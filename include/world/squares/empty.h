@@ -8,7 +8,8 @@ class EmptySquare : public Square {
         EmptySquare();
         ~EmptySquare();
 
-        void walkAgainst(directions dir);
+        int walkAgainst(directions dir);
+        char token();
 
     private:
 };

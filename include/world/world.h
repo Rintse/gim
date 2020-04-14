@@ -5,7 +5,9 @@
 #include "world/level.h"
 
 class World {
-    std::vector<Level> levels;
+    public:
+    private:
+        std::vector<Level> levels;
 };
 
 #endif

@@ -13,6 +13,8 @@ public:
 
     void randomGenerate();
     Square* getSquare(int x, int y);
+    void print(); //normal output
+    void draw(); //ncurses: todo
 private:
     Square*** board;
     FastRandom randgen;

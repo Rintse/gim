@@ -5,8 +5,10 @@
 
 class Square {
     public:
-        int walkAgainst(directions dir);
-        
+        Square() {}
+        virtual ~Square() {}
+        virtual int walkAgainst(directions dir) = 0;
+        virtual char token() = 0;
     private:
 
 };

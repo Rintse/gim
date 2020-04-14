@@ -1,5 +1,6 @@
 #include "world/level.h"
 #include "fastrandom.h"
+#include <stdio.h>
 
 Level::Level(){}
 
@@ -36,6 +37,27 @@ void Level::randomGenerate() {
             }
         }
     }
+}
+
+void Level::print() {
+    char* str = new char[width*height+1];
+    int strIdx = 0;
+
+    for(int i = 0; i < width; i++) {
+        for(int j = 0; j < height; j++) {
+            str[strIdx++] = board[i][j]->token();
+        }
+    }
+
+    // Add nullbyte to terminate and print with fprint
+    str[strIdx] = '\0';
+    printf("%s", str);
+
+    delete[] str;
+}
+
+void Level::draw() {
+
 }
 
 Square* Level::getSquare(int x, int y) {
