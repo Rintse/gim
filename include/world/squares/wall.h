@@ -1,10 +1,16 @@
 #ifndef wall_h
 #define wall_h
 
-#include "wolrd/squares/square.h"
+#include "world/squares/square.h"
 
-class WallSquare : Square {
+class WallSquare : public Square {
+    public:
+        WallSquare();
+        ~WallSquare();
 
+        void walkAgainst(directions dir);
+
+    private:
 };
 
 #endif

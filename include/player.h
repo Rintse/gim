@@ -2,11 +2,12 @@
 #define player_h
 
 #include "world/world.h"
+#include "directions.h"
 
 class Player {
 public:
     Player(World w);
-    int move(int direction);
+    void move(directions dir);
 private:
     World world;
     Level curLvl;

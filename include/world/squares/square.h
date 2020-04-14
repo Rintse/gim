@@ -1,6 +1,14 @@
-class Square {
-public:
+#ifndef square_h
+#define square_h
 
-private:
-    
+#include "directions.h"
+
+class Square {
+    public:
+        int walkAgainst(directions dir);
+        
+    private:
+
 };
+
+#endif
