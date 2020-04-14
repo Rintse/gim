@@ -3,13 +3,13 @@
 
 #define NUM_DIRECTIONS 4
 
-enum directions {
+enum Direction {
    UP,
    LEFT,
    DOWN,
    RIGHT
 };
 
-directions opposite(directions dir);
+Direction opposite(Direction dir);
 
 #endif

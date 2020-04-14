@@ -3,7 +3,7 @@
 EmptySquare::EmptySquare() {}
 EmptySquare::~EmptySquare() {}
 
-int EmptySquare::walkAgainst(directions dir) {
+int EmptySquare::walkAgainst(Direction dir) {
     return 0;
 }
 

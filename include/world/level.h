@@ -4,6 +4,7 @@
 #include "world/squares/wall.h"
 #include "world/squares/empty.h"
 #include "fastrandom.h"
+#include <list>
 
 class Level {
 public:
@@ -19,6 +20,8 @@ private:
     Square*** board;
     FastRandom randgen;
     int height, width;
+    std::list<Entity> entities;
+    std::list<NPC> npcs;
 };
 
 #endif

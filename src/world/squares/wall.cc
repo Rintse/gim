@@ -3,7 +3,7 @@
 WallSquare::WallSquare() {}
 WallSquare::~WallSquare() {}
 
-int WallSquare::walkAgainst(directions dir) {
+int WallSquare::walkAgainst(Direction dir) {
     return 0;
 }
 

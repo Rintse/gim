@@ -5,12 +5,19 @@
 #include "world/world.h"
 #include "screen.h"
 
-class Game {
+enum ACTION {
+    NONE, MOVEUP, MOVELEFT, MOVEDOWN, MOVERIGHT, SHOOT
+};
 
-private:
-    Player player;
-    World world;
-    Screen screen;
+class Game {
+    public:
+        Game();
+        void run();
+    private:
+        Player player;
+        World world;
+        Screen screen;
+        bool gameOver;
 };
 
 #endif

@@ -1,10 +1,12 @@
 #include "player.h"
 
+Player::Player() {}
+
 Player::Player(World w) {
     world = w;
 }
 
-void Player::move(directions dir) {
+void Player::move(Direction dir) {
     // Get intended new position
     int ty = y, tx = x;
     switch (dir) {

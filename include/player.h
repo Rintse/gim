@@ -6,8 +6,9 @@
 
 class Player {
 public:
+    Player();
     Player(World w);
-    void move(directions dir);
+    void move(Direction dir);
 private:
     World world;
     Level curLvl;

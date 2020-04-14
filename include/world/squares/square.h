@@ -7,7 +7,7 @@ class Square {
     public:
         Square() {}
         virtual ~Square() {}
-        virtual int walkAgainst(directions dir) = 0;
+        virtual int walkAgainst(Direction dir) = 0;
         virtual char token() = 0;
     private:
 

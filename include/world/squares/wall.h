@@ -8,7 +8,7 @@ class WallSquare : public Square {
         WallSquare();
         ~WallSquare();
 
-        int walkAgainst(directions dir);
+        int walkAgainst(Direction dir);
         char token();
 
     private:
