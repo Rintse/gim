@@ -1,0 +1,6 @@
+class Square {
+public:
+
+private:
+    
+};
