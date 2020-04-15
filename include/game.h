@@ -2,7 +2,7 @@
 #define game_h
 
 #include "player.h"
-#include "world/world.h"
+#include "world/level.h"
 #include "screen.h"
 
 #define FPS 20.0

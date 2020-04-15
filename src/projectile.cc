@@ -1,34 +1,36 @@
 #include "projectile.h"
+#include "world/squares/square.h"
+#include "world/level.h"
 
 Projectile::Projectile() {}
 
-Projectile::Projectile(Level l, Square s, Direction d) {
+Projectile::Projectile(Level* l, Square* s, Direction d) {
     lvl = l;
     curSquare = s;
     dir = d;
-    isDone = false;
+    done = false;
 }
 
-Projectile::isDone() {
-    return isDone;
+bool Projectile::isDone() {
+    return done;
 }
 
-Projectile::move() {
+void Projectile::move() {
     Square* s = lvl->getSquareDir(curSquare, dir);
     // Only travel along floor squares
     if(!s->type() != SQUARE_FLOOR) {
-        isDone = true;
+        done = true;
         return;
     }
     else {
         // Kill an enemy when moving onto its square
-        if(s->getEnemy() != NULL) {
-            lvl->kill(s->getEnemy());
-            s->setEnemy(NULL);
+        if(s->getEnemy() != 0) {
+            lvl->killEnemy(s->getEnemy());
+            s->setEnemy(0);
         }
 
         // Move onto the square
-        curSquare->setProjectile(NULL);
+        curSquare->setProjectile(0);
         s->setProjectile(this);
         curSquare = s;
     }

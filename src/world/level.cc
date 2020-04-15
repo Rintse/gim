@@ -1,6 +1,7 @@
 #include "world/level.h"
 #include "fastrandom.h"
 #include <stdio.h>
+#include "directions.h"
 
 Level::Level(){}
 
@@ -25,11 +26,12 @@ Level::~Level() {
     delete[] board;
 }
 
-inline Square* Level::getSquareDir(Square s, Direction dir) {
-    int y = curSquare.getY(), x = curSquare.getX();
+Square* Level::getSquareDir(Square* s, Direction dir) {
+    int y = s->getY();
+    int x = s->getX();
     switch (dir) {
-        case UP: y++; break; case LEFT: x++; break;
-        case DOWN: y--; break; case RIGHT: x--; break;
+        case DIR_UP: y++; break; case DIR_LEFT: x++; break;
+        case DIR_DOWN: y--; break; case DIR_RIGHT: x--; break;
     }
     return board[x][y];
 }

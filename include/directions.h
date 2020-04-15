@@ -4,10 +4,10 @@
 #define NUM_DIRECTIONS 4
 
 enum Direction {
-   UP,
-   LEFT,
-   DOWN,
-   RIGHT
+   DIR_UP,
+   DIR_LEFT,
+   DIR_DOWN,
+   DIR_RIGHT
 };
 
 Direction opposite(Direction dir);

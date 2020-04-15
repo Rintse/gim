@@ -1,10 +1,6 @@
 #include "world/squares/wall.h"
 
-WallSquare::WallSquare(int _x, int _y) {
-    player = projectile = enemy = NULL;
-    x = X;
-    y = Y;
-}
+WallSquare::WallSquare(int x, int y) : Square(x,y) {}
 
 WallSquare::~WallSquare() {
 

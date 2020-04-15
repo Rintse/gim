@@ -12,7 +12,7 @@ int _kbhit() {
         tcgetattr(STDIN, &term);
         term.c_lflag &= ~ICANON;
         tcsetattr(STDIN, TCSANOW, &term);
-        setbuf(stdin, NULL);
+        setbuf(stdin, 0);
         initialized = true;
     }
 

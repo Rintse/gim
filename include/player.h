@@ -1,19 +1,19 @@
 #ifndef player_h
 #define player_h
 
-#include "world/world.h"
-#include "world/level.h"
 #include "directions.h"
 #include "actions.h"
+
+class Level;
+class Square;
 
 class Player {
 public:
     Player();
-    Player(World w);
+    Player(Level* l);
     void act(Action a);
     void move(Direction dir);
 private:
-    World* world;
     Level* curLvl;
     Square* curSquare;
     Direction facing;

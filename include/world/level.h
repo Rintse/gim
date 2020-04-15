@@ -3,8 +3,6 @@
 
 #include "world/squares/wall.h"
 #include "world/squares/empty.h"
-#include "player.h"
-#include "enemy.h"
 #include "fastrandom.h"
 #include <set>
 

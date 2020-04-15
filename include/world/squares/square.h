@@ -12,7 +12,13 @@ enum SquareType {
 
 class Square {
     public:
-        Square() {}
+        Square(int _x, int _y) {
+            player = 0;
+            projectile = 0;
+            enemy = 0;
+            x = _x;
+            y = _y;
+        }
         virtual ~Square() {}
         virtual char token() = 0;
         virtual SquareType type() = 0;
@@ -20,12 +26,12 @@ class Square {
         int getY() { return y; };
         Player* getPlayer() { return player; }
         Projectile* getProjectile() { return projectile; }
-        Enemy* getEnemey() { return enemy; }
+        Enemy* getEnemy() { return enemy; }
         void setPlayer(Player* p) { player = p; }
-        void setProjectile(Projectile *p) { projectile = p }
-        void setEnemey(Enemy* e) { enemy = e; }
+        void setProjectile(Projectile *p) { projectile = p; }
+        void setEnemy(Enemy* e) { enemy = e; }
 
-    private:
+    protected:
         Player* player;
         Projectile* projectile;
         Enemy* enemy;

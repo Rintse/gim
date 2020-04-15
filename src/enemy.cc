@@ -1,8 +1,8 @@
-#include "projectile.h"
+#include "enemy.h"
 
 Enemy::Enemy() {}
 
-Enemy::Enemy(Level l, Square s) {
+Enemy::Enemy(Level* l, Square* s) {
     lvl = l;
     curSquare = s;
 }

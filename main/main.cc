@@ -2,7 +2,7 @@
 
 int main() {
     Game g;
-    g->run();
+    g.run();
 
     return 0;
 }
