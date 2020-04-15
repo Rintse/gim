@@ -3,8 +3,10 @@
 
 #include "world/squares/wall.h"
 #include "world/squares/empty.h"
+#include "player.h"
+#include "enemy.h"
 #include "fastrandom.h"
-#include <list>
+#include <set>
 
 class Level {
 public:
@@ -13,15 +15,22 @@ public:
     ~Level();
 
     void randomGenerate();
+    Square* getSquareDir(Square* s, Direction dir);
     Square* getSquare(int x, int y);
     void print(); //normal output
     void draw(); //ncurses: todo
+    void killEnemy(Enemy* e);
+    void updateEnemies();
+    void updateProjectiles();
 private:
     Square*** board;
     FastRandom randgen;
     int height, width;
-    std::list<Entity> entities;
-    std::list<NPC> npcs;
+
+    std::set<Projectile*> projectiles;
+    std::set<Enemy*> enemies;
+    Player* player;
+    Level* left, * right;
 };
 
 #endif

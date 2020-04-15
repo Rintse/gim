@@ -1,6 +1,9 @@
 #include "game.h"
 #include "kbhit.h"
 #include <iostream>
+#include <chrono>
+#include <thread>
+#include "actions.h"
 
 //TODO: misschien niet last?
 int lastKeyPressed() {
@@ -14,14 +17,14 @@ int lastKeyPressed() {
     }
 }
 
-ACTION getAction(char key) {
+Action getAction(int key) {
     switch (key) {
-        case 'w': return MOVEUP;
-        case 's': return MOVEDOWN;
-        case 'd': return MOVERIGHT;
-        case 'a': return MOVELEFT;
-        case -1 : return NONE;
-        case ' ': return SHOOT;
+        case 'w': return ACTION_MOVEUP;
+        case 's': return ACTION_MOVEDOWN;
+        case 'd': return ACTION_MOVERIGHT;
+        case 'a': return ACTION_MOVELEFT;
+        case ' ': return ACTION_SHOOT;
+        default: case -1 : return ACTION_NONE;
     }
 }
 
@@ -31,8 +34,23 @@ Game::Game() {
 
 void Game::run() {
     while(!gameOver) {
-        char lastKey = lastKeyPressed();
-        ACTION act = getAction(lastKey);
+        auto t1 = std::chrono::high_resolution_clock::now();
 
+        char lastKey = lastKeyPressed();
+        Action action = getAction(lastKey);
+
+        // Update all entities
+        player->act(action);
+        curLvl->updateProjectiles();
+        curLvl->updateEnemies();
+
+        // Draw to the screen
+        curLvl->print();
+
+        auto updateT = std::chrono::duration_cast<std::chrono::milliseconds>
+                            (std::chrono::high_resolution_clock::now() - t1);
+        int millisLeft = FRAMETIME-updateT.count();
+        if(millisLeft > 0)
+            std::this_thread::sleep_for(std::chrono::milliseconds(millisLeft));
     }
 }

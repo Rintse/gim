@@ -1,22 +1,23 @@
-#ifndef player_h
-#define player_h
+#ifndef enemy_h
+#define enemy_h
 
 #include "world/world.h"
 #include "world/level.h"
 #include "directions.h"
 #include "actions.h"
 
-class Player {
+class Enemy {
 public:
-    Player();
-    Player(World w);
-    void act(Action a);
-    void move(Direction dir);
+    Enemy();
+    Enemy(World w);
+
+    Action decideMove(); //Can be done in parralel
+    void act();
 private:
     World* world;
     Level* curLvl;
     Square* curSquare;
-    Direction facing;
+    Action nextMove;
 };
 
 #endif

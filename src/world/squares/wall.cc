@@ -1,10 +1,17 @@
 #include "world/squares/wall.h"
 
-WallSquare::WallSquare() {}
-WallSquare::~WallSquare() {}
+WallSquare::WallSquare(int _x, int _y) {
+    player = projectile = enemy = NULL;
+    x = X;
+    y = Y;
+}
 
-int WallSquare::walkAgainst(Direction dir) {
-    return 0;
+WallSquare::~WallSquare() {
+
+}
+
+SquareType WallSquare::type() {
+    return SQUARE_WALL;
 }
 
 char WallSquare::token() {

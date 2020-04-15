@@ -5,17 +5,16 @@
 #include "world/world.h"
 #include "screen.h"
 
-enum ACTION {
-    NONE, MOVEUP, MOVELEFT, MOVEDOWN, MOVERIGHT, SHOOT
-};
+#define FPS 20.0
+#define FRAMETIME (1000.0/FPS)
 
 class Game {
     public:
         Game();
         void run();
     private:
-        Player player;
-        World world;
+        Player* player;
+        Level *curLvl;
         Screen screen;
         bool gameOver;
 };

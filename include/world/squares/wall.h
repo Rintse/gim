@@ -5,10 +5,10 @@
 
 class WallSquare : public Square {
     public:
-        WallSquare();
+        WallSquare(int _x, int _y);
         ~WallSquare();
 
-        int walkAgainst(Direction dir);
+        SquareType type();
         char token();
 
     private:

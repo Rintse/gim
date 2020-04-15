@@ -25,15 +25,36 @@ Level::~Level() {
     delete[] board;
 }
 
+inline Square* Level::getSquareDir(Square s, Direction dir) {
+    int y = curSquare.getY(), x = curSquare.getX();
+    switch (dir) {
+        case UP: y++; break; case LEFT: x++; break;
+        case DOWN: y--; break; case RIGHT: x--; break;
+    }
+    return board[x][y];
+}
+
+void Level::killEnemy(Enemy* e) {
+    enemies.erase(enemies.find(e));
+}
+
+void Level::updateEnemies() {
+
+}
+
+void Level::updateProjectiles() {
+
+}
+
 void Level::randomGenerate() {
     for(int i = 0; i < width; i++) {
         for(int j = 0; j < height; j++) {
             int rand = randgen.getLong() % 5;
             if(rand == 0) {
-                board[i][j] = new WallSquare;
+                board[i][j] = new WallSquare(i,j);
             }
             else {
-                board[i][j] = new EmptySquare;
+                board[i][j] = new EmptySquare(i,j);
             }
         }
     }
@@ -60,6 +81,6 @@ void Level::draw() {
 
 }
 
-Square* Level::getSquare(int x, int y) {
+inline Square* Level::getSquare(int x, int y) {
     return board[x][y];
 }
