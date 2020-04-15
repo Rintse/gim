@@ -14,9 +14,11 @@ class Game {
     public:
         Game();
         void setLevel(Level* l);
+        FastRandom* getRNG();
         void init();
         void run();
     private:
+        FastRandom randgen;
         Player* player;
         Level *curLvl;
         Screen screen;

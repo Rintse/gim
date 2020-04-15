@@ -1,6 +1,8 @@
 #ifndef directions_h
 #define directions_h
 
+#include <string>
+
 #define NUM_DIRECTIONS 4
 
 enum Direction {
@@ -9,6 +11,8 @@ enum Direction {
    DIR_DOWN,
    DIR_RIGHT
 };
+
+std::string dir_tostr(Direction dir);
 
 Direction opposite_dir(Direction dir);
 

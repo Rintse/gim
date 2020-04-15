@@ -17,6 +17,8 @@ public:
     void setSquare(Square* s);
     void setLevel(Level* l);
     char token();
+    Square* getSquare();
+
 private:
     Level* curLvl;
     Square* curSquare;

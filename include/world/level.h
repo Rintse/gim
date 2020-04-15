@@ -19,7 +19,7 @@ public:
     // Initialisation
     void randomGenerate();
     void generateStartRoom();
-    void newLevel(Direction dir);
+    Level* newLevel(Direction dir);
     void setPlayer(Player* p);
     void initPlayer();
     void initPlayer(Direction dir);
@@ -31,6 +31,7 @@ public:
     void removeEnemy(Enemy* e);
     void updateEnemies();
     void updateProjectiles();
+    void switchLevel(Direction dir);
 
     // Getters
     Square* getSquareDir(Square* s, Direction dir);
@@ -42,9 +43,9 @@ public:
 
 private:
     Square*** board;
-    FastRandom randgen;
     int height, width;
     int doorx, doory;
+    Square* lastSquare;
 
     std::set<Projectile*> projectiles;
     std::set<Enemy*> enemies;

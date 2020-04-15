@@ -42,8 +42,8 @@ void Level::initPlayer() {
 }
 
 void Level::initPlayer(Direction d) {
-    // If door was, right now we start left and vice versa
-    int startx = d == DIR_LEFT ? width-1 : 0;
+    // If door was right, now we start left and vice versa
+    int startx = (d == DIR_LEFT) ? width-2 : 1;
     Square* startSquare = board[startx][doory];
     startSquare->setPlayer(player);
     player->setSquare(startSquare);
@@ -58,7 +58,6 @@ void Level::newProjectile(Square* start, Direction dir) {
 
 void Level::removeProjectile(Projectile* p) {
     projectiles.erase(projectiles.find(p));
-    std::cout << "projectile deleted" << std::endl;
 }
 
 Square* Level::getSquareDir(Square* s, Direction dir) {
@@ -67,6 +66,9 @@ Square* Level::getSquareDir(Square* s, Direction dir) {
     switch (dir) {
         case DIR_UP: y--; break; case DIR_LEFT: x--; break;
         case DIR_DOWN: y++; break; case DIR_RIGHT: x++; break;
+    }
+    if(x < 0 || x > width-1 || y < 0 || y > height-1) {
+        return NULL;
     }
     return board[x][y];
 }
@@ -99,20 +101,30 @@ void Level::setNeighbour(Direction dir, Level* l)  {
 }
 
 
-void Level::newLevel(Direction dir) {
+void Level::switchLevel(Direction dir) {
+    std::cout << std::endl;
+
+    if(!neighbours.count(dir)) {
+        neighbours[dir] = newLevel(dir);
+    }
+
+    // Switch to this new level
+    neighbours[dir]->initPlayer(dir);
+    game->setLevel(neighbours[dir]);
+    player->setLevel(neighbours[dir]);
+}
+
+
+Level* Level::newLevel(Direction dir) {
     // Create new level and populate its board
     Level* tmp = new Level(width, height, game);
     tmp->randomGenerate();
 
     // Set all reference pointers
     tmp->setPlayer(player);
-    player->setLevel(tmp);
-    tmp->initPlayer(dir);
     tmp->setNeighbour(opposite_dir(dir), this);
-    neighbours[dir] = tmp;
 
-    // Switch to this new level
-    game->setLevel(tmp);
+    return tmp;
 }
 
 
@@ -140,18 +152,24 @@ void Level::generateStartRoom() {
 void Level::randomGenerate() {
     for(int i = 0; i < width; i++) {
         for(int j = 0; j < height; j++) {
-            if((i == 0 || i == width-1) && j == doory) {
-                Direction dir = i==0 ? DIR_LEFT : DIR_RIGHT;
-                board[i][j] = new DoorSquare(i,j,dir);
-                continue;
-            }
-
-            int rand = randgen.getLong() % 5;
-            if(rand == 0) {
-                board[i][j] = new WallSquare(i,j);
+            if(i == 0 || j == 0 || i == width-1 || j == height-1) {
+                if((i == 0 || i == width-1) && j == doory) {
+                    Direction dir = i==0 ? DIR_LEFT : DIR_RIGHT;
+                    board[i][j] = new DoorSquare(i,j,dir);
+                    continue;
+                }
+                else {
+                    board[i][j] = new WallSquare(i,j);
+                }
             }
             else {
-                board[i][j] = new EmptySquare(i,j);
+                int rand = game->getRNG()->getLong() % 10;
+                if(rand == 0) {
+                    board[i][j] = new WallSquare(i,j);
+                }
+                else {
+                    board[i][j] = new EmptySquare(i,j);
+                }
             }
         }
     }

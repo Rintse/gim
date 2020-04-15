@@ -23,6 +23,10 @@ void Game::setLevel(Level* l) {
     curLvl = l;
 }
 
+FastRandom* Game::getRNG() {
+    return &randgen;
+}
+
 void Game::init() {
     curLvl = new Level(LVL_WIDTH, LVL_HEIGHT, this);
     player = new Player(curLvl);

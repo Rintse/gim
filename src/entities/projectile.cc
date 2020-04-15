@@ -16,7 +16,6 @@ Square* Projectile::getCurSquare() {
 }
 
 int Projectile::move() {
-    std::cout << "projectile move?" << std::endl;
     Square* s = lvl->getSquareDir(curSquare, dir);
     // Only travel along floor squares
     if(s->type() != SQUARE_FLOOR) {
@@ -29,7 +28,6 @@ int Projectile::move() {
             s->setEnemy(0);
         }
 
-        std::cout << "actual move?" << std::endl;
         // Move onto the square
         curSquare->setProjectile(0);
         s->setProjectile(this);

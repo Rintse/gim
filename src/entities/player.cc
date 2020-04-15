@@ -49,9 +49,16 @@ char Player::token() {
     }
 }
 
+
+Square* Player::getSquare() {
+    return curSquare;
+}
+
+
 void Player::move(Direction dir) {
     // Get the square in the intended new position
     Square* s = curLvl->getSquareDir(curSquare, dir);
+    if(s == NULL) { return; }
 
     // Touching enemies is not allowed
     if(s->getEnemy() != 0) {
@@ -61,7 +68,8 @@ void Player::move(Direction dir) {
     // Touching doors makes you go to a new room
     else if(s->type() == SQUARE_DOOR) {
         Direction dir = dynamic_cast<DoorSquare*>(s)->getDir();
-        curLvl->newLevel(dir);
+        curLvl->switchLevel(dir);
+        facing = dir;
     }
 
     // Move onto new floor square
