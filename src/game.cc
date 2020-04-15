@@ -32,6 +32,11 @@ Game::Game() {
     gameOver = false;
 }
 
+void Game::init() {
+    curLvl = new Level(LVL_WIDTH, LVL_HEIGHT);
+    curLvl->generateStartRoom();
+}
+
 void Game::run() {
     while(!gameOver) {
         auto t1 = std::chrono::high_resolution_clock::now();

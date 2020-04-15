@@ -8,6 +8,8 @@ Level::Level(){}
 Level::Level(int w, int h) {
     width = w;
     height = h;
+    doorx = width/2;
+    doory = height/2;
 
     board = new Square**[width];
     for(int i = 0; i < width; ++i) {
@@ -48,6 +50,26 @@ void Level::updateProjectiles() {
 
 }
 
+void Level::generateStartRoom() {
+    for(int i = 0; i < width; i++) {
+        for(int j = 0; j < height; j++) {
+            // Edges
+            if(i == 0 || j == 0 || i == width-1 || j == height-1) {
+                if( (j == 0 && i == doorx) ||
+                ((i == 0 || i == width-1) && j == doory)) {
+                    board[i][j] = new DoorSquare(i,j);
+                }
+                else {
+                    board[i][j] = new WallSquare(i,j);
+                }
+            }
+            else {
+                board[i][j] = new EmptySquare(i,j);
+            }
+        }
+    }
+}
+
 void Level::randomGenerate() {
     for(int i = 0; i < width; i++) {
         for(int j = 0; j < height; j++) {
@@ -63,18 +85,19 @@ void Level::randomGenerate() {
 }
 
 void Level::print() {
-    char* str = new char[width*height+1];
+    char* str = new char[width*height+height+1];
     int strIdx = 0;
 
-    for(int i = 0; i < width; i++) {
-        for(int j = 0; j < height; j++) {
+    for(int j = 0; j < height; j++) {
+        for(int i = 0; i < width; i++) {
             str[strIdx++] = board[i][j]->token();
         }
+        str[strIdx++] = '\n';
     }
 
     // Add nullbyte to terminate and print with fprint
     str[strIdx] = '\0';
-    printf("%s", str);
+    printf("%s\n", str);
 
     delete[] str;
 }
