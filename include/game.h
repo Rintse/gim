@@ -1,7 +1,7 @@
 #ifndef game_h
 #define game_h
 
-#include "player.h"
+#include "entities/player.h"
 #include "world/level.h"
 #include "screen.h"
 

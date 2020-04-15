@@ -1,4 +1,4 @@
-#include "projectile.h"
+#include "entities/projectile.h"
 #include "world/squares/square.h"
 #include "world/level.h"
 #include <iostream>

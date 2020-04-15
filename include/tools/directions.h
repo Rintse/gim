@@ -10,6 +10,6 @@ enum Direction {
    DIR_RIGHT
 };
 
-Direction opposite(Direction dir);
+Direction opposite_dir(Direction dir);
 
 #endif

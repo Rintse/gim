@@ -1,7 +1,7 @@
 #include "world/level.h"
-#include "fastrandom.h"
+#include "tools/fastrandom.h"
 #include <stdio.h>
-#include "directions.h"
+#include "tools/directions.h"
 #include <iostream>
 #include <vector>
 
@@ -36,6 +36,13 @@ void Level::setPlayer(Player* p) {
 
 void Level::initPlayer() {
     Square* startSquare = board[doorx][doory];
+    startSquare->setPlayer(player);
+    player->setSquare(startSquare);
+}
+
+void Level::initPlayer(Direction d) {
+    int startx = d == DIR_LEFT ? width-1 : 0;
+    Square* startSquare = board[startx][doory];
     startSquare->setPlayer(player);
     player->setSquare(startSquare);
 }
@@ -84,6 +91,22 @@ void Level::updateProjectiles() {
     }
 }
 
+
+void Level::setNeighbour(Direction dir, Level* l)  {
+    neighbours[dir] = l;
+}
+
+
+void Level::newLevel(Direction dir) {
+    Level* tmp = new Level(width, height);
+    tmp->setPlayer(player);
+    tmp->initPlayer(dir);
+    tmp->randomGenerate();
+    tmp->setNeighbour(opposite_dir(dir), this);
+    neighbours[dir] = tmp;
+}
+
+
 void Level::generateStartRoom() {
     for(int i = 0; i < width; i++) {
         for(int j = 0; j < height; j++) {
@@ -91,7 +114,8 @@ void Level::generateStartRoom() {
             if(i == 0 || j == 0 || i == width-1 || j == height-1) {
                 if( (j == 0 && i == doorx) ||
                 ((i == 0 || i == width-1) && j == doory)) {
-                    board[i][j] = new DoorSquare(i,j);
+                    Direction dir = i==0 ? DIR_LEFT : DIR_RIGHT;
+                    board[i][j] = new DoorSquare(i,j,dir);
                 }
                 else {
                     board[i][j] = new WallSquare(i,j);
@@ -107,6 +131,12 @@ void Level::generateStartRoom() {
 void Level::randomGenerate() {
     for(int i = 0; i < width; i++) {
         for(int j = 0; j < height; j++) {
+            if((i == 0 || i == width-1) && j == doory) {
+                Direction dir = i==0 ? DIR_LEFT : DIR_RIGHT;
+                board[i][j] = new DoorSquare(i,j,dir);
+                continue;
+            }
+
             int rand = randgen.getLong() % 5;
             if(rand == 0) {
                 board[i][j] = new WallSquare(i,j);

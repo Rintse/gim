@@ -1,4 +1,4 @@
-#include "kbhit.h"
+#include "tools/kbhit.h"
 #include <stdio.h>
 #include <termios.h>
 #include <sys/ioctl.h>

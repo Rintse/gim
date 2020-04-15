@@ -1,4 +1,4 @@
-#include "fastrandom.h"
+#include "tools/fastrandom.h"
 //Marsaglia's xorshf generator, very few operations
 
 FastRandom::FastRandom(){ // Seeding

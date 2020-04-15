@@ -1,4 +1,4 @@
-#include "player.h"
+#include "entities/player.h"
 #include "world/squares/square.h"
 #include "world/level.h"
 #include <iostream>
@@ -48,8 +48,6 @@ char Player::token() {
 void Player::move(Direction dir) {
     // Get the square in the intended new position
     Square* s = curLvl->getSquareDir(curSquare, dir);
-    // Don't do anything if there is no such square
-    if(s == 0) return; //TODO: Shouldn't happen?
 
     // Touching enemies is not allowed
     if(s->getEnemy() != 0) {
@@ -58,7 +56,8 @@ void Player::move(Direction dir) {
     }
     // Touching doors makes you go to a new room
     else if(s->type() == SQUARE_DOOR) {
-
+        Direction dir = dynamic_cast<DoorSquare*>(s)->getDir();
+        curLvl->newLevel(dir);
     }
 
     // Move onto new floor square

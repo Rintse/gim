@@ -5,13 +5,15 @@
 
 class DoorSquare : public Square {
     public:
-        DoorSquare(int _x, int _y);
+        DoorSquare(int _x, int _y, Direction d);
         ~DoorSquare();
 
         SquareType type();
         char token();
+        Direction getDir();
 
     private:
+        Direction dir;
 };
 
 #endif

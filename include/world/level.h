@@ -4,8 +4,9 @@
 #include "world/squares/wall.h"
 #include "world/squares/empty.h"
 #include "world/squares/door.h"
-#include "fastrandom.h"
+#include "tools/fastrandom.h"
 #include <set>
+#include <map>
 
 class Level {
 public:
@@ -13,19 +14,30 @@ public:
     Level(int width, int height);
     ~Level();
 
+    // Initialisation
     void randomGenerate();
     void generateStartRoom();
-    Square* getSquareDir(Square* s, Direction dir);
-    Square* getSquare(int x, int y);
+    void newLevel(Direction dir);
     void setPlayer(Player* p);
     void initPlayer();
-    void print(); //normal output
-    void draw(); //ncurses: todo
+    void initPlayer(Direction dir);
+
+    // Game updates
+    void setNeighbour(Direction d, Level* l);
     void newProjectile(Square* start, Direction dir);
     void removeProjectile(Projectile* p);
     void removeEnemy(Enemy* e);
     void updateEnemies();
     void updateProjectiles();
+
+    // Getters
+    Square* getSquareDir(Square* s, Direction dir);
+    Square* getSquare(int x, int y);
+
+    // Visuals
+    void print(); //normal output
+    void draw(); //ncurses: todo
+
 private:
     Square*** board;
     FastRandom randgen;
@@ -35,7 +47,7 @@ private:
     std::set<Projectile*> projectiles;
     std::set<Enemy*> enemies;
     Player* player;
-    Level* left, * right;
+    std::map<Direction, Level*> neighbours;
 };
 
 #endif

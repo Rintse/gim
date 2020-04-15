@@ -1,7 +1,7 @@
 #ifndef projectile_h
 #define projectile_h
 
-#include "directions.h"
+#include "tools/directions.h"
 
 class Level;
 class Square;

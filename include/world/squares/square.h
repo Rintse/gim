@@ -1,10 +1,10 @@
 #ifndef square_h
 #define square_h
 
-#include "directions.h"
-#include "player.h"
-#include "enemy.h"
-#include "projectile.h"
+#include "tools/directions.h"
+#include "entities/player.h"
+#include "entities/enemy.h"
+#include "entities/projectile.h"
 
 enum SquareType {
     SQUARE_FLOOR, SQUARE_DOOR, SQUARE_WALL
@@ -12,24 +12,19 @@ enum SquareType {
 
 class Square {
     public:
-        Square(int _x, int _y) {
-            player = 0;
-            projectile = 0;
-            enemy = 0;
-            x = _x;
-            y = _y;
-        }
-        virtual ~Square() {}
+        Square(int _x, int _y);
+        virtual ~Square();
+
         virtual char token() = 0;
         virtual SquareType type() = 0;
-        int getX() { return x; };
-        int getY() { return y; };
-        Player* getPlayer() { return player; }
-        Projectile* getProjectile() { return projectile; }
-        Enemy* getEnemy() { return enemy; }
-        void setPlayer(Player* p) { player = p; }
-        void setProjectile(Projectile *p) { projectile = p; }
-        void setEnemy(Enemy* e) { enemy = e; }
+        int getX();
+        int getY();
+        Player* getPlayer();
+        Projectile* getProjectile();
+        Enemy* getEnemy();
+        void setPlayer(Player* p);
+        void setProjectile(Projectile *p);
+        void setEnemy(Enemy* e);
 
     protected:
         Player* player;

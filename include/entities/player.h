@@ -1,8 +1,8 @@
 #ifndef player_h
 #define player_h
 
-#include "directions.h"
-#include "actions.h"
+#include "tools/directions.h"
+#include "tools/actions.h"
 
 class Level;
 class Square;
