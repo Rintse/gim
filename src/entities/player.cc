@@ -14,6 +14,10 @@ void Player::setSquare(Square* s) {
     curSquare = s;
 }
 
+void Player::setLevel(Level* l) {
+    curLvl = l;
+}
+
 void Player::shoot() {
     Square* s = curLvl->getSquareDir(curSquare, facing);
     if(s->type() != SQUARE_FLOOR) {

@@ -13,6 +13,7 @@
 class Game {
     public:
         Game();
+        void setLevel(Level* l);
         void init();
         void run();
     private:

@@ -19,8 +19,12 @@ Game::Game() {
     gameOver = false;
 }
 
+void Game::setLevel(Level* l) {
+    curLvl = l;
+}
+
 void Game::init() {
-    curLvl = new Level(LVL_WIDTH, LVL_HEIGHT);
+    curLvl = new Level(LVL_WIDTH, LVL_HEIGHT, this);
     player = new Player(curLvl);
     curLvl->setPlayer(player);
     curLvl->generateStartRoom();

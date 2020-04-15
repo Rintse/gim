@@ -8,10 +8,12 @@
 #include <set>
 #include <map>
 
+class Game;
+
 class Level {
 public:
     Level();
-    Level(int width, int height);
+    Level(int w, int h, Game* g);
     ~Level();
 
     // Initialisation
@@ -48,6 +50,7 @@ private:
     std::set<Enemy*> enemies;
     Player* player;
     std::map<Direction, Level*> neighbours;
+    Game* game;
 };
 
 #endif

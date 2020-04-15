@@ -4,10 +4,12 @@
 #include "tools/directions.h"
 #include <iostream>
 #include <vector>
+#include "game.h"
 
 Level::Level(){}
 
-Level::Level(int w, int h) {
+Level::Level(int w, int h, Game* g) {
+    game = g;
     width = w;
     height = h;
     doorx = width/2;
@@ -17,7 +19,6 @@ Level::Level(int w, int h) {
     for(int i = 0; i < width; ++i) {
         board[i] = new Square*[height];
     }
-
 }
 
 Level::~Level() {
@@ -41,6 +42,7 @@ void Level::initPlayer() {
 }
 
 void Level::initPlayer(Direction d) {
+    // If door was, right now we start left and vice versa
     int startx = d == DIR_LEFT ? width-1 : 0;
     Square* startSquare = board[startx][doory];
     startSquare->setPlayer(player);
@@ -98,12 +100,19 @@ void Level::setNeighbour(Direction dir, Level* l)  {
 
 
 void Level::newLevel(Direction dir) {
-    Level* tmp = new Level(width, height);
-    tmp->setPlayer(player);
-    tmp->initPlayer(dir);
+    // Create new level and populate its board
+    Level* tmp = new Level(width, height, game);
     tmp->randomGenerate();
+
+    // Set all reference pointers
+    tmp->setPlayer(player);
+    player->setLevel(tmp);
+    tmp->initPlayer(dir);
     tmp->setNeighbour(opposite_dir(dir), this);
     neighbours[dir] = tmp;
+
+    // Switch to this new level
+    game->setLevel(tmp);
 }
 
 

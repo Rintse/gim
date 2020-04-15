@@ -15,6 +15,7 @@ public:
     void move(Direction dir);
     void shoot();
     void setSquare(Square* s);
+    void setLevel(Level* l);
     char token();
 private:
     Level* curLvl;
