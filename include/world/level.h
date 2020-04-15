@@ -17,12 +17,14 @@ public:
     ~Level();
 
     // Initialisation
-    void randomGenerate();
+    void generateBossRoom();
     void generateStartRoom();
+    void generateRandomRoom();
     Level* newLevel(Direction dir);
     void setPlayer(Player* p);
     void initPlayer();
     void initPlayer(Direction dir);
+    void createBossRoom();
 
     // Game updates
     void setNeighbour(Direction d, Level* l);

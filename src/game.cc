@@ -33,6 +33,7 @@ void Game::init() {
     curLvl->setPlayer(player);
     curLvl->generateStartRoom();
     curLvl->initPlayer();
+    curLvl->createBossRoom();
 }
 
 void Game::run() {

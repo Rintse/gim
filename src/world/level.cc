@@ -43,8 +43,15 @@ void Level::initPlayer() {
 
 void Level::initPlayer(Direction d) {
     // If door was right, now we start left and vice versa
-    int startx = (d == DIR_LEFT) ? width-2 : 1;
-    Square* startSquare = board[startx][doory];
+    int startx, starty;
+    switch(d) {
+        case DIR_LEFT: starty = doory; startx = width-2; break;
+        case DIR_RIGHT: starty = doory; startx = 1; break;
+        case DIR_UP: starty = height-2; startx = doorx; break;
+        case DIR_DOWN: starty = 1; startx = doorx; break;
+        default: break;
+    }
+    Square* startSquare = board[startx][starty];
     startSquare->setPlayer(player);
     player->setSquare(startSquare);
 }
@@ -118,7 +125,7 @@ void Level::switchLevel(Direction dir) {
 Level* Level::newLevel(Direction dir) {
     // Create new level and populate its board
     Level* tmp = new Level(width, height, game);
-    tmp->randomGenerate();
+    tmp->generateRandomRoom();
 
     // Set all reference pointers
     tmp->setPlayer(player);
@@ -127,18 +134,24 @@ Level* Level::newLevel(Direction dir) {
     return tmp;
 }
 
+void Level::createBossRoom() {
+    Level* tmp = new Level(width, height, game);
+    tmp->generateBossRoom();
+    tmp->setNeighbour(DIR_DOWN, this);
+    tmp->setPlayer(player);
+    neighbours[DIR_UP] = tmp;
+}
 
-void Level::generateStartRoom() {
+void Level::generateBossRoom() {
     for(int i = 0; i < width; i++) {
         for(int j = 0; j < height; j++) {
             // Edges
             if(i == 0 || j == 0 || i == width-1 || j == height-1) {
-                if( (j == 0 && i == doorx) ||
-                ((i == 0 || i == width-1) && j == doory)) {
-                    Direction dir = i==0 ? DIR_LEFT : DIR_RIGHT;
-                    board[i][j] = new DoorSquare(i,j,dir);
+                // Door on bottom
+                if(j == height-1 && i == doorx) {
+                    board[i][j] = new DoorSquare(i,j,DIR_DOWN);
                 }
-                else {
+                else { // Walls around the entire thing
                     board[i][j] = new WallSquare(i,j);
                 }
             }
@@ -149,7 +162,37 @@ void Level::generateStartRoom() {
     }
 }
 
-void Level::randomGenerate() {
+void Level::generateStartRoom() {
+    for(int i = 0; i < width; i++) {
+        for(int j = 0; j < height; j++) {
+            // Edges
+            if(i == 0 || j == 0 || i == width-1 || j == height-1) {
+                // Doors on top, left, right
+                if( (j == 0 && i == doorx) ||
+                ((i == 0 || i == width-1) && j == doory)) {
+                    Direction dir;
+                    if(i == 0) dir = DIR_LEFT;
+                    else if(i == width-1) dir = DIR_RIGHT;
+                    else dir = DIR_UP;
+                    board[i][j] = new DoorSquare(i,j,dir);
+                }
+                else { // Walls around the entire thing
+                    board[i][j] = new WallSquare(i,j);
+                }
+            }
+            // Hallway
+            else if((i < doorx-2 && j < doory-2) || (i > doorx+2 && j < doory-2) ||
+                    (i < doorx-2 && j > doory+2) || (i > doorx+2 && j > doory+2)) {
+                board[i][j] = new WallSquare(i,j);
+            }
+            else {
+                board[i][j] = new EmptySquare(i,j);
+            }
+        }
+    }
+}
+
+void Level::generateRandomRoom() {
     for(int i = 0; i < width; i++) {
         for(int j = 0; j < height; j++) {
             if(i == 0 || j == 0 || i == width-1 || j == height-1) {
@@ -176,11 +219,12 @@ void Level::randomGenerate() {
 }
 
 void Level::print() {
-    char* str = new char[width*height+height+1];
+    char* str = new char[(width*height*3) + height + 1];
     int strIdx = 0;
 
     for(int j = 0; j < height; j++) {
         for(int i = 0; i < width; i++) {
+            str[strIdx++] = ' ';
             if(board[i][j]->getPlayer() != 0) {
                 str[strIdx++] = player->token();
             }
@@ -193,6 +237,7 @@ void Level::print() {
             else {
                 str[strIdx++] = board[i][j]->token();
             }
+            str[strIdx++] = ' ';
         }
         str[strIdx++] = '\n';
     }
