@@ -17,9 +17,13 @@ public:
     void generateStartRoom();
     Square* getSquareDir(Square* s, Direction dir);
     Square* getSquare(int x, int y);
+    void setPlayer(Player* p);
+    void initPlayer();
     void print(); //normal output
     void draw(); //ncurses: todo
-    void killEnemy(Enemy* e);
+    void newProjectile(Square* start, Direction dir);
+    void removeProjectile(Projectile* p);
+    void removeEnemy(Enemy* e);
     void updateEnemies();
     void updateProjectiles();
 private:

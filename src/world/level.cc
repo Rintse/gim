@@ -2,6 +2,8 @@
 #include "fastrandom.h"
 #include <stdio.h>
 #include "directions.h"
+#include <iostream>
+#include <vector>
 
 Level::Level(){}
 
@@ -28,17 +30,39 @@ Level::~Level() {
     delete[] board;
 }
 
+void Level::setPlayer(Player* p) {
+    player = p;
+}
+
+void Level::initPlayer() {
+    Square* startSquare = board[doorx][doory];
+    startSquare->setPlayer(player);
+    player->setSquare(startSquare);
+}
+
+
+void Level::newProjectile(Square* start, Direction dir) {
+    Projectile* tmp = new Projectile(this, start, dir);
+    start->setProjectile(tmp);
+    projectiles.insert(tmp);
+}
+
+void Level::removeProjectile(Projectile* p) {
+    projectiles.erase(projectiles.find(p));
+    std::cout << "projectile deleted" << std::endl;
+}
+
 Square* Level::getSquareDir(Square* s, Direction dir) {
     int y = s->getY();
     int x = s->getX();
     switch (dir) {
-        case DIR_UP: y++; break; case DIR_LEFT: x++; break;
-        case DIR_DOWN: y--; break; case DIR_RIGHT: x--; break;
+        case DIR_UP: y--; break; case DIR_LEFT: x--; break;
+        case DIR_DOWN: y++; break; case DIR_RIGHT: x++; break;
     }
     return board[x][y];
 }
 
-void Level::killEnemy(Enemy* e) {
+void Level::removeEnemy(Enemy* e) {
     enemies.erase(enemies.find(e));
 }
 
@@ -47,7 +71,17 @@ void Level::updateEnemies() {
 }
 
 void Level::updateProjectiles() {
+    std::vector<Projectile*> toDelete;
+    for(auto &i : projectiles) {
+        if(i->move() == -1) {
+            toDelete.push_back(i);
+        }
+    }
 
+    for(auto &i: toDelete) {
+        i->getCurSquare()->setProjectile(0);
+        projectiles.erase(projectiles.find(i));
+    }
 }
 
 void Level::generateStartRoom() {
@@ -90,7 +124,18 @@ void Level::print() {
 
     for(int j = 0; j < height; j++) {
         for(int i = 0; i < width; i++) {
-            str[strIdx++] = board[i][j]->token();
+            if(board[i][j]->getPlayer() != 0) {
+                str[strIdx++] = player->token();
+            }
+            else if(board[i][j]->getEnemy() != 0) {
+                str[strIdx++] = 'x';
+            }
+            else if(board[i][j]->getProjectile() != 0) {
+                str[strIdx++] = 'o';
+            }
+            else {
+                str[strIdx++] = board[i][j]->token();
+            }
         }
         str[strIdx++] = '\n';
     }

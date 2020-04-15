@@ -5,7 +5,7 @@
 #include "world/level.h"
 #include "screen.h"
 
-#define FPS 20.0
+#define FPS 25.0
 #define FRAMETIME (1000.0/FPS)
 #define LVL_HEIGHT 20
 #define LVL_WIDTH 30

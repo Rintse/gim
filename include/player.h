@@ -13,6 +13,9 @@ public:
     Player(Level* l);
     void act(Action a);
     void move(Direction dir);
+    void shoot();
+    void setSquare(Square* s);
+    char token();
 private:
     Level* curLvl;
     Square* curSquare;

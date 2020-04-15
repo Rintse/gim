@@ -10,13 +10,12 @@ class Projectile {
 public:
     Projectile();
     Projectile(Level* l, Square* s, Direction d);
-    void move();
-    bool isDone();
+    int move();
+    Square* getCurSquare();
 private:
     Level* lvl;
     Square* curSquare;
     Direction dir;
-    bool done;
 };
 
 #endif

@@ -7,10 +7,15 @@
 
 //TODO: misschien niet last?
 int lastKeyPressed() {
-    std::string in;
-    if (_kbhit()) {
-        std::cin >> in;
-        return in[in.length()-1];
+    char c;
+    int inbuff = _kbhit();
+    // If characters were pressed
+    if(inbuff != 0) {
+        // Get the last one
+        for(int i = 0; i < inbuff; i++) {
+            std::cin.get(c);
+        }
+        return c;
     }
     else {
         return -1;
@@ -34,7 +39,10 @@ Game::Game() {
 
 void Game::init() {
     curLvl = new Level(LVL_WIDTH, LVL_HEIGHT);
+    player = new Player(curLvl);
+    curLvl->setPlayer(player);
     curLvl->generateStartRoom();
+    curLvl->initPlayer();
 }
 
 void Game::run() {
