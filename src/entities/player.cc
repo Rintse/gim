@@ -1,7 +1,7 @@
 #include "entities/player.h"
 #include "world/squares/square.h"
 #include "world/level.h"
-#include "tools/user_input.h"
+#include "tools/key_input.h"
 #include <iostream>
 
 Player::Player() {}
@@ -38,7 +38,6 @@ void Player::act(Input in) {
         default: break;
     }
     if(in.fired) {
-        std::cout << "cuuur" << std::endl;
         shoot();
     }
 }

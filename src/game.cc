@@ -3,7 +3,7 @@
 #include <chrono>
 #include <thread>
 #include "tools/actions.h"
-#include "tools/user_input.h"
+#include "tools/key_input.h"
 
 
 void sleep_remaining(std::chrono::time_point<std::chrono::high_resolution_clock> t1) {
@@ -15,12 +15,13 @@ void sleep_remaining(std::chrono::time_point<std::chrono::high_resolution_clock>
 }
 
 
-Game::Game() : screen(Screen(this)){
+Game::Game() : gfx(GFX(this)){
     gameOver = false;
 }
 
 Game::~Game(){
     delete player;
+    delete kh;
     for(auto & i : levels) {
         delete i;
     }
@@ -51,8 +52,8 @@ void Game::init() {
     curLvl->createBossRoom();
     levels.push_back(curLvl);
 
-    WINDOW* tmp = screen.init();
-    inputHandler.init(tmp);
+    gfx.init();
+    kh = new KeyHandler();
 }
 
 void Game::run() {
@@ -60,7 +61,7 @@ void Game::run() {
         auto t1 = std::chrono::high_resolution_clock::now();
 
         // Update all entities
-        Input in = inputHandler.getInput();
+        Input in = kh->getInput();
         if(in.act == GAME_PAUSE) break;
         player->act(in);
         curLvl->updateProjectiles();
@@ -68,7 +69,7 @@ void Game::run() {
 
         // Draw to the screen
         //curLvl->print();
-        screen.drawGame();
+        gfx.drawGame();
 
         sleep_remaining(t1);
     }

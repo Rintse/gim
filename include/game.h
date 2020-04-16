@@ -3,10 +3,11 @@
 
 #include "entities/player.h"
 #include "world/level.h"
-#include "screen.h"
-#include "tools/user_input.h"
+#include "gfx.h"
+#include "tools/key_input.h"
+#include <vector>
 
-#define FPS 60.0
+#define FPS 30.0
 #define FRAMETIME (1000.0/FPS)
 #define LVL_HEIGHT 20
 #define LVL_WIDTH 30
@@ -23,12 +24,14 @@ class Game {
         void run();
 
     private:
-        InputHandler inputHandler;
+        GFX gfx;
+        KeyHandler* kh;
         FastRandom randgen;
         Player* player;
         Level *curLvl;
         std::vector<Level*> levels;
-        Screen screen;
+        //Screen screen;
+        //InputHandler inputHandler;
         bool gameOver;
 };
 
