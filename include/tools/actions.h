@@ -7,7 +7,9 @@ enum Action {
     ACTION_MOVELEFT,
     ACTION_MOVEDOWN,
     ACTION_MOVERIGHT,
-    ACTION_SHOOT
+    ACTION_SHOOT,
+    GAME_CLOSE,
+    GAME_PAUSE
 };
 
 #endif

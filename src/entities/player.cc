@@ -1,6 +1,7 @@
 #include "entities/player.h"
 #include "world/squares/square.h"
 #include "world/level.h"
+#include "tools/user_input.h"
 #include <iostream>
 
 Player::Player() {}
@@ -28,14 +29,16 @@ void Player::shoot() {
     }
 }
 
-void Player::act(Action a) {
-    switch (a) {
+void Player::act(Input in) {
+    switch (in.act) {
         case ACTION_MOVEUP: move(DIR_UP); break;
         case ACTION_MOVEDOWN: move(DIR_DOWN); break;
         case ACTION_MOVERIGHT: move(DIR_RIGHT); break;
         case ACTION_MOVELEFT: move(DIR_LEFT); break;
-        case ACTION_SHOOT: shoot(); break;
         default: return;
+    }
+    if(in.fired) {
+        shoot();
     }
 }
 

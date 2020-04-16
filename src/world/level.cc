@@ -253,6 +253,6 @@ void Level::draw() {
 
 }
 
-inline Square* Level::getSquare(int x, int y) {
+Square* Level::getSquare(int x, int y) {
     return board[x][y];
 }

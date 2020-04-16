@@ -15,12 +15,16 @@ void sleep_remaining(std::chrono::time_point<std::chrono::high_resolution_clock>
 }
 
 
-Game::Game() {
+Game::Game() : screen(Screen(this)){
     gameOver = false;
 }
 
 void Game::setLevel(Level* l) {
     curLvl = l;
+}
+
+Level* Game::getLevel() {
+    return curLvl;
 }
 
 FastRandom* Game::getRNG() {
@@ -34,22 +38,23 @@ void Game::init() {
     curLvl->generateStartRoom();
     curLvl->initPlayer();
     curLvl->createBossRoom();
+
+    WINDOW* tmp = screen.init();
+    inputHandler.init(tmp);
 }
 
 void Game::run() {
     while(!gameOver) {
         auto t1 = std::chrono::high_resolution_clock::now();
-
-        char lastKey = lastKeyPressed();
-        Action action = getAction(lastKey);
-
+        
         // Update all entities
-        player->act(action);
+        player->act(inputHandler.getInput());
         curLvl->updateProjectiles();
         curLvl->updateEnemies();
 
         // Draw to the screen
-        curLvl->print();
+        //curLvl->print();
+        screen.drawGame();
 
         sleep_remaining(t1);
     }

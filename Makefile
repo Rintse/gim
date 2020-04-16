@@ -17,11 +17,11 @@ CPPFLAGS 		= $(addprefix -I, $(INC_DIR)) -pedantic
 all: $(MAIN_TARGET)
 
 $(MAIN_TARGET): $(OBJECTS) $(MAIN_OBJ)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ $^ -lncurses
 -include $(MAIN_DEPS) $(DEPS)
 
 %.o: %.cc
-	$(CC) $(CFLAGS) $(CPPFLAGS) -MMD -o $@ -c $<
+	$(CC) $(CFLAGS) $(CPPFLAGS) -MMD -lcurses -o $@ -c $<
 
 clean:
 	rm -f $(OBJECTS) $(MAIN_OBJ) $(DEPS) $(MAIN_DEPS) $(MAIN_TARGET)

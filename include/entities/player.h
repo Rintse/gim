@@ -6,12 +6,13 @@
 
 class Level;
 class Square;
+struct Input;
 
 class Player {
 public:
     Player();
     Player(Level* l);
-    void act(Action a);
+    void act(Input a);
     void move(Direction dir);
     void shoot();
     void setSquare(Square* s);

@@ -1,6 +1,47 @@
 #include "tools/user_input.h"
 #include <iostream>
 
+
+InputHandler::InputHandler() {}
+
+InputHandler::~InputHandler() {}
+
+
+void InputHandler::init(WINDOW* w) {
+    win = w;
+}
+
+
+void InputHandler::readKeys() {
+    keysPressed.clear();
+
+    int key = wgetch(win);
+    while(key != ERR) {
+        keysPressed.push_back(key);
+        key = wgetch(win);
+    }
+}
+
+Input InputHandler::getInput() {
+    readKeys();
+    Input tmp;
+    tmp.fired = false;
+    tmp.act = ACTION_NONE;
+
+    // If space is held, shoot. Use last movement key to determine direction
+    for(auto &i : keysPressed) {
+        if(i == ' ') { tmp.fired = true; std::cout << "vuur" << std::endl;}
+        if(i == 'w') tmp.act = ACTION_MOVEUP;
+        if(i == 's') tmp.act = ACTION_MOVEDOWN;
+        if(i == 'd') tmp.act = ACTION_MOVERIGHT;
+        if(i == 'a') tmp.act = ACTION_MOVELEFT;
+        if(i == KEY_BACKSPACE) = GAME_PAUSE;
+    }
+
+    return tmp;
+}
+
+
 //TODO: misschien niet last?
 int lastKeyPressed() {
     char c;
