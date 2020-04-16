@@ -11,8 +11,12 @@ void KeyHandler::updateKeys() {
         if(events.type == SDL_KEYDOWN) {
             SDL_Keycode key = events.key.keysym.sym;
             keys[key] = true;
-            if(key == SDLK_w || key == SDLK_s || key == SDLK_d || key == SDLK_a)
-                movementQ.push_back(key);
+            if(key == SDLK_w || key == SDLK_s || key == SDLK_d || key == SDLK_a) {
+                auto it = std::find(movementQ.begin(), movementQ.end(), key);
+                if(it == movementQ.end()) {
+                    movementQ.push_back(key);
+                }
+            }
         }
         else if(events.type == SDL_KEYUP) {
             keys[events.key.keysym.sym] = false;
@@ -33,8 +37,9 @@ Input KeyHandler::getInput() {
 
     // Character controls
     if(keys[SDLK_SPACE]) { in.fired = true; }
+    std::cerr << movementQ.size() << std::endl;
     // Always use movement key that was pressed down last (and is still pressed)
-    if((int)keys[SDLK_w] + keys[SDLK_s] + keys[SDLK_d] + keys[SDLK_a] > 0) {
+    if(!movementQ.empty()) {
         if(movementQ.back() == SDLK_w) in.act = ACTION_MOVEUP;
         else if(movementQ.back() == SDLK_s) in.act = ACTION_MOVEDOWN;
         else if(movementQ.back() == SDLK_d) in.act = ACTION_MOVERIGHT;
