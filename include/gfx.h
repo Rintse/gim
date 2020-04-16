@@ -2,6 +2,7 @@
 #define screen_h
 
 #include <SDL2/SDL.h>
+#include <map>
 
 class Game;
 
@@ -10,10 +11,12 @@ class GFX {
         GFX(Game* g);
         ~GFX();
         void drawGame();
+        void loadSprites();
         void init();
     private:
         Game* game;
         SDL_Surface* surface;
+        std::map<char, SDL_Surface*> sprites;
         SDL_Window* window;
 };
 

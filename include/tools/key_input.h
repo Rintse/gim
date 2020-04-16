@@ -10,12 +10,12 @@ struct Input {
 };
 
 struct Keys {
-    bool w;
-    bool s;
-    bool d;
-    bool a;
-    bool space;
-    bool esc;
+    bool w = false;
+    bool s = false;
+    bool d = false;
+    bool a = false;
+    bool space = false;
+    bool esc = false;
 };
 
 class KeyHandler {

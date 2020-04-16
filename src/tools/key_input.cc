@@ -35,5 +35,21 @@ void KeyHandler::updateKeys() {
 }
 
 Input KeyHandler::getInput() {
+    updateKeys();
 
+    Input in;
+    in.fired = false;
+    in.act = ACTION_NONE;
+
+    // Character controls
+    if(keys.space) { in.fired = true; }
+    if(keys.w) { in.act = ACTION_MOVEUP; }
+    if(keys.s) { in.act = ACTION_MOVEDOWN; }
+    if(keys.d) { in.act = ACTION_MOVERIGHT; }
+    if(keys.a) { in.act = ACTION_MOVELEFT; }
+
+    // Game controls
+    if(keys.esc) { in.act = GAME_PAUSE; }
+
+    return in;
 }
