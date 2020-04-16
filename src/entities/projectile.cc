@@ -16,7 +16,7 @@ Square* Projectile::getCurSquare() {
 }
 
 int Projectile::move() {
-    for(int i = 0; i < PROJECTILE_SPEED; i++) {
+    for(int i = 0; i < 2; i++) {
         Square* s = lvl->getSquareDir(curSquare, dir);
         // Only travel along floor squares
         if(s->type() != SQUARE_FLOOR) {

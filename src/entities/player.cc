@@ -9,6 +9,7 @@ Player::Player() {}
 Player::Player(Level* l) {
     curLvl = l;
     facing = DIR_UP;
+
 }
 
 void Player::setSquare(Square* s) {
@@ -82,5 +83,4 @@ void Player::move(Direction dir) {
         curSquare = s;
         facing = dir;
     }
-
 }

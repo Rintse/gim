@@ -183,8 +183,8 @@ void Level::generateStartRoom() {
                 }
             }
             // Hallway
-            else if((i < doorx-2 && j < doory-2) || (i > doorx+2 && j < doory-2) ||
-                    (i < doorx-2 && j > doory+2) || (i > doorx+2 && j > doory+2)) {
+            else if((i < doorx-6 && j < doory-6) || (i > doorx+6 && j < doory-6) ||
+                    (i < doorx-6 && j > doory+6) || (i > doorx+6 && j > doory+6)) {
                 board[i][j] = new WallSquare(i,j);
             }
             else {

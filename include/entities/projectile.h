@@ -2,7 +2,6 @@
 #define projectile_h
 
 #include "tools/directions.h"
-#define PROJECTILE_SPEED 2
 
 class Level;
 class Square;

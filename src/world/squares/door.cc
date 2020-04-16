@@ -14,5 +14,5 @@ Direction DoorSquare::getDir() {
 }
 
 char DoorSquare::token() {
-    return '-';
+    return ' ';
 }

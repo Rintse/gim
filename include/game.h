@@ -31,8 +31,6 @@ class Game {
         Player* player;
         Level *curLvl;
         std::vector<Level*> levels;
-        //Screen screen;
-        //InputHandler inputHandler;
         bool gameOver;
 };
 

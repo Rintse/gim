@@ -68,9 +68,7 @@ void Game::run() {
         curLvl->updateEnemies();
 
         // Draw to the screen
-        //curLvl->print();
         gfx.drawGame();
-
         sleep_remaining(t1);
     }
 }
