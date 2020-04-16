@@ -16,22 +16,24 @@ Square* Projectile::getCurSquare() {
 }
 
 int Projectile::move() {
-    Square* s = lvl->getSquareDir(curSquare, dir);
-    // Only travel along floor squares
-    if(s->type() != SQUARE_FLOOR) {
-        return -1;
-    }
-    else {
-        // Kill an enemy when moving onto its square
-        if(s->getEnemy() != 0) {
-            lvl->removeEnemy(s->getEnemy());
-            s->setEnemy(0);
+    for(int i = 0; i < PROJECTILE_SPEED; i++) {
+        Square* s = lvl->getSquareDir(curSquare, dir);
+        // Only travel along floor squares
+        if(s->type() != SQUARE_FLOOR) {
+            return -1;
         }
+        else {
+            // Kill an enemy when moving onto its square
+            if(s->getEnemy() != 0) {
+                lvl->removeEnemy(s->getEnemy());
+                s->setEnemy(0);
+            }
 
-        // Move onto the square
-        curSquare->setProjectile(0);
-        s->setProjectile(this);
-        curSquare = s;
+            // Move onto the square
+            curSquare->setProjectile(0);
+            s->setProjectile(this);
+            curSquare = s;
+        }
     }
 
     return 0;

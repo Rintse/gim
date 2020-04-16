@@ -1,6 +1,6 @@
 #include "tools/key_input.h"
 #include <iostream>
-
+#include <algorithm>
 
 KeyHandler::KeyHandler() {}
 
@@ -8,28 +8,18 @@ KeyHandler::~KeyHandler() {}
 
 void KeyHandler::updateKeys() {
     while(SDL_PollEvent(&events)){
-        switch( events.type ){
-            case SDL_KEYDOWN:
-                switch( events.key.keysym.sym ){
-                    case SDLK_w: keys.w = true; break;
-                    case SDLK_s: keys.s = true; break;
-                    case SDLK_d: keys.d = true; break;
-                    case SDLK_a: keys.a = true; break;
-                    case SDLK_SPACE: keys.space = true; break;
-                    case SDLK_ESCAPE: keys.esc = true; break;
-                    default: break;
-                } break;
-            case SDL_KEYUP:
-                switch( events.key.keysym.sym ){
-                    case SDLK_w: keys.w = false; break;
-                    case SDLK_s: keys.s = false; break;
-                    case SDLK_d: keys.d = false; break;
-                    case SDLK_a: keys.a = false; break;
-                    case SDLK_SPACE: keys.space = false; break;
-                    case SDLK_ESCAPE: keys.esc = false; break;
-                    default: break;
-                } break;
-            default: break;
+        if(events.type == SDL_KEYDOWN) {
+            SDL_Keycode key = events.key.keysym.sym;
+            keys[key] = true;
+            if(key == SDLK_w || key == SDLK_s || key == SDLK_d || key == SDLK_a)
+                movementQ.push_back(key);
+        }
+        else if(events.type == SDL_KEYUP) {
+            keys[events.key.keysym.sym] = false;
+            auto it = std::find(movementQ.begin(), movementQ.end(), events.key.keysym.sym);
+            if(it != movementQ.end()) {
+                movementQ.erase(it);
+            }
         }
     }
 }
@@ -42,14 +32,17 @@ Input KeyHandler::getInput() {
     in.act = ACTION_NONE;
 
     // Character controls
-    if(keys.space) { in.fired = true; }
-    if(keys.w) { in.act = ACTION_MOVEUP; }
-    if(keys.s) { in.act = ACTION_MOVEDOWN; }
-    if(keys.d) { in.act = ACTION_MOVERIGHT; }
-    if(keys.a) { in.act = ACTION_MOVELEFT; }
+    if(keys[SDLK_SPACE]) { in.fired = true; }
+    // Always use movement key that was pressed down last (and is still pressed)
+    if((int)keys[SDLK_w] + keys[SDLK_s] + keys[SDLK_d] + keys[SDLK_a] > 0) {
+        if(movementQ.back() == SDLK_w) in.act = ACTION_MOVEUP;
+        else if(movementQ.back() == SDLK_s) in.act = ACTION_MOVEDOWN;
+        else if(movementQ.back() == SDLK_d) in.act = ACTION_MOVERIGHT;
+        else in.act = ACTION_MOVELEFT;
+    }
 
     // Game controls
-    if(keys.esc) { in.act = GAME_PAUSE; }
+    if(keys[SDLK_ESCAPE]) { in.act = GAME_PAUSE; }
 
     return in;
 }

@@ -3,19 +3,12 @@
 
 #include <SDL2/SDL.h>
 #include "tools/actions.h"
+#include <map>
+#include <list>
 
 struct Input {
     Action act;
     bool fired;
-};
-
-struct Keys {
-    bool w = false;
-    bool s = false;
-    bool d = false;
-    bool a = false;
-    bool space = false;
-    bool esc = false;
 };
 
 class KeyHandler {
@@ -24,8 +17,10 @@ class KeyHandler {
         ~KeyHandler();
         void updateKeys();
         Input getInput();
+
     private:
-        Keys keys;
+        std::map<SDL_Keycode, bool> keys;
+        std::list<SDL_Keycode> movementQ;
         SDL_Event events;
 };
 
