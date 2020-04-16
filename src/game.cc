@@ -19,6 +19,17 @@ Game::Game() : screen(Screen(this)){
     gameOver = false;
 }
 
+Game::~Game(){
+    delete player;
+    for(auto & i : levels) {
+        delete i;
+    }
+}
+
+void Game::addLevel(Level* l) {
+    levels.push_back(l);
+}
+
 void Game::setLevel(Level* l) {
     curLvl = l;
 }
@@ -38,6 +49,7 @@ void Game::init() {
     curLvl->generateStartRoom();
     curLvl->initPlayer();
     curLvl->createBossRoom();
+    levels.push_back(curLvl);
 
     WINDOW* tmp = screen.init();
     inputHandler.init(tmp);
@@ -46,9 +58,11 @@ void Game::init() {
 void Game::run() {
     while(!gameOver) {
         auto t1 = std::chrono::high_resolution_clock::now();
-        
+
         // Update all entities
-        player->act(inputHandler.getInput());
+        Input in = inputHandler.getInput();
+        if(in.act == GAME_PAUSE) break;
+        player->act(in);
         curLvl->updateProjectiles();
         curLvl->updateEnemies();
 

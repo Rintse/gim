@@ -35,9 +35,10 @@ void Player::act(Input in) {
         case ACTION_MOVEDOWN: move(DIR_DOWN); break;
         case ACTION_MOVERIGHT: move(DIR_RIGHT); break;
         case ACTION_MOVELEFT: move(DIR_LEFT); break;
-        default: return;
+        default: break;
     }
     if(in.fired) {
+        std::cout << "cuuur" << std::endl;
         shoot();
     }
 }

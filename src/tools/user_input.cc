@@ -30,12 +30,12 @@ Input InputHandler::getInput() {
 
     // If space is held, shoot. Use last movement key to determine direction
     for(auto &i : keysPressed) {
-        if(i == ' ') { tmp.fired = true; std::cout << "vuur" << std::endl;}
+        if(i == ' ') tmp.fired = true;
         if(i == 'w') tmp.act = ACTION_MOVEUP;
         if(i == 's') tmp.act = ACTION_MOVEDOWN;
         if(i == 'd') tmp.act = ACTION_MOVERIGHT;
         if(i == 'a') tmp.act = ACTION_MOVELEFT;
-        if(i == KEY_BACKSPACE) = GAME_PAUSE;
+        if(i == KEY_BACKSPACE) tmp.act = GAME_PAUSE;
     }
 
     return tmp;

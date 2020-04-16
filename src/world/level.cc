@@ -130,6 +130,7 @@ Level* Level::newLevel(Direction dir) {
     // Set all reference pointers
     tmp->setPlayer(player);
     tmp->setNeighbour(opposite_dir(dir), this);
+    game->addLevel(tmp);
 
     return tmp;
 }
@@ -139,6 +140,7 @@ void Level::createBossRoom() {
     tmp->generateBossRoom();
     tmp->setNeighbour(DIR_DOWN, this);
     tmp->setPlayer(player);
+    game->addLevel(tmp);
     neighbours[DIR_UP] = tmp;
 }
 

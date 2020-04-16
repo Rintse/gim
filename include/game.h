@@ -14,17 +14,20 @@
 class Game {
     public:
         Game();
+        ~Game();
         void setLevel(Level* l);
         Level* getLevel();
+        void addLevel(Level* l);
         FastRandom* getRNG();
         void init();
         void run();
-        
+
     private:
         InputHandler inputHandler;
         FastRandom randgen;
         Player* player;
         Level *curLvl;
+        std::vector<Level*> levels;
         Screen screen;
         bool gameOver;
 };
