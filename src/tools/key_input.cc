@@ -38,7 +38,7 @@ Input KeyHandler::getInput() {
         if(movementQ.back() == SDLK_w) in.act = ACTION_MOVEUP;
         else if(movementQ.back() == SDLK_s) in.act = ACTION_MOVEDOWN;
         else if(movementQ.back() == SDLK_d) in.act = ACTION_MOVERIGHT;
-        else in.act = ACTION_MOVELEFT;
+        else if(movementQ.back() == SDLK_a) in.act = ACTION_MOVELEFT;
     }
 
     // Game controls
