@@ -85,7 +85,17 @@ void Level::removeEnemy(Enemy* e) {
 }
 
 void Level::updateEnemies() {
+    std::vector<Enemy*> toDelete;
+    for(auto &i: enemies) {
+        if(i->act() == -1) {
+            toDelete.push_back(i);
+        }
+    }
 
+    for(auto &i: toDelete) {
+        i->getCurSquare()->setEnemy(0);
+        enemies.erase(enemies.find(i));
+    }
 }
 
 void Level::updateProjectiles() {
