@@ -16,19 +16,22 @@ GFX::~GFX() {
 
 void GFX::loadSprites() {
     printf( "Loading sprites\n");
-    sprites['^'] = SDL_LoadBMP("img/up.bmp");
-    sprites['>'] = SDL_LoadBMP("img/right.bmp");
-    sprites['<'] = SDL_LoadBMP("img/left.bmp");
-    sprites['v'] = SDL_LoadBMP("img/down.bmp");
+    // Player
+    sprites['^'] = SDL_LoadBMP("img/player/up.bmp");
+    sprites['>'] = SDL_LoadBMP("img/player/right.bmp");
+    sprites['<'] = SDL_LoadBMP("img/player/left.bmp");
+    sprites['v'] = SDL_LoadBMP("img/player/down.bmp");
+    // Enemy
+    sprites['w'] = SDL_LoadBMP("img/enemy/up.bmp");
+    sprites['d'] = SDL_LoadBMP("img/enemy/right.bmp");
+    sprites['a'] = SDL_LoadBMP("img/enemy/left.bmp");
+    sprites['s'] = SDL_LoadBMP("img/enemy/down.bmp");
+    // Other
     sprites['#'] = SDL_LoadBMP("img/wall.bmp");
     sprites[' '] = SDL_LoadBMP("img/empty.bmp");
     sprites['o'] = SDL_LoadBMP("img/projectile.bmp");
     sprites['x'] = SDL_LoadBMP("img/projectile.bmp"); //TODO: bullet image
     sprites['|'] = SDL_LoadBMP("img/projectile.bmp"); //TODO: laser image
-
-    if(sprites[' '] == NULL) {
-        printf( "Unable to load sprites!\n");
-    }else { printf( "Sprites loaded succesfully!\n"); }
 }
 
 void GFX::init() {
