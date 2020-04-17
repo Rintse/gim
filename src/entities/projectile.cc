@@ -9,7 +9,6 @@ Projectile::Projectile(Level* l, Square* s, Direction d) {
     lvl = l;
     curSquare = s;
     dir = d;
-    player = p;
 }
 
 Square* Projectile::getCurSquare() {

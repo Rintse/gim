@@ -8,9 +8,8 @@ PlayerProjectile::PlayerProjectile(Level* l, Square* s, Direction d) {
     lvl = l;
     curSquare = s;
     dir = d;
-    player = p;
 }
 
-PlayerProjectile::token(){
+char PlayerProjectile::token(){
   return 'o';
 }

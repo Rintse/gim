@@ -8,9 +8,8 @@ GeorgeBullet::GeorgeBullet(Level* l, Square* s, Direction d) {
     lvl = l;
     curSquare = s;
     dir = d;
-    player = p;
 }
 
-GeorgeBullet::token(){
+char GeorgeBullet::token(){
   return 'o';
 }
