@@ -63,7 +63,7 @@ void George::shootBullet(Square* s){
       return;
   }
   else {
-      lvl->newProjectile(s, DIR_DOWN, false);
+      lvl->newProjectile(s, DIR_DOWN);
   }
 }
 

@@ -8,25 +8,16 @@ class Square;
 
 class Projectile {
 public:
-    Projectile();
-    Projectile(Level* l, Square* s, Direction d, bool p);
-    int move();
-    char token();
-    Square* getCurSquare();
-private:
-    Level* lvl;
-    Square* curSquare;
-    Direction dir;
-    bool player;
-};
-
-/*
-class Projectile {
-public:
   Projectile();
+  Projectile(Level* l, Square* s, Direction d);
+  int move();
+  Square* getCurSquare();
+  virtual char token() = 0;
 
 private:
-}
-*/
+  Level* lvl;
+  Square* curSquare;
+  Direction dir;
+};
 
 #endif

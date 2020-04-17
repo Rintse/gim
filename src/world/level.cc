@@ -57,8 +57,8 @@ void Level::initPlayer(Direction d) {
 }
 
 
-void Level::newProjectile(Square* start, Direction dir, bool player) {
-    Projectile* tmp = new Projectile(this, start, dir, player);
+void Level::newProjectile(Square* start, Direction dir) {
+    Projectile* tmp = new PlayerProjectile(this, start, dir);
     start->setProjectile(tmp);
     projectiles.insert(tmp);
 }

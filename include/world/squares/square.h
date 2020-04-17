@@ -4,7 +4,7 @@
 #include "tools/directions.h"
 #include "entities/player.h"
 #include "entities/enemy.h"
-#include "entities/projectile.h"
+#include "entities/playerprojectile.h"
 
 enum SquareType {
     SQUARE_FLOOR, SQUARE_DOOR, SQUARE_WALL
