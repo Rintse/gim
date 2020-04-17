@@ -7,7 +7,7 @@ FastRandom::FastRandom(){ // Seeding
     z=521288629;
 }
 
-unsigned long FastRandom::getLong(void) { //period 2^96-1
+unsigned long FastRandom::getLong() { //period 2^96-1
     unsigned long t;
     x ^= x << 16;
     x ^= x >> 5;
@@ -17,4 +17,8 @@ unsigned long FastRandom::getLong(void) { //period 2^96-1
     y = z;
     z = t ^ x ^ y;
     return z;
+}
+
+unsigned long FastRandom::getMax() {
+    return ULONG_MAX;
 }
