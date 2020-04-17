@@ -12,7 +12,7 @@ public:
     Enemy();
     Enemy(Level* l, Square* s);
 
-    Action decideMove(); //Can be done in parralel
+    Action decideMove();
     void act();
 private:
     Level* lvl;
