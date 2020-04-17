@@ -23,6 +23,7 @@ void GFX::loadSprites() {
     sprites['#'] = SDL_LoadBMP("img/wall.bmp");
     sprites[' '] = SDL_LoadBMP("img/empty.bmp");
     sprites['o'] = SDL_LoadBMP("img/projectile.bmp");
+    sprites['x'] = SDL_LoadBMP("img/projectile.bmp"); //TODO: bullet image
 
     if(sprites[' '] == NULL) {
         printf( "Unable to load sprites!\n");
@@ -71,7 +72,7 @@ void GFX::drawGame() {
             //     c = 'x';
             // }
             else if(s->getProjectile() != 0) {
-                c = 'o';
+                c = s->getProjectile()->token();
             }
             else {
                 c = s->token();

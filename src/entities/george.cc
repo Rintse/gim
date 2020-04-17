@@ -1,4 +1,6 @@
 #include "entities/george.h"
+#include "world/squares/square.h"
+#include "world/level.h"
 
 George::George() {}
 
@@ -25,6 +27,7 @@ void George::act() {
 }
 
 void George::attackBullets() {
+
   return;
 }
 
@@ -33,5 +36,18 @@ void George::attackLasers() {
 }
 
 void George::attackTinyGeorges() {
+  return;
+}
+
+void George::shootBullet(Square* s){
+  if(s->type() != SQUARE_FLOOR) {
+      return;
+  }
+  else {
+      lvl->newProjectile(s, DIR_DOWN, false);
+  }
+}
+
+void George::shootLaser(){
   return;
 }

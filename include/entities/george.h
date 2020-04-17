@@ -21,6 +21,8 @@ private:
     void attackBullets();
     void attackLasers();
     void attackTinyGeorges();
+    void shootBullet(Square* s);
+    void shootLaser();
 };
 
 #endif
