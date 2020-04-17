@@ -20,4 +20,13 @@ private:
     bool player;
 };
 
+/*
+class Projectile {
+public:
+  Projectile();
+
+private:
+}
+*/
+
 #endif
