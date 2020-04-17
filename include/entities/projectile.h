@@ -14,7 +14,7 @@ public:
   Square* getCurSquare();
   virtual char token() = 0;
 
-private:
+protected:
   Level* lvl;
   Square* curSquare;
   Direction dir;

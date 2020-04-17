@@ -4,11 +4,7 @@
 
 PlayerProjectile::PlayerProjectile() {}
 
-PlayerProjectile::PlayerProjectile(Level* l, Square* s, Direction d) {
-    lvl = l;
-    curSquare = s;
-    dir = d;
-}
+PlayerProjectile::PlayerProjectile(Level* l, Square* s, Direction d) : Projectile(l,s,d) {}
 
 char PlayerProjectile::token(){
   return 'o';
