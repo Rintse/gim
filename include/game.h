@@ -23,6 +23,7 @@ class Game {
         FastRandom* getRNG();
         void init();
         void run();
+        void over();
 
     private:
         GFX gfx;

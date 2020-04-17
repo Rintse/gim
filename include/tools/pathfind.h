@@ -14,7 +14,7 @@ class BFS {
         BFS();
         BFS(Level* l);
         ~BFS();
-        Direction getNextStep(Square* curPos, bool& found);
+        Direction getNextStep(Square* curPos);
 
     private:
         FastRandom rng;

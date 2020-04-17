@@ -91,7 +91,6 @@ void Level::updateEnemies() {
             toDelete.push_back(i);
         }
     }
-
     for(auto &i: toDelete) {
         i->getCurSquare()->setEnemy(0);
         enemies.erase(enemies.find(i));
@@ -105,7 +104,6 @@ void Level::updateProjectiles() {
             toDelete.push_back(i);
         }
     }
-
     for(auto &i: toDelete) {
         i->getCurSquare()->setProjectile(0);
         projectiles.erase(projectiles.find(i));
@@ -117,6 +115,10 @@ void Level::setNeighbour(Direction dir, Level* l)  {
     neighbours[dir] = l;
 }
 
+
+void Level::signalGameOver() {
+    game->over();
+}
 
 void Level::switchLevel(Direction dir) {
     std::cout << std::endl;
