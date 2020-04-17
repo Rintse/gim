@@ -12,9 +12,9 @@ class Enemy {
 public:
     Enemy();
     Enemy(Level* l, Square* s);
-
-    Action decideMove();
-    void act();
+    int act();
+    int move(Direction dir);
+    Square* getCurSquare();
 private:
     BFS pathfind;
     Level* lvl;

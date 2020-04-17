@@ -31,6 +31,10 @@ void Game::addLevel(Level* l) {
     levels.push_back(l);
 }
 
+void Game::over() {
+    gameOver = true;
+}
+
 void Game::setLevel(Level* l) {
     curLvl = l;
 }

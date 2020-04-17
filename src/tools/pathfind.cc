@@ -12,7 +12,8 @@ BFS::BFS(Level* l) {
 
 BFS::~BFS() {}
 
-Direction BFS::getNextStep(Square* curPos, bool& found) {
+Direction BFS::getNextStep(Square* curPos) {
+    bool foundPlayer = false;
     std::queue<Square*> q;
     std::set<Square*> visited({curPos});
     std::map<Square*, Direction> originalDir;
@@ -26,7 +27,8 @@ Direction BFS::getNextStep(Square* curPos, bool& found) {
         q.push(directNeighbour);
     }
 
-    while(q.back()->getPlayer() == 0) { // BFS
+    while(!q.empty()) { // BFS
+        if(q.back()->getPlayer() == 0) { foundPlayer = true; break; }
         for(int d = DIR_UP; d <= DIR_RIGHT; d++) {
             Square* neighbour = lvl->getSquareDir(q.back(), static_cast<Direction>(d));
             if(neighbour == 0) continue;
@@ -49,5 +51,7 @@ Direction BFS::getNextStep(Square* curPos, bool& found) {
         }
         q.pop();
     }
-    return originalDir[q.back()];
+
+    if(foundPlayer) return originalDir[q.back()];
+    else return (Direction)(rng.getLong()%(int)DIR_RIGHT+1);
 }

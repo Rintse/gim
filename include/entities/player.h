@@ -19,8 +19,10 @@ public:
     void setLevel(Level* l);
     char token();
     Square* getSquare();
+    void takeDamage();
 
 private:
+    int health;
     Level* curLvl;
     Square* curSquare;
     Direction facing;

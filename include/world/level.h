@@ -34,6 +34,7 @@ public:
     void updateEnemies();
     void updateProjectiles();
     void switchLevel(Direction dir);
+    void signalGameOver();
 
     // Getters
     Square* getSquareDir(Square* s, Direction dir);

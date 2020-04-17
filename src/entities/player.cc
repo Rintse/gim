@@ -9,7 +9,7 @@ Player::Player() {}
 Player::Player(Level* l) {
     curLvl = l;
     facing = DIR_UP;
-
+    health = 1;
 }
 
 void Player::setSquare(Square* s) {
@@ -18,6 +18,12 @@ void Player::setSquare(Square* s) {
 
 void Player::setLevel(Level* l) {
     curLvl = l;
+}
+
+void Player::takeDamage() {
+    if(--health < 1) {
+        curLvl->signalGameOver();
+    }
 }
 
 void Player::shoot() {
@@ -66,7 +72,7 @@ void Player::move(Direction dir) {
 
     // Touching enemies is not allowed
     if(s->getEnemy() != 0) {
-        //TODO:gameover
+        curLvl->signalGameOver();
         return;
     }
     // Touching doors makes you go to a new room
