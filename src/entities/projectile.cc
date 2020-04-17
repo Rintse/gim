@@ -5,10 +5,11 @@
 
 Projectile::Projectile() {}
 
-Projectile::Projectile(Level* l, Square* s, Direction d) {
+Projectile::Projectile(Level* l, Square* s, Direction d, bool p) {
     lvl = l;
     curSquare = s;
     dir = d;
+    player = p;
 }
 
 Square* Projectile::getCurSquare() {
@@ -37,4 +38,9 @@ int Projectile::move() {
     }
 
     return 0;
+}
+
+
+char Projectile::token(){
+  return player ? 'o' : 'x';
 }
