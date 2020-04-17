@@ -71,10 +71,9 @@ void GFX::drawGame() {
             if(s->getPlayer() != 0) {
                 c = s->getPlayer()->token();
             }
-            //TODO:
-            // else if(s->getEnemy() != 0) {
-            //     c = 'x';
-            // }
+            else if(s->getEnemy() != 0) {
+                c = s->getEnemy()->token();
+            }
             else if(s->getProjectile() != 0) {
                 c = s->getProjectile()->token();
             }

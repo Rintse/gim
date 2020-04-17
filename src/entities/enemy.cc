@@ -16,6 +16,16 @@ Square* Enemy::getCurSquare() {
     return curSquare;
 }
 
+char Enemy::token() {
+    switch (facing) {
+        case DIR_UP: return 'w';
+        case DIR_LEFT: return 'a';
+        case DIR_DOWN: return 's';
+        case DIR_RIGHT: return 'd';
+        default: return '0';
+    }
+}
+
 int Enemy::move(Direction dir) {
     // Get the square in the intended new position
     Square* s = lvl->getSquareDir(curSquare, dir);

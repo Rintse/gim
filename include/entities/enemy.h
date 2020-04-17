@@ -15,6 +15,8 @@ public:
     int act();
     int move(Direction dir);
     Square* getCurSquare();
+    char token();
+
 private:
     BFS pathfind;
     Level* lvl;
