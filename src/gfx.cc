@@ -24,6 +24,7 @@ void GFX::loadSprites() {
     sprites[' '] = SDL_LoadBMP("img/empty.bmp");
     sprites['o'] = SDL_LoadBMP("img/projectile.bmp");
     sprites['x'] = SDL_LoadBMP("img/projectile.bmp"); //TODO: bullet image
+    sprites['|'] = SDL_LoadBMP("img/projectile.bmp"); //TODO: laser image
 
     if(sprites[' '] == NULL) {
         printf( "Unable to load sprites!\n");

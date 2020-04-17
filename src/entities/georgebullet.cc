@@ -4,12 +4,8 @@
 
 GeorgeBullet::GeorgeBullet() {}
 
-GeorgeBullet::GeorgeBullet(Level* l, Square* s, Direction d) {
-    lvl = l;
-    curSquare = s;
-    dir = d;
-}
+GeorgeBullet::GeorgeBullet(Level* l, Square* s, Direction d) : Projectile(l,s,d) {}
 
 char GeorgeBullet::token(){
-  return 'o';
+  return 'x';
 }

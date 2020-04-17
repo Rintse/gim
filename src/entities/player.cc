@@ -32,7 +32,7 @@ void Player::shoot() {
         return;
     }
     else {
-        curLvl->newProjectile(s, facing);
+        curLvl->newPlayerProjectile(s, facing);
     }
 }
 

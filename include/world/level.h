@@ -28,7 +28,7 @@ public:
 
     // Game updates
     void setNeighbour(Direction d, Level* l);
-    void newProjectile(Square* start, Direction dir);
+    void newPlayerProjectile(Square* start, Direction dir);
     void removeProjectile(Projectile* p);
     void removeEnemy(Enemy* e);
     void updateEnemies();

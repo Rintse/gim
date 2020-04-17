@@ -9,9 +9,6 @@ public:
   GeorgeBullet(Level* l, Square* s, Direction d);
   char token();
 private:
-  Level* lvl;
-  Square* curSquare;
-  Direction dir;
 };
 
 #endif

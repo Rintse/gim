@@ -63,7 +63,8 @@ void George::shootBullet(Square* s){
       return;
   }
   else {
-      lvl->newProjectile(s, DIR_DOWN);
+      //DOE EEN GEORGEBULLET
+      //lvl->newProjectile(s, DIR_DOWN);
   }
 }
 
