@@ -37,7 +37,6 @@ Input KeyHandler::getInput() {
 
     // Character controls
     if(keys[SDLK_SPACE]) { in.fired = true; }
-    std::cerr << movementQ.size() << std::endl;
     // Always use movement key that was pressed down last (and is still pressed)
     if(!movementQ.empty()) {
         if(movementQ.back() == SDLK_w) in.act = ACTION_MOVEUP;
