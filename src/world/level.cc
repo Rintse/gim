@@ -59,8 +59,22 @@ void Level::initPlayer(Direction d) {
 
 void Level::newPlayerProjectile(Square* start, Direction dir) {
     Projectile* tmp = new PlayerProjectile(this, start, dir);
-    start->setProjectile(tmp);
-    projectiles.insert(tmp);
+    setProjectile(tmp, start);
+}
+
+void Level::newGeorgeBullet(Square* start, Direction dir) {
+    Projectile* tmp = new GeorgeBullet(this, start, dir);
+    setProjectile(tmp, start);
+}
+
+void Level::newGeorgeLaser(Square* start, Direction dir) {
+    Projectile* tmp = new GeorgeLaser(this, start, dir);
+    setProjectile(tmp, start);
+}
+
+void Level::setProjectile(Projectile* p, Square* start) {
+  start->setProjectile(p);
+  projectiles.insert(p);
 }
 
 void Level::removeProjectile(Projectile* p) {

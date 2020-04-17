@@ -5,6 +5,8 @@
 #include "entities/player.h"
 #include "entities/enemy.h"
 #include "entities/playerprojectile.h"
+#include "entities/georgebullet.h"
+#include "entities/georgelaser.h"
 
 enum SquareType {
     SQUARE_FLOOR, SQUARE_DOOR, SQUARE_WALL

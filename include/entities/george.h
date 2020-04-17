@@ -29,7 +29,7 @@ private:
     void attackLasers();
     void attackTinyGeorges();
     void shootBullet(Square* s);
-    void shootLaser();
+    void shootLaser(Square* s);
 };
 
 #endif

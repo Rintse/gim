@@ -29,6 +29,8 @@ public:
     // Game updates
     void setNeighbour(Direction d, Level* l);
     void newPlayerProjectile(Square* start, Direction dir);
+    void newGeorgeBullet(Square* start, Direction dir);
+    void newGeorgeLaser(Square* start, Direction dir);
     void removeProjectile(Projectile* p);
     void removeEnemy(Enemy* e);
     void updateEnemies();
@@ -55,6 +57,8 @@ private:
     Player* player;
     std::map<Direction, Level*> neighbours;
     Game* game;
+
+    void setProjectile(Projectile* p, Square* start);
 };
 
 #endif

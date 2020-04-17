@@ -41,7 +41,7 @@ void George::act() {
 }
 
 void George::attackBullets() {
-  // om de zoveel frames bullets schieten
+  // schiet bullets vanaf de 2 gun squares
   // volg de player een beetje op de x as
   return;
 }
@@ -59,15 +59,21 @@ void George::attackTinyGeorges() {
 }
 
 void George::shootBullet(Square* s){
+  // georgebullets fire twice every second
+  if(s->type() != SQUARE_FLOOR || frame % (int)(FPS/2) != 0) {
+      return;
+  }
+  else {
+      lvl->newGeorgeBullet(s, DIR_DOWN);
+  }
+}
+
+void George::shootLaser(Square* s){
+  // georgelasers fire continuously
   if(s->type() != SQUARE_FLOOR) {
       return;
   }
   else {
-      //DOE EEN GEORGEBULLET
-      //lvl->newProjectile(s, DIR_DOWN);
+      lvl->newGeorgeLaser(s, DIR_DOWN);
   }
-}
-
-void George::shootLaser(){
-  return;
 }
