@@ -17,7 +17,7 @@ void GeorgeGun::shootBullet(){
       return;
   }
   else {
-      lvl->newGeorgeBullet(curSquare, DIR_DOWN);
+      //lvl->newGeorgeBullet(curSquare, DIR_DOWN);
   }
 }
 
@@ -26,7 +26,7 @@ void GeorgeGun::shootLaser(){
       return;
   }
   else {
-      lvl->newGeorgeLaser(curSquare, DIR_DOWN);
+      //lvl->newGeorgeLaser(curSquare, DIR_DOWN);
   }
 }
 
