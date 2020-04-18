@@ -2,6 +2,7 @@
 #include "world/squares/square.h"
 #include "world/level.h"
 #include "tools/key_input.h"
+#include "entities/playerprojectile.h"
 #include <iostream>
 
 Player::Player() {}
@@ -32,7 +33,9 @@ void Player::shoot() {
         return;
     }
     else {
-        curLvl->newPlayerProjectile(s, facing);
+        Projectile* tmp =
+        dynamic_cast<Projectile*>(new PlayerProjectile(curLvl, s, facing));
+        curLvl->newProjectile(tmp);
     }
 }
 

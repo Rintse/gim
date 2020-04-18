@@ -28,9 +28,7 @@ public:
 
     // Game updates
     void setNeighbour(Direction d, Level* l);
-    void newPlayerProjectile(Square* start, Direction dir);
-    void newGeorgeBullet(Square* start, Direction dir);
-    void newGeorgeLaser(Square* start, Direction dir);
+    void newProjectile(Projectile* p);
     void removeProjectile(Projectile* p);
     void removeEnemy(Enemy* e);
     void updateEnemies();
