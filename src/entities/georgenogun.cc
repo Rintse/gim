@@ -6,6 +6,6 @@ GeorgeNoGun::GeorgeNoGun() {}
 
 GeorgeNoGun::GeorgeNoGun(Level* l, Square* s) : GeorgePart (l,s) {}
 
-void GeorgeNoGun::act(Action action) {
+void GeorgeNoGun::act(Input i) {
   return;
 }

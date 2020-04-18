@@ -8,7 +8,7 @@ GeorgeGun::GeorgeGun(Level* l, Square* s) : GeorgePart (l,s) {
   int curRound = 0;
 }
 
-void GeorgeGun::act(Action action) {
+void GeorgeGun::act(Input i) {
   return;
 }
 

@@ -34,7 +34,6 @@ private:
     void attackBullets();
     void attackLasers();
     void attackTinyGeorges();
-    void move(Direction dir);
 };
 
 #endif

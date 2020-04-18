@@ -11,7 +11,7 @@ public:
     GeorgeNoGun();
     GeorgeNoGun(Level* l, Square* s);
 
-    void act(Action action);
+    void act(Input i);
 };
 
 #endif

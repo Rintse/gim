@@ -75,11 +75,6 @@ void George::attackLasers() {
 
 void George::attackTinyGeorges() {
   // willekeurige beweging op de x as?
-  // spawn tiny baby georges op willekeurige plekken in het level
-  return;
-}
-
-void George::move(Direction dir){
-  // elke georgepart naar dir
+  // spawn tiny baby georges op willekeurige plek
   return;
 }

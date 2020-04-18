@@ -1,7 +1,7 @@
 #ifndef georgepart_h
 #define georgepart_h
 
-#include "tools/actions.h"
+#include "tools/key_input.h"
 
 class Level;
 class Square;
@@ -11,7 +11,7 @@ public:
     GeorgePart();
     GeorgePart(Level* l, Square* s);
 
-    virtual void act(Action action) = 0;
+    virtual void act(Input i) = 0;
     virtual char token() = 0;
 
 protected:

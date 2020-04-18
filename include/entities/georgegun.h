@@ -13,7 +13,7 @@ public:
     GeorgeGun();
     GeorgeGun(Level* l, Square* s);
 
-    void act(Action action);
+    void act(Input i);
 
 protected:
     int curRound;
