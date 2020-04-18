@@ -2,7 +2,7 @@
 #include "world/squares/square.h"
 #include "world/level.h"
 #include "tools/key_input.h"
-#include "entities/playerprojectile.h"
+#include "entities/projectiles/playerprojectile.h"
 #include <iostream>
 
 Player::Player() {}

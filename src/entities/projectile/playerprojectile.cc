@@ -1,4 +1,4 @@
-#include "entities/playerprojectile.h"
+#include "entities/projectiles/playerprojectile.h"
 #include "world/squares/square.h"
 #include "world/level.h"
 

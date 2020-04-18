@@ -2,8 +2,8 @@
 #define georgegun_h
 
 #include "georgepart.h"
-#include "georgebullet.h"
-#include "georgelaser.h"
+#include "entities/projectiles/georgebullet.h"
+#include "entities/projectiles/georgelaser.h"
 
 class Level;
 class Square;

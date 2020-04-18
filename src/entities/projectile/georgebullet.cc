@@ -1,4 +1,4 @@
-#include "entities/georgebullet.h"
+#include "entities/projectiles/georgebullet.h"
 #include "world/squares/square.h"
 #include "world/level.h"
 

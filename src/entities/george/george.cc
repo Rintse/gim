@@ -1,4 +1,4 @@
-#include "entities/george.h"
+#include "entities/george/george.h"
 #include "world/squares/square.h"
 #include "world/level.h"
 

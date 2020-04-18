@@ -1,4 +1,4 @@
-#include "entities/georgeparts.h"
+#include "entities/george/georgeparts.h"
 
 
 GeorgeA::GeorgeA() {}
