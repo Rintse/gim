@@ -6,6 +6,6 @@ GeorgeNoGun::GeorgeNoGun() {}
 
 GeorgeNoGun::GeorgeNoGun(Level* l, Square* s) : GeorgePart (l,s) {}
 
-void GeorgeNoGun::act(Direction dir) {
+void GeorgeNoGun::act(Action action) {
   return;
 }

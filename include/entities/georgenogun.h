@@ -11,8 +11,7 @@ public:
     GeorgeNoGun();
     GeorgeNoGun(Level* l, Square* s);
 
-    void act(Direction dir);
-    virtual char token() = 0;
+    void act(Action action);
 };
 
 #endif

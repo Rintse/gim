@@ -4,9 +4,11 @@
 
 GeorgeGun::GeorgeGun() {}
 
-GeorgeGun::GeorgeGun(Level* l, Square* s) : GeorgePart (l,s) {}
+GeorgeGun::GeorgeGun(Level* l, Square* s) : GeorgePart (l,s) {
+  int curRound = 0;
+}
 
-void GeorgeGun::act(int curRound, Direction dir) {
+void GeorgeGun::act(Action action) {
   return;
 }
 
@@ -26,4 +28,8 @@ void GeorgeGun::shootLaser(){
   else {
       lvl->newGeorgeLaser(curSquare, DIR_DOWN);
   }
+}
+
+void GeorgeGun::setRound(int r){
+  curRound = r;
 }

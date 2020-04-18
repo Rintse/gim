@@ -9,6 +9,8 @@
 #define COOLDOWN_FRAMES (FPS*COOLDOWN_SECONDS)
 #define ROUND_FRAMES (FPS*ROUND_SECONDS)
 
+#define N_PARTS 6
+
 class Level;
 class Square;
 
@@ -24,19 +26,15 @@ private:
     Level* lvl;
     int curRound;
     int frame;
+    int health;
 
-    // zijn voorlopig pointers, moet nog even overnadenken of dat de beste opslag
-    // methode is voor elk george deel
-    GeorgeA* a;
-    GeorgeB* b;
-    GeorgeC* c;
-    GeorgeD* d;
-    GeorgeE* e;
-    GeorgeF* f; 
+    GeorgePart* parts[N_PARTS];
 
+    void setParts();
     void attackBullets();
     void attackLasers();
     void attackTinyGeorges();
+    void move(Direction dir);
 };
 
 #endif

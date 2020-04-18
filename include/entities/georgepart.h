@@ -1,7 +1,7 @@
 #ifndef georgepart_h
 #define georgepart_h
 
-#include "tools/directions.h"
+#include "tools/actions.h"
 
 class Level;
 class Square;
@@ -11,7 +11,7 @@ public:
     GeorgePart();
     GeorgePart(Level* l, Square* s);
 
-    virtual void act() = 0;
+    virtual void act(Action action) = 0;
     virtual char token() = 0;
 
 protected:

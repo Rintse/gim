@@ -9,6 +9,28 @@ George::George(Level* l, Square* s) {
   curSquare = s;
   curRound = 2;
   frame = 0;
+  health = 100;
+  setParts();
+}
+
+void George::setParts(){
+  Square* tmp;
+  parts[0] = dynamic_cast<GeorgePart*>(new GeorgeA(lvl, curSquare));
+
+  tmp = lvl->getSquareDir(curSquare, DIR_RIGHT);
+  parts[1] = dynamic_cast<GeorgePart*>(new GeorgeB(lvl, tmp));
+
+  tmp = lvl->getSquareDir(tmp, DIR_RIGHT);
+  parts[2] = dynamic_cast<GeorgePart*>(new GeorgeC(lvl, tmp));
+
+  tmp = lvl->getSquareDir(curSquare, DIR_DOWN);
+  parts[3] = dynamic_cast<GeorgePart*>(new GeorgeD(lvl, tmp));
+
+  tmp = lvl->getSquareDir(tmp, DIR_RIGHT);
+  parts[4] = dynamic_cast<GeorgePart*>(new GeorgeE(lvl, tmp));
+
+  tmp = lvl->getSquareDir(tmp, DIR_RIGHT);
+  parts[5] = dynamic_cast<GeorgePart*>(new GeorgeF(lvl, tmp));
 }
 
 void George::act() {
@@ -18,7 +40,6 @@ void George::act() {
   }
 
   else {
-
     if(frame == 0){ // start of new attack round
       curRound = (curRound + 1) % 3;
     }
@@ -55,5 +76,10 @@ void George::attackLasers() {
 void George::attackTinyGeorges() {
   // willekeurige beweging op de x as?
   // spawn tiny baby georges op willekeurige plekken in het level
+  return;
+}
+
+void George::move(Direction dir){
+  // elke georgepart naar dir
   return;
 }

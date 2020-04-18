@@ -13,12 +13,13 @@ public:
     GeorgeGun();
     GeorgeGun(Level* l, Square* s);
 
-    void act(int curRound, Direction dir);
-    virtual char token() = 0;
+    void act(Action action);
 
 protected:
+    int curRound;
     void shootBullet();
     void shootLaser();
+    void setRound(int r);
 };
 
 #endif
