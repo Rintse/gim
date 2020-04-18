@@ -4,9 +4,8 @@
 #include "tools/directions.h"
 #include "entities/player.h"
 #include "entities/enemy.h"
-#include "entities/playerprojectile.h"
-#include "entities/georgebullet.h"
-#include "entities/georgelaser.h"
+#include "entities/georgepart.h"
+#include "entities/projectile.h"
 
 enum SquareType {
     SQUARE_FLOOR, SQUARE_DOOR, SQUARE_WALL
@@ -24,14 +23,17 @@ class Square {
         Player* getPlayer();
         Projectile* getProjectile();
         Enemy* getEnemy();
+        GeorgePart* getGeorgepart();
         void setPlayer(Player* p);
-        void setProjectile(Projectile *p);
+        void setProjectile(Projectile* p);
         void setEnemy(Enemy* e);
+        void setGeorgepart(GeorgePart* g);
 
     protected:
         Player* player;
         Projectile* projectile;
         Enemy* enemy;
+        GeorgePart* georgepart;
         int x,y;
 };
 

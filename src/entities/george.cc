@@ -57,23 +57,3 @@ void George::attackTinyGeorges() {
   // spawn tiny baby georges op willekeurige plekken in het level
   return;
 }
-
-void George::shootBullet(Square* s){
-  // georgebullets fire twice every second
-  if(s->type() != SQUARE_FLOOR || frame % (int)(FPS/2) != 0) {
-      return;
-  }
-  else {
-      lvl->newGeorgeBullet(s, DIR_DOWN);
-  }
-}
-
-void George::shootLaser(Square* s){
-  // georgelasers fire continuously
-  if(s->type() != SQUARE_FLOOR) {
-      return;
-  }
-  else {
-      lvl->newGeorgeLaser(s, DIR_DOWN);
-  }
-}

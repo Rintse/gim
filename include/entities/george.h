@@ -1,8 +1,8 @@
 #ifndef george_h
 #define george_h
 
-#include "tools/directions.h"
 #include "game.h"
+#include "georgeparts.h"
 
 #define COOLDOWN_SECONDS 1
 #define ROUND_SECONDS 20
@@ -25,11 +25,18 @@ private:
     int curRound;
     int frame;
 
+    // zijn voorlopig pointers, moet nog even overnadenken of dat de beste opslag
+    // methode is voor elk george deel
+    GeorgeA* a;
+    GeorgeB* b;
+    GeorgeC* c;
+    GeorgeD* d;
+    GeorgeE* e;
+    GeorgeF* f; 
+
     void attackBullets();
     void attackLasers();
     void attackTinyGeorges();
-    void shootBullet(Square* s);
-    void shootLaser(Square* s);
 };
 
 #endif

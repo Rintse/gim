@@ -26,6 +26,13 @@ void GFX::loadSprites() {
     sprites['d'] = SDL_LoadBMP("img/enemy/right.bmp");
     sprites['a'] = SDL_LoadBMP("img/enemy/left.bmp");
     sprites['s'] = SDL_LoadBMP("img/enemy/down.bmp");
+    // George
+    sprites['A'] = SDL_LoadBMP("img/wall.bmp");
+    sprites['B'] = SDL_LoadBMP("img/wall.bmp");
+    sprites['C'] = SDL_LoadBMP("img/wall.bmp");
+    sprites['D'] = SDL_LoadBMP("img/wall.bmp");
+    sprites['E'] = SDL_LoadBMP("img/wall.bmp");
+    sprites['F'] = SDL_LoadBMP("img/wall.bmp");
     // Other
     sprites['#'] = SDL_LoadBMP("img/wall.bmp");
     sprites[' '] = SDL_LoadBMP("img/empty.bmp");

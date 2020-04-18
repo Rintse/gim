@@ -5,6 +5,9 @@
 #include <iostream>
 #include <vector>
 #include "game.h"
+#include "entities/playerprojectile.h"
+#include "entities/georgebullet.h"
+#include "entities/georgelaser.h"
 
 Level::Level(){}
 
