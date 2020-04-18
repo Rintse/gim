@@ -1,13 +1,10 @@
 #ifndef george_h
 #define george_h
 
-#include "game.h"
 #include "georgeparts.h"
 
 #define COOLDOWN_SECONDS 1
 #define ROUND_SECONDS 20
-#define COOLDOWN_FRAMES (FPS*COOLDOWN_SECONDS)
-#define ROUND_FRAMES (FPS*ROUND_SECONDS)
 
 #define N_PARTS 6
 
@@ -17,20 +14,26 @@ class Square;
 class George {
 public:
     George();
-    George(Level* l, Square* s);
+    George(Level* l, Square* s, int FPS);
 
     void act();
 
 private:
     Square* curSquare;
     Level* lvl;
-    int curRound;
+    GeorgePart* parts[N_PARTS];
+    Round curRound;
+    Direction dir;
+    Input input;
+
     int frame;
     int health;
+    int cooldownFrames;
+    int roundFrames;
 
-    GeorgePart* parts[N_PARTS];
 
     void setParts();
+    void inputToParts();
     void attackBullets();
     void attackLasers();
     void attackTinyGeorges();

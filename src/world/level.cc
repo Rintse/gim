@@ -115,6 +115,11 @@ void Level::updateProjectiles() {
     }
 }
 
+void Level::updateGeorge() {
+  if(george != 0) {
+    george->act();
+  }
+}
 
 void Level::setNeighbour(Direction dir, Level* l)  {
     neighbours[dir] = l;
@@ -179,6 +184,14 @@ void Level::generateBossRoom() {
             }
         }
     }
+    setGeorge();
+}
+
+void Level::setGeorge() {
+    int y = 3;
+    int x = width/2 - 1;
+    Square* georgeStart = board[x][y];
+    george = new George(this, georgeStart, FPS);
 }
 
 void Level::generateStartRoom() {

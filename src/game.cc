@@ -70,6 +70,7 @@ void Game::run() {
         player->act(in);
         curLvl->updateProjectiles();
         curLvl->updateEnemies();
+        curLvl->updateGeorge();
 
         // Draw to the screen
         gfx.drawGame();

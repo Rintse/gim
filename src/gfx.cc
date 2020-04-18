@@ -81,6 +81,9 @@ void GFX::drawGame() {
             else if(s->getEnemy() != 0) {
                 c = s->getEnemy()->token();
             }
+            else if(s->getGeorgepart() != 0) {
+                c = s->getGeorgepart()->token();
+            }
             else if(s->getProjectile() != 0) {
                 c = s->getProjectile()->token();
             }

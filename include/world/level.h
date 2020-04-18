@@ -5,6 +5,7 @@
 #include "world/squares/empty.h"
 #include "world/squares/door.h"
 #include "tools/fastrandom.h"
+#include "entities/george/george.h"
 #include <set>
 #include <map>
 
@@ -33,6 +34,7 @@ public:
     void removeEnemy(Enemy* e);
     void updateEnemies();
     void updateProjectiles();
+    void updateGeorge();
     void switchLevel(Direction dir);
     void signalGameOver();
 
@@ -53,10 +55,12 @@ private:
     std::set<Projectile*> projectiles;
     std::set<Enemy*> enemies;
     Player* player;
+    George* george;
     std::map<Direction, Level*> neighbours;
     Game* game;
 
     void setProjectile(Projectile* p, Square* start);
+    void setGeorge();
 };
 
 #endif

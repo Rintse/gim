@@ -4,6 +4,7 @@
 #include "georgepart.h"
 #include "entities/projectiles/georgebullet.h"
 #include "entities/projectiles/georgelaser.h"
+#include "round.h"
 
 class Level;
 class Square;
@@ -14,12 +15,12 @@ public:
     GeorgeGun(Level* l, Square* s);
 
     void act(Input i);
+    void setRound(Round round);
 
 protected:
-    int curRound;
+    Round curRound;
     void shootBullet();
     void shootLaser();
-    void setRound(int r);
 };
 
 #endif

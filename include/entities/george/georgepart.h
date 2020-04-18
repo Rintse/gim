@@ -2,6 +2,7 @@
 #define georgepart_h
 
 #include "tools/key_input.h"
+#include "tools/directions.h"
 
 class Level;
 class Square;
@@ -14,9 +15,13 @@ public:
     virtual void act(Input i) = 0;
     virtual char token() = 0;
 
+    Square* getSquare();
+
 protected:
     Square* curSquare;
     Level* lvl;
+
+    void move(Direction dir);
 };
 
 #endif
