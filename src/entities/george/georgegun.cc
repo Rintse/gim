@@ -32,7 +32,9 @@ void GeorgeGun::shootBullet(){
       return;
   }
   else {
-      //lvl->newGeorgeBullet(curSquare, DIR_DOWN);
+    Projectile* tmp = dynamic_cast<Projectile*>(
+        new GeorgeBullet(lvl, dynamic_cast<EmptySquare*>(curSquare), DIR_DOWN));
+    lvl->newProjectile(tmp);
   }
 }
 
@@ -41,7 +43,9 @@ void GeorgeGun::shootLaser(){
       return;
   }
   else {
-      //lvl->newGeorgeLaser(curSquare, DIR_DOWN);
+    Projectile* tmp = dynamic_cast<Projectile*>(
+        new GeorgeLaser(lvl, dynamic_cast<EmptySquare*>(curSquare), DIR_DOWN));
+    lvl->newProjectile(tmp);
   }
 }
 
