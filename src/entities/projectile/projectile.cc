@@ -9,6 +9,7 @@ Projectile::Projectile(Level* l, EmptySquare* s, Direction d) {
     lvl = l;
     curSquare = s;
     dir = d;
+    speed = 2;
 }
 
 EmptySquare* Projectile::getCurSquare() {
@@ -16,7 +17,7 @@ EmptySquare* Projectile::getCurSquare() {
 }
 
 int Projectile::move() {
-    for(int i = 0; i < 2; i++) {
+    for(int i = 0; i < speed; i++) {
         Square* s = lvl->getSquareDir(curSquare, dir);
         if(s == 0) return 0;
         // Only travel along floor squares

@@ -18,6 +18,7 @@ protected:
   Level* lvl;
   EmptySquare* curSquare;
   Direction dir;
+  int speed;
 };
 
 #endif
