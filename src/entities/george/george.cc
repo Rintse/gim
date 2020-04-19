@@ -43,7 +43,15 @@ void George::setParts(){
 }
 
 void George::inputToParts() {
-  for(int i = 0; i < N_PARTS; i++) {
+  int start = 0, end = N_PARTS, inc = 1;
+
+  if(input.act == ACTION_MOVERIGHT) {
+    start = N_PARTS-1;
+    end = -1;
+    inc = -1;
+  }
+
+  for(int i = start; i != end; i += inc) {
     parts[i]->act(input);
   }
 }
@@ -96,23 +104,24 @@ void George::attackBullets() {
 void George::attackLasers() {
   input.fired = true;
 
-  if(dir == DIR_LEFT) {
+  if(dir == DIR_RIGHT) {
+    if(lvl->getSquareDir(parts[5]->getSquare(), dir)->type() == SQUARE_FLOOR) {
+      input.act = ACTION_MOVERIGHT;
+      // TODO en 2
+    }
+    else {
+      dir = DIR_LEFT;
+      input.act = ACTION_MOVELEFT;
+    }
+  }
+
+  else if(dir == DIR_LEFT) {
     if(lvl->getSquareDir(parts[0]->getSquare(), dir)->type() == SQUARE_FLOOR) {
       input.act = ACTION_MOVELEFT;
     }
     else {
       dir = DIR_RIGHT;
       input.act = ACTION_MOVERIGHT;
-    }
-  }
-
-  else if(dir == DIR_RIGHT) {
-    if(lvl->getSquareDir(parts[5]->getSquare(), dir)->type() == SQUARE_FLOOR) {
-      input.act = ACTION_MOVERIGHT;
-    }
-    else {
-      dir = DIR_LEFT;
-      input.act = ACTION_MOVELEFT;
     }
   }
 }

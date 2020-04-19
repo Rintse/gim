@@ -1,5 +1,7 @@
 #include "world/squares/empty.h"
 
+#include <iostream>
+
 EmptySquare::EmptySquare(int x, int y) : Square(x,y) {
     player = 0;
     projectile = 0;

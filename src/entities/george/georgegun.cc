@@ -1,7 +1,6 @@
 #include "entities/george/georgegun.h"
 #include "world/squares/square.h"
 #include "world/level.h"
-#include <iostream>
 
 GeorgeGun::GeorgeGun() {}
 
@@ -10,6 +9,14 @@ GeorgeGun::GeorgeGun(Level* l, EmptySquare* s) : GeorgePart (l,s) {
 }
 
 void GeorgeGun::act(Input i) {
+  switch (i.act) {
+      case ACTION_MOVEUP: move(DIR_UP); break;
+      case ACTION_MOVEDOWN: move(DIR_DOWN); break;
+      case ACTION_MOVERIGHT: move(DIR_RIGHT); break;
+      case ACTION_MOVELEFT: move(DIR_LEFT); break;
+      default: break;
+  }
+
   if(i.fired){
     if(curRound == ROUND_BULLETS){
       shootBullet();
@@ -17,14 +24,6 @@ void GeorgeGun::act(Input i) {
     else if(curRound == ROUND_LASERS){
       shootLaser();
     }
-  }
-
-  switch (i.act) {
-      case ACTION_MOVEUP: move(DIR_UP); break;
-      case ACTION_MOVEDOWN: move(DIR_DOWN); break;
-      case ACTION_MOVERIGHT: move(DIR_RIGHT); break;
-      case ACTION_MOVELEFT: move(DIR_LEFT); break;
-      default: break;
   }
 }
 

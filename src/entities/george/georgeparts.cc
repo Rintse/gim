@@ -1,4 +1,5 @@
 #include "entities/george/georgeparts.h"
+#include <iostream>
 
 
 GeorgeA::GeorgeA() {}

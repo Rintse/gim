@@ -2,6 +2,8 @@
 #include "world/squares/square.h"
 #include "world/level.h"
 
+#include <iostream>
+
 GeorgePart::GeorgePart() {}
 
 GeorgePart::GeorgePart(Level* l, EmptySquare* s) {
