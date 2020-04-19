@@ -4,6 +4,7 @@
 #include "tools/directions.h"
 #include <iostream>
 #include <vector>
+#include <math.h>
 #include "game.h"
 #include "entities/projectiles/playerprojectile.h"
 #include "entities/projectiles/georgebullet.h"
@@ -17,6 +18,7 @@ Level::Level(int w, int h, Game* g) {
     height = h;
     doorx = width/2;
     doory = height/2;
+    george = 0;
 
     board = new Square**[width];
     for(int i = 0; i < width; ++i) {
@@ -220,6 +222,17 @@ void Level::generateStartRoom() {
     createBossRoom();
 }
 
+void Level::spawnEnemy(Square* s) {
+    EmptySquare* es = dynamic_cast<EmptySquare*>(s);
+    Enemy* tmp = new Enemy(this, es);
+    es->setEnemy(tmp);
+    enemies.insert(tmp);
+}
+
+double dst(int x1, int y1, int x2, int y2) {
+    return sqrt( ((x1-x2)*(x1-x2)) + ((y1-y2)*(y1-y2)) );
+}
+
 void Level::generateRandomRoom() {
     for(int i = 0; i < width; i++) {
         for(int j = 0; j < height; j++) {
@@ -240,6 +253,14 @@ void Level::generateRandomRoom() {
                 }
                 else {
                     board[i][j] = new EmptySquare(i,j);
+                    // Only spawn enemy if far enough from doors
+                    if(dst(i,j, 0,doory) > 15 && dst(i,j, width-1,doory) > 15) {
+                        double rand = game->getRNG()->getDouble();
+                        if(rand < 0.005) { // Certain chance to spawn enemy
+                            spawnEnemy(board[i][j]); //TODO: magic num
+                            std::cout << "Enemy at " << i << ", " << j << std::endl;
+                        }
+                    }
                 }
             }
         }

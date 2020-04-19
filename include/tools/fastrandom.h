@@ -2,14 +2,15 @@
 #define fastrandom_h
 
 #include <climits>
+#include <cstdint>
 
 class FastRandom {
 public:
     FastRandom();
-    unsigned long getLong();
-    unsigned long getMax();
+    double getDouble();
+    uint64_t getLong();
 private:
-    int x,y,z;
+    uint64_t x,y,z;
 };
 
 #endif

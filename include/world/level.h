@@ -26,6 +26,7 @@ public:
     void initPlayer();
     void initPlayer(Direction dir);
     void createBossRoom();
+    void spawnEnemy(Square* s);
 
     // Game updates
     void setNeighbour(Direction d, Level* l);

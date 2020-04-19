@@ -21,7 +21,8 @@ Direction BFS::getNextStep(Square* curPos) {
     // Keep track of direct neighbours so that best first step can be selected
     std::map<Square*,Direction> orginalDir;
     for(int d = DIR_UP; d <= DIR_RIGHT; d++) {
-        Square* directNeighbour = lvl->getSquareDir(q.back(), static_cast<Direction>(d));
+        Square* directNeighbour = lvl->getSquareDir(curPos, static_cast<Direction>(d));
+        if(directNeighbour->type() != SQUARE_FLOOR) continue;
         originalDir[directNeighbour] = static_cast<Direction>(d);
         visited.insert(directNeighbour);
         q.push(directNeighbour);
@@ -40,7 +41,7 @@ Direction BFS::getNextStep(Square* curPos) {
                 if(tmp->getEnemy() != 0) continue;
                 // Possibilty of dodging projectiles
                 if(tmp->getProjectile() != 0) {
-                    double t = (double)rng.getLong() / rng.getMax();
+                    double t = rng.getDouble();
                     if(t < DODGE_CHANCE) continue;
                 }
                 if(visited.find(tmp) == visited.end()) {
