@@ -11,7 +11,7 @@ public:
   Projectile();
   Projectile(Level* l, EmptySquare* s, Direction d);
   int move();
-  EmptySquare* getCurSquare();
+  EmptySquare* getSquare();
   virtual char token() = 0;
 
 protected:

@@ -38,10 +38,13 @@ public:
     void updateGeorge();
     void switchLevel(Direction dir);
     void signalGameOver();
+    double BFSdist(Square* from, Square* to);
 
     // Getters
     Square* getSquareDir(Square* s, Direction dir);
     Square* getSquare(int x, int y);
+    Player* getPlayer();
+    std::set<Projectile*>* getProjectiles();
 
 private:
     void setGeorge();
@@ -49,7 +52,7 @@ private:
     Square*** board;
     int height, width;
     int doorx, doory;
-    Square* lastSquare;
+    Square* lastSquare; //TODO:delete?
 
     std::set<Projectile*> projectiles;
     std::set<Enemy*> enemies;

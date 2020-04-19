@@ -15,10 +15,17 @@ int Enemy::act() {
         return 0;
     }
     lockout = 0;
-    return move(pathfind.getNextStep(curSquare));
+
+    switch (pathfind.getNextStep(curSquare)) {
+        case ACTION_MOVEUP: return move(DIR_UP); break;
+        case ACTION_MOVEDOWN: return move(DIR_DOWN); break;
+        case ACTION_MOVERIGHT: return move(DIR_RIGHT); break;
+        case ACTION_MOVELEFT: return move(DIR_LEFT); break;
+        default: return 0;
+    }
 }
 
-EmptySquare* Enemy::getCurSquare() {
+EmptySquare* Enemy::getSquare() {
     return curSquare;
 }
 

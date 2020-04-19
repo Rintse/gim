@@ -16,11 +16,11 @@ public:
     Enemy(Level* l, EmptySquare* s);
     int act();
     int move(Direction dir);
-    EmptySquare* getCurSquare();
+    EmptySquare* getSquare();
     char token();
 
 private:
-    BFS pathfind;
+    PathFind pathfind;
     Level* lvl;
     EmptySquare* curSquare;
     Action nextMove;

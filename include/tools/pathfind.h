@@ -1,9 +1,12 @@
 #ifndef pathfind_h
 #define pathfind_h
 
-#define DODGE_CHANCE 1
+#define PLAYERWEIGHT 5
+#define PROJECTILEWEIGHT 1
+#define SCARED_DIST 5
 
-#include "directions.h"
+#include "tools/directions.h"
+#include "tools/actions.h"
 #include "fastrandom.h"
 #include <set>
 
@@ -11,13 +14,12 @@ class Level;
 class Square;
 class EmptySquare;
 
-class BFS {
+class PathFind {
     public:
-        BFS();
-        BFS(Level* l);
-        ~BFS();
-        Direction getNextStep(Square* curPos);
-        EmptySquare* consider(Square* s, std::set<Square*>* visited);
+        PathFind();
+        PathFind(Level* l);
+        ~PathFind();
+        Action getNextStep(Square* curPos);
 
     private:
         FastRandom rng;

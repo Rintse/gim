@@ -5,10 +5,14 @@
 #include <iostream>
 #include <vector>
 #include <math.h>
+#include <queue>
+#include <map>
+#include <limits>
 #include "game.h"
 #include "entities/projectiles/playerprojectile.h"
 #include "entities/projectiles/georgebullet.h"
 #include "entities/projectiles/georgelaser.h"
+#include "tools/distance.h"
 
 Level::Level(){}
 
@@ -61,6 +65,10 @@ void Level::initPlayer(Direction d) {
     player->setSquare(startSquare);
 }
 
+std::set<Projectile*>* Level::getProjectiles() {
+    return &projectiles;
+}
+
 void Level::newProjectile(Projectile* p) {
     projectiles.insert(p);
 }
@@ -94,7 +102,7 @@ void Level::updateEnemies() {
         }
     }
     for(auto &i: toDelete) {
-        i->getCurSquare()->setEnemy(0);
+        i->getSquare()->setEnemy(0);
         enemies.erase(enemies.find(i));
     }
 }
@@ -107,7 +115,7 @@ void Level::updateProjectiles() {
         }
     }
     for(auto &i: toDelete) {
-        i->getCurSquare()->setProjectile(0);
+        i->getSquare()->setProjectile(0);
         projectiles.erase(projectiles.find(i));
     }
 }
@@ -222,15 +230,15 @@ void Level::generateStartRoom() {
     createBossRoom();
 }
 
+Player* Level::getPlayer() {
+    return player;
+}
+
 void Level::spawnEnemy(Square* s) {
     EmptySquare* es = dynamic_cast<EmptySquare*>(s);
     Enemy* tmp = new Enemy(this, es);
     es->setEnemy(tmp);
     enemies.insert(tmp);
-}
-
-double dst(int x1, int y1, int x2, int y2) {
-    return sqrt( ((x1-x2)*(x1-x2)) + ((y1-y2)*(y1-y2)) );
 }
 
 void Level::generateRandomRoom() {
@@ -254,7 +262,7 @@ void Level::generateRandomRoom() {
                 else {
                     board[i][j] = new EmptySquare(i,j);
                     // Only spawn enemy if far enough from doors
-                    if(dst(i,j, 0,doory) > 15 && dst(i,j, width-1,doory) > 15) {
+                    if(dist(i,j, 0,doory) > 15 && dist(i,j, width-1,doory) > 15) {
                         double rand = game->getRNG()->getDouble();
                         if(rand < 0.005) { // Certain chance to spawn enemy
                             spawnEnemy(board[i][j]); //TODO: magic num
