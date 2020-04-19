@@ -3,7 +3,7 @@
 
 Enemy::Enemy() {}
 
-Enemy::Enemy(Level* l, Square* s) {
+Enemy::Enemy(Level* l, EmptySquare* s) {
     lvl = l;
     curSquare = s;
 }
@@ -12,7 +12,7 @@ int Enemy::act() {
     return move(pathfind.getNextStep(curSquare));
 }
 
-Square* Enemy::getCurSquare() {
+EmptySquare* Enemy::getCurSquare() {
     return curSquare;
 }
 
@@ -30,20 +30,21 @@ int Enemy::move(Direction dir) {
     // Get the square in the intended new position
     Square* s = lvl->getSquareDir(curSquare, dir);
     if(s == NULL) return 0;
-    // Two enemies may not occupy the same square
-    if(s->getEnemy() != 0) return 0;
-    // If you touch a projectile, you die
-    if(s->getProjectile() != 0) return -1;
-    // If you touch the player, he takes damage, you die
-    if(s->getPlayer() != 0) {
-        s->getPlayer()->takeDamage();
-        return -1;
-    }
     // Move onto new floor square
     else if(s->type() == SQUARE_FLOOR){
+        EmptySquare* tmp = dynamic_cast<EmptySquare*>(s);
+        // Two enemies may not occupy the same square
+        if(tmp->getEnemy() != 0) return 0;
+        // If you touch a projectile, you die
+        if(tmp->getProjectile() != 0) return -1;
+        // If you touch the player, he takes damage, you die
+        if(tmp->getPlayer() != 0) {
+            tmp->getPlayer()->takeDamage();
+            return -1;
+        }
         curSquare->setEnemy(0);
-        s->setEnemy(this);
-        curSquare = s;
+        tmp->setEnemy(this);
+        curSquare = tmp;
         facing = dir;
     }
     return 0;

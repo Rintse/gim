@@ -42,11 +42,9 @@ public:
     Square* getSquareDir(Square* s, Direction dir);
     Square* getSquare(int x, int y);
 
-    // Visuals
-    void print(); //normal output
-    void draw(); //ncurses: todo
-
 private:
+    void setGeorge();
+
     Square*** board;
     int height, width;
     int doorx, doory;
@@ -59,8 +57,6 @@ private:
     std::map<Direction, Level*> neighbours;
     Game* game;
 
-    void setProjectile(Projectile* p, Square* start);
-    void setGeorge();
 };
 
 #endif

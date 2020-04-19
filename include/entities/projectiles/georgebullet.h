@@ -6,7 +6,7 @@
 class GeorgeBullet : public Projectile {
 public:
   GeorgeBullet();
-  GeorgeBullet(Level* l, Square* s, Direction d);
+  GeorgeBullet(Level* l, EmptySquare* s, Direction d);
   char token();
 private:
 };

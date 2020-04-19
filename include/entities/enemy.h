@@ -6,21 +6,21 @@
 #include "tools/pathfind.h"
 
 class Level;
-class Square;
+class EmptySquare;
 
 class Enemy {
 public:
     Enemy();
-    Enemy(Level* l, Square* s);
+    Enemy(Level* l, EmptySquare* s);
     int act();
     int move(Direction dir);
-    Square* getCurSquare();
+    EmptySquare* getCurSquare();
     char token();
 
 private:
     BFS pathfind;
     Level* lvl;
-    Square* curSquare;
+    EmptySquare* curSquare;
     Action nextMove;
     Direction facing;
 };

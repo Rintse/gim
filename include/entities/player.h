@@ -5,7 +5,7 @@
 #include "tools/actions.h"
 
 class Level;
-class Square;
+class EmptySquare;
 struct Input;
 
 class Player {
@@ -15,16 +15,16 @@ public:
     void act(Input a);
     void move(Direction dir);
     void shoot();
-    void setSquare(Square* s);
+    void setSquare(EmptySquare* s);
     void setLevel(Level* l);
     char token();
-    Square* getSquare();
+    EmptySquare* getSquare();
     void takeDamage();
 
 private:
     int health;
     Level* curLvl;
-    Square* curSquare;
+    EmptySquare* curSquare;
     Direction facing;
 };
 

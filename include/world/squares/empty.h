@@ -10,8 +10,22 @@ class EmptySquare : public Square {
 
         SquareType type();
         char token();
+        // Getters
+        Player* getPlayer();
+        Projectile* getProjectile();
+        Enemy* getEnemy();
+        GeorgePart* getGeorgepart();
+        // Setters
+        void setPlayer(Player* p);
+        void setProjectile(Projectile* p);
+        void setEnemy(Enemy* e);
+        void setGeorgepart(GeorgePart* g);
 
     private:
+        Player* player;
+        Projectile* projectile;
+        Enemy* enemy;
+        GeorgePart* georgepart;
 };
 
 #endif

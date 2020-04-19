@@ -4,19 +4,19 @@
 #include "tools/directions.h"
 
 class Level;
-class Square;
+class EmptySquare;
 
 class Projectile {
 public:
   Projectile();
-  Projectile(Level* l, Square* s, Direction d);
+  Projectile(Level* l, EmptySquare* s, Direction d);
   int move();
-  Square* getCurSquare();
+  EmptySquare* getCurSquare();
   virtual char token() = 0;
 
 protected:
   Level* lvl;
-  Square* curSquare;
+  EmptySquare* curSquare;
   Direction dir;
 };
 

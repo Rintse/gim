@@ -4,7 +4,7 @@
 
 GeorgeLaser::GeorgeLaser() {}
 
-GeorgeLaser::GeorgeLaser(Level* l, Square* s, Direction d) : Projectile(l,s,d) {}
+GeorgeLaser::GeorgeLaser(Level* l, EmptySquare* s, Direction d) : Projectile(l,s,d) {}
 
 char GeorgeLaser::token(){
   return '|';

@@ -7,7 +7,7 @@
 class GeorgeA : public GeorgeNoGun {
 public:
     GeorgeA();
-    GeorgeA(Level* l, Square* s);
+    GeorgeA(Level* l, EmptySquare* s);
 
     char token();
 };
@@ -15,7 +15,7 @@ public:
 class GeorgeB : public GeorgeNoGun {
 public:
     GeorgeB();
-    GeorgeB(Level* l, Square* s);
+    GeorgeB(Level* l, EmptySquare* s);
 
     char token();
 };
@@ -23,7 +23,7 @@ public:
 class GeorgeC : public GeorgeNoGun {
 public:
     GeorgeC();
-    GeorgeC(Level* l, Square* s);
+    GeorgeC(Level* l, EmptySquare* s);
 
     char token();
 };
@@ -31,7 +31,7 @@ public:
 class GeorgeD : public GeorgeGun {
 public:
     GeorgeD();
-    GeorgeD(Level* l, Square* s);
+    GeorgeD(Level* l, EmptySquare* s);
 
     char token();
 };
@@ -39,7 +39,7 @@ public:
 class GeorgeE : public GeorgeNoGun {
 public:
     GeorgeE();
-    GeorgeE(Level* l, Square* s);
+    GeorgeE(Level* l, EmptySquare* s);
 
     char token();
 };
@@ -47,7 +47,7 @@ public:
 class GeorgeF : public GeorgeGun {
 public:
     GeorgeF();
-    GeorgeF(Level* l, Square* s);
+    GeorgeF(Level* l, EmptySquare* s);
 
     char token();
 };

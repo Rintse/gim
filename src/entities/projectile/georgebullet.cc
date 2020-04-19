@@ -4,7 +4,7 @@
 
 GeorgeBullet::GeorgeBullet() {}
 
-GeorgeBullet::GeorgeBullet(Level* l, Square* s, Direction d) : Projectile(l,s,d) {}
+GeorgeBullet::GeorgeBullet(Level* l, EmptySquare* s, Direction d) : Projectile(l,s,d) {}
 
 char GeorgeBullet::token(){
   return 'x';

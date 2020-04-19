@@ -4,12 +4,12 @@
 
 GeorgePart::GeorgePart() {}
 
-GeorgePart::GeorgePart(Level* l, Square* s) {
+GeorgePart::GeorgePart(Level* l, EmptySquare* s) {
   lvl = l;
   curSquare = s;
 }
 
-Square* GeorgePart::getSquare() {
+EmptySquare* GeorgePart::getSquare() {
   return curSquare;
 }
 
@@ -21,7 +21,7 @@ void GeorgePart::move(Direction dir) {
   // Move onto new floor square
   else if(s->type() == SQUARE_FLOOR){
       curSquare->setGeorgepart(0);
-      s->setGeorgepart(this);
-      curSquare = s;
+      dynamic_cast<EmptySquare*>(s)->setGeorgepart(this);
+      curSquare = dynamic_cast<EmptySquare*>(s);
   }
 }

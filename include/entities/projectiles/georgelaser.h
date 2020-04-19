@@ -6,7 +6,7 @@
 class GeorgeLaser : public Projectile {
 public:
   GeorgeLaser();
-  GeorgeLaser(Level* l, Square* s, Direction d);
+  GeorgeLaser(Level* l, EmptySquare* s, Direction d);
   char token();
 private:
 };

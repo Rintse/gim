@@ -5,13 +5,13 @@
 
 Projectile::Projectile() {}
 
-Projectile::Projectile(Level* l, Square* s, Direction d) {
+Projectile::Projectile(Level* l, EmptySquare* s, Direction d) {
     lvl = l;
     curSquare = s;
     dir = d;
 }
 
-Square* Projectile::getCurSquare() {
+EmptySquare* Projectile::getCurSquare() {
     return curSquare;
 }
 
@@ -24,16 +24,17 @@ int Projectile::move() {
             return -1;
         }
         else {
+            EmptySquare* tmp = dynamic_cast<EmptySquare*>(s);
             // Kill an enemy when moving onto its square
-            if(s->getEnemy() != 0) {
-                lvl->removeEnemy(s->getEnemy());
-                s->setEnemy(0);
+            if(tmp->getEnemy() != 0) {
+                lvl->removeEnemy(tmp->getEnemy());
+                tmp->setEnemy(0);
             }
 
             // Move onto the square
             curSquare->setProjectile(0);
-            s->setProjectile(this);
-            curSquare = s;
+            tmp->setProjectile(this);
+            curSquare = tmp;
         }
     }
 

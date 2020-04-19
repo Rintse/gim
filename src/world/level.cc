@@ -39,7 +39,7 @@ void Level::setPlayer(Player* p) {
 }
 
 void Level::initPlayer() {
-    Square* startSquare = board[doorx][doory];
+    EmptySquare* startSquare = dynamic_cast<EmptySquare*>(board[doorx][doory]);
     startSquare->setPlayer(player);
     player->setSquare(startSquare);
 }
@@ -54,18 +54,13 @@ void Level::initPlayer(Direction d) {
         case DIR_DOWN: starty = 1; startx = doorx; break;
         default: break;
     }
-    Square* startSquare = board[startx][starty];
+    EmptySquare* startSquare = dynamic_cast<EmptySquare*>(board[startx][starty]);
     startSquare->setPlayer(player);
     player->setSquare(startSquare);
 }
 
 void Level::newProjectile(Projectile* p) {
     projectiles.insert(p);
-}
-
-void Level::setProjectile(Projectile* p, Square* start) {
-  start->setProjectile(p);
-  projectiles.insert(p);
 }
 
 void Level::removeProjectile(Projectile* p) {
@@ -190,7 +185,7 @@ void Level::generateBossRoom() {
 void Level::setGeorge() {
     int y = 3;
     int x = width/2 - 1;
-    Square* georgeStart = board[x][y];
+    EmptySquare* georgeStart = dynamic_cast<EmptySquare*>(board[x][y]);
     george = new George(this, georgeStart, FPS);
 }
 
@@ -222,6 +217,7 @@ void Level::generateStartRoom() {
             }
         }
     }
+    createBossRoom();
 }
 
 void Level::generateRandomRoom() {
@@ -248,41 +244,6 @@ void Level::generateRandomRoom() {
             }
         }
     }
-}
-
-void Level::print() {
-    char* str = new char[(width*height*3) + height + 1];
-    int strIdx = 0;
-
-    for(int j = 0; j < height; j++) {
-        for(int i = 0; i < width; i++) {
-            str[strIdx++] = ' ';
-            if(board[i][j]->getPlayer() != 0) {
-                str[strIdx++] = player->token();
-            }
-            else if(board[i][j]->getEnemy() != 0) {
-                str[strIdx++] = 'x';
-            }
-            else if(board[i][j]->getProjectile() != 0) {
-                str[strIdx++] = 'o';
-            }
-            else {
-                str[strIdx++] = board[i][j]->token();
-            }
-            str[strIdx++] = ' ';
-        }
-        str[strIdx++] = '\n';
-    }
-
-    // Add nullbyte to terminate and print with fprint
-    str[strIdx] = '\0';
-    printf("%s\n", str);
-
-    delete[] str;
-}
-
-void Level::draw() {
-
 }
 
 Square* Level::getSquare(int x, int y) {

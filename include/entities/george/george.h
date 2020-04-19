@@ -14,12 +14,12 @@ class Square;
 class George {
 public:
     George();
-    George(Level* l, Square* s, int FPS);
+    George(Level* l, EmptySquare* s, int FPS);
 
     void act();
 
 private:
-    Square* curSquare;
+    EmptySquare* curSquare;
     Level* lvl;
     GeorgePart* parts[N_PARTS];
     Round curRound;

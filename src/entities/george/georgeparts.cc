@@ -3,7 +3,7 @@
 
 GeorgeA::GeorgeA() {}
 
-GeorgeA::GeorgeA(Level* l, Square* s) : GeorgeNoGun (l,s) {}
+GeorgeA::GeorgeA(Level* l, EmptySquare* s) : GeorgeNoGun (l,s) {}
 
 char GeorgeA::token() {
   return 'A';
@@ -13,7 +13,7 @@ char GeorgeA::token() {
 
 GeorgeB::GeorgeB() {}
 
-GeorgeB::GeorgeB(Level* l, Square* s) : GeorgeNoGun (l,s) {}
+GeorgeB::GeorgeB(Level* l, EmptySquare* s) : GeorgeNoGun (l,s) {}
 
 char GeorgeB::token() {
   return 'B';
@@ -23,7 +23,7 @@ char GeorgeB::token() {
 
 GeorgeC::GeorgeC() {}
 
-GeorgeC::GeorgeC(Level* l, Square* s) : GeorgeNoGun (l,s) {}
+GeorgeC::GeorgeC(Level* l, EmptySquare* s) : GeorgeNoGun (l,s) {}
 
 char GeorgeC::token() {
   return 'C';
@@ -33,7 +33,7 @@ char GeorgeC::token() {
 
 GeorgeD::GeorgeD() {}
 
-GeorgeD::GeorgeD(Level* l, Square* s) : GeorgeGun (l,s) {}
+GeorgeD::GeorgeD(Level* l, EmptySquare* s) : GeorgeGun (l,s) {}
 
 char GeorgeD::token() {
   return 'D';
@@ -43,7 +43,7 @@ char GeorgeD::token() {
 
 GeorgeE::GeorgeE() {}
 
-GeorgeE::GeorgeE(Level* l, Square* s) : GeorgeNoGun (l,s) {}
+GeorgeE::GeorgeE(Level* l, EmptySquare* s) : GeorgeNoGun (l,s) {}
 
 char GeorgeE::token() {
   return 'E';
@@ -53,7 +53,7 @@ char GeorgeE::token() {
 
 GeorgeF::GeorgeF() {}
 
-GeorgeF::GeorgeF(Level* l, Square* s) : GeorgeGun (l,s) {}
+GeorgeF::GeorgeF(Level* l, EmptySquare* s) : GeorgeGun (l,s) {}
 
 char GeorgeF::token() {
   return 'F';

@@ -28,24 +28,25 @@ Direction BFS::getNextStep(Square* curPos) {
     }
 
     while(!q.empty()) { // BFS
-        if(q.back()->getPlayer() == 0) { foundPlayer = true; break; }
+        if(dynamic_cast<EmptySquare*>(q.back())->getPlayer() == 0) {
+            foundPlayer = true; break;
+        }
         for(int d = DIR_UP; d <= DIR_RIGHT; d++) {
             Square* neighbour = lvl->getSquareDir(q.back(), static_cast<Direction>(d));
             if(neighbour == 0) continue;
             if(neighbour->type() == SQUARE_FLOOR) {
+                EmptySquare* tmp = dynamic_cast<EmptySquare*>(neighbour);
                 // Already occupied
-                if(neighbour->getEnemy() != 0) continue;
+                if(tmp->getEnemy() != 0) continue;
                 // Possibilty of dodging projectiles
-                if(neighbour->getProjectile() != 0) {
+                if(tmp->getProjectile() != 0) {
                     double t = (double)rng.getLong() / rng.getMax();
-                    if(t < DODGE_CHANCE) {
-                        continue;
-                    }
+                    if(t < DODGE_CHANCE) continue;
                 }
-                if(visited.find(neighbour) == visited.end()) {
-                    visited.insert(neighbour);
-                    q.push(neighbour);
-                    originalDir[neighbour] = originalDir[q.back()];
+                if(visited.find(tmp) == visited.end()) {
+                    visited.insert(tmp);
+                    q.push(tmp);
+                    originalDir[tmp] = originalDir[q.back()];
                 }
             }
         }

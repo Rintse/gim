@@ -9,7 +9,7 @@ class Square;
 class GeorgeNoGun : public GeorgePart {
 public:
     GeorgeNoGun();
-    GeorgeNoGun(Level* l, Square* s);
+    GeorgeNoGun(Level* l, EmptySquare* s);
 
     void act(Input i);
 };

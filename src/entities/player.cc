@@ -13,7 +13,7 @@ Player::Player(Level* l) {
     health = 1;
 }
 
-void Player::setSquare(Square* s) {
+void Player::setSquare(EmptySquare* s) {
     curSquare = s;
 }
 
@@ -33,8 +33,8 @@ void Player::shoot() {
         return;
     }
     else {
-        Projectile* tmp =
-        dynamic_cast<Projectile*>(new PlayerProjectile(curLvl, s, facing));
+        Projectile* tmp = dynamic_cast<Projectile*>(
+            new PlayerProjectile(curLvl, dynamic_cast<EmptySquare*>(s), facing));
         curLvl->newProjectile(tmp);
     }
 }
@@ -63,7 +63,7 @@ char Player::token() {
 }
 
 
-Square* Player::getSquare() {
+EmptySquare* Player::getSquare() {
     return curSquare;
 }
 
@@ -72,24 +72,23 @@ void Player::move(Direction dir) {
     // Get the square in the intended new position
     Square* s = curLvl->getSquareDir(curSquare, dir);
     if(s == NULL) { return; }
-
-    // Touching enemies is not allowed
-    if(s->getEnemy() != 0) {
-        curLvl->signalGameOver();
-        return;
-    }
     // Touching doors makes you go to a new room
     else if(s->type() == SQUARE_DOOR) {
         Direction dir = dynamic_cast<DoorSquare*>(s)->getDir();
         curLvl->switchLevel(dir);
         facing = dir;
     }
-
     // Move onto new floor square
     else if(s->type() == SQUARE_FLOOR){
+        EmptySquare* tmp = dynamic_cast<EmptySquare*>(s);
+        // Touching enemies is not allowed
+        if(tmp->getEnemy() != 0) {
+            curLvl->signalGameOver();
+            return;
+        }
         curSquare->setPlayer(0);
-        s->setPlayer(this);
-        curSquare = s;
+        tmp->setPlayer(this);
+        curSquare = tmp;
         facing = dir;
     }
 }

@@ -53,7 +53,6 @@ void Game::init() {
     curLvl->setPlayer(player);
     curLvl->generateStartRoom();
     curLvl->initPlayer();
-    curLvl->createBossRoom();
     levels.push_back(curLvl);
 
     gfx.init();

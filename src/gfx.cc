@@ -74,23 +74,7 @@ void GFX::drawGame() {
         for(int i = 0; i < LVL_WIDTH; i++) {
             pos.x = i*SPRITE_DIM;
             pos.y = j*SPRITE_DIM;
-            Square* s = game->getLevel()->getSquare(i,j);
-            if(s->getPlayer() != 0) {
-                c = s->getPlayer()->token();
-            }
-            else if(s->getEnemy() != 0) {
-                c = s->getEnemy()->token();
-            }
-            else if(s->getGeorgepart() != 0) {
-                c = s->getGeorgepart()->token();
-            }
-            else if(s->getProjectile() != 0) {
-                c = s->getProjectile()->token();
-            }
-            else {
-                c = s->token();
-            }
-
+            c = game->getLevel()->getSquare(i,j)->token();
             SDL_BlitSurface(sprites[c], NULL, surface, &pos);
         }
     }

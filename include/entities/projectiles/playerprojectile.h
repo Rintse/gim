@@ -6,7 +6,7 @@
 class PlayerProjectile : public Projectile {
 public:
   PlayerProjectile();
-  PlayerProjectile(Level* l, Square* s, Direction d);
+  PlayerProjectile(Level* l, EmptySquare* s, Direction d);
   char token();
 };
 

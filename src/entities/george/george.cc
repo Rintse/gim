@@ -4,7 +4,7 @@
 
 George::George() {}
 
-George::George(Level* l, Square* s, int FPS) {
+George::George(Level* l, EmptySquare* s, int FPS) {
   lvl = l;
   curSquare = s;
   curRound = ROUND_TINYBABYGEORGES;
@@ -17,27 +17,27 @@ George::George(Level* l, Square* s, int FPS) {
 }
 
 void George::setParts(){
-  Square* tmp;
+  EmptySquare* tmp;
   parts[0] = dynamic_cast<GeorgePart*>(new GeorgeA(lvl, curSquare));
   curSquare->setGeorgepart(parts[0]);
 
-  tmp = lvl->getSquareDir(curSquare, DIR_RIGHT);
+  tmp = dynamic_cast<EmptySquare*>(lvl->getSquareDir(curSquare, DIR_RIGHT));
   parts[1] = dynamic_cast<GeorgePart*>(new GeorgeB(lvl, tmp));
   tmp->setGeorgepart(parts[1]);
 
-  tmp = lvl->getSquareDir(tmp, DIR_RIGHT);
+  tmp = dynamic_cast<EmptySquare*>(lvl->getSquareDir(tmp, DIR_RIGHT));
   parts[2] = dynamic_cast<GeorgePart*>(new GeorgeC(lvl, tmp));
   tmp->setGeorgepart(parts[2]);
 
-  tmp = lvl->getSquareDir(curSquare, DIR_DOWN);
+  tmp = dynamic_cast<EmptySquare*>(lvl->getSquareDir(curSquare, DIR_DOWN));
   parts[3] = dynamic_cast<GeorgePart*>(new GeorgeD(lvl, tmp));
   tmp->setGeorgepart(parts[3]);
 
-  tmp = lvl->getSquareDir(tmp, DIR_RIGHT);
+  tmp = dynamic_cast<EmptySquare*>(lvl->getSquareDir(tmp, DIR_RIGHT));
   parts[4] = dynamic_cast<GeorgePart*>(new GeorgeE(lvl, tmp));
   tmp->setGeorgepart(parts[4]);
 
-  tmp = lvl->getSquareDir(tmp, DIR_RIGHT);
+  tmp = dynamic_cast<EmptySquare*>(lvl->getSquareDir(tmp, DIR_RIGHT));
   parts[5] = dynamic_cast<GeorgePart*>(new GeorgeF(lvl, tmp));
   tmp->setGeorgepart(parts[5]);
 }
