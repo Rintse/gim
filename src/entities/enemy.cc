@@ -6,9 +6,15 @@ Enemy::Enemy() {}
 Enemy::Enemy(Level* l, EmptySquare* s) : pathfind(l) {
     lvl = l;
     curSquare = s;
+    lockout = 0;
 }
 
 int Enemy::act() {
+    if(lockout < LOCKOUTFRAMES) {
+        lockout++;
+        return 0;
+    }
+    lockout = 0;
     return move(pathfind.getNextStep(curSquare));
 }
 
@@ -32,19 +38,19 @@ int Enemy::move(Direction dir) {
     if(s == NULL) return 0;
     // Move onto new floor square
     else if(s->type() == SQUARE_FLOOR){
-        EmptySquare* tmp = dynamic_cast<EmptySquare*>(s);
+        EmptySquare* es = dynamic_cast<EmptySquare*>(s);
         // Two enemies may not occupy the same square
-        if(tmp->getEnemy() != 0) return 0;
+        if(es->getEnemy() != 0) return 0;
         // If you touch a projectile, you die
-        if(tmp->getProjectile() != 0) return -1;
+        if(es->getProjectile() != 0) return -1;
         // If you touch the player, he takes damage, you die
-        if(tmp->getPlayer() != 0) {
-            tmp->getPlayer()->takeDamage();
+        if(es->getPlayer() != 0) {
+            es->getPlayer()->takeDamage();
             return -1;
         }
         curSquare->setEnemy(0);
-        tmp->setEnemy(this);
-        curSquare = tmp;
+        es->setEnemy(this);
+        curSquare = es;
         facing = dir;
     }
     return 0;

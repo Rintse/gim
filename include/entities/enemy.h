@@ -8,6 +8,8 @@
 class Level;
 class EmptySquare;
 
+#define LOCKOUTFRAMES 3
+
 class Enemy {
 public:
     Enemy();
@@ -23,6 +25,7 @@ private:
     EmptySquare* curSquare;
     Action nextMove;
     Direction facing;
+    int lockout;
 };
 
 #endif
