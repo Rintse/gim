@@ -3,7 +3,7 @@
 
 Enemy::Enemy() {}
 
-Enemy::Enemy(Level* l, EmptySquare* s) {
+Enemy::Enemy(Level* l, EmptySquare* s) : pathfind(l) {
     lvl = l;
     curSquare = s;
 }
