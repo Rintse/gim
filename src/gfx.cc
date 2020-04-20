@@ -5,6 +5,11 @@
 GFX::GFX(Game* g) {
     game = g;
     scale = 2;
+
+    // Helper rectangle
+    dst.w = dst.h = SPRITE_DIM*scale;
+    src.w = src.h = SPRITE_DIM;
+    src.x = src.y = 0;
 }
 
 GFX::~GFX() {
@@ -68,11 +73,32 @@ void GFX::init() {
 }
 
 
+void GFX::drawHeader() {
+    char c = 'H';
+
+    int hp = game->getLevel()->getPlayer()->getHP();
+    dst.y = scale*(LVL_HEIGHT-1)*SPRITE_DIM;
+    for(int i = 0; i < LVL_WIDTH; i++) {
+        dst.x = scale*i*SPRITE_DIM;
+        if(i >= hp) c = game->getLevel()->getSquare(i,(LVL_HEIGHT-1))->token();
+        SDL_BlitScaled(sprites[c], &src, surface, &dst);
+    }
+}
+
+void GFX::drawFooter() {
+    char c = 'H';
+
+    int hp = game->getLevel()->getPlayer()->getHP();
+    dst.y = scale*(LVL_HEIGHT-1)*SPRITE_DIM;
+    for(int i = 0; i < LVL_WIDTH; i++) {
+        dst.x = scale*i*SPRITE_DIM;
+        if(i >= hp) c = game->getLevel()->getSquare(i,(LVL_HEIGHT-1))->token();
+        SDL_BlitScaled(sprites[c], &src, surface, &dst);
+    }
+}
+
+
 void GFX::drawGame() {
-    SDL_Rect src, dst;
-    dst.w = dst.h = SPRITE_DIM*scale;
-    src.w = src.h = SPRITE_DIM;
-    src.x = src.y = 0;
     char c;
 
     for(int j = 0; j < LVL_HEIGHT; j++) {
@@ -84,12 +110,9 @@ void GFX::drawGame() {
         }
     }
 
-    int hp = game->getLevel()->getPlayer()->getHP();
-    dst.y = scale*(LVL_HEIGHT-1)*SPRITE_DIM;
-    for(int i = 0; i < hp; i++) {
-        dst.x = scale*i*SPRITE_DIM;
-        SDL_BlitScaled(sprites['H'], &src, surface, &dst);
-    }
+    drawHeader();
+    drawFooter();
+
 
     SDL_UpdateWindowSurface(window);
 }
