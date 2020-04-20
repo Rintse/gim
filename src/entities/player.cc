@@ -90,6 +90,6 @@ void Player::move(Direction dir) {
         es->setPlayer(this);
         curSquare = es;
         facing = dir;
-        std::cout << "moved to " << es->getX() << ", " << es->getY() << std::endl;
+        //std::cout << "moved to " << es->getX() << ", " << es->getY() << std::endl;
     }
 }

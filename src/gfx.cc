@@ -4,6 +4,7 @@
 
 GFX::GFX(Game* g) {
     game = g;
+    scale = 2;
 }
 
 GFX::~GFX() {
@@ -50,8 +51,8 @@ void GFX::init() {
         window = SDL_CreateWindow(  "Notorious George",
                                     SDL_WINDOWPOS_UNDEFINED,
                                     SDL_WINDOWPOS_UNDEFINED,
-                                    LVL_WIDTH*SPRITE_DIM,
-                                    LVL_HEIGHT*SPRITE_DIM,
+                                    2*LVL_WIDTH*SPRITE_DIM,
+                                    2*LVL_HEIGHT*SPRITE_DIM,
                                     SDL_WINDOW_SHOWN    );
         if( window == NULL ) {
             printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -66,16 +67,18 @@ void GFX::init() {
 
 
 void GFX::drawGame() {
-    SDL_Rect pos;
-    pos.w = pos.h = SPRITE_DIM;
+    SDL_Rect src, dst;
+    dst.w = dst.h = SPRITE_DIM*scale;
+    src.w = src.h = SPRITE_DIM;
+    src.x = src.y = 0;
     char c;
 
     for(int j = 0; j < LVL_HEIGHT; j++) {
         for(int i = 0; i < LVL_WIDTH; i++) {
-            pos.x = i*SPRITE_DIM;
-            pos.y = j*SPRITE_DIM;
+            dst.x = scale*i*SPRITE_DIM;
+            dst.y = scale*j*SPRITE_DIM;
             c = game->getLevel()->getSquare(i,j)->token();
-            SDL_BlitSurface(sprites[c], NULL, surface, &pos);
+            SDL_BlitScaled(sprites[c], &src, surface, &dst);
         }
     }
 

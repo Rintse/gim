@@ -9,8 +9,8 @@
 
 #define FPS 25.0
 #define FRAMETIME (1000.0/FPS)
-#define LVL_HEIGHT 40
-#define LVL_WIDTH 60
+#define LVL_HEIGHT 30
+#define LVL_WIDTH 50
 #define SPRITE_DIM 16
 
 class Game {
