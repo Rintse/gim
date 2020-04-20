@@ -199,6 +199,12 @@ void Level::setGeorge() {
     george = new George(this, georgeStart, FPS);
 }
 
+void Level::hurtGeorge() {
+  if(george->takehit()) {
+    signalGameOver();
+  }
+}
+
 void Level::generateStartRoom() {
     for(int i = 0; i < width; i++) {
         for(int j = 0; j < height; j++) {

@@ -31,6 +31,10 @@ int Projectile::move() {
                 lvl->removeEnemy(tmp->getEnemy());
                 tmp->setEnemy(0);
             }
+            if(tmp->getGeorgepart() != 0) {
+              lvl->hurtGeorge();
+              return -1;
+            }
 
             // Move onto the square
             curSquare->setProjectile(0);

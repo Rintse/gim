@@ -39,6 +39,7 @@ public:
     void switchLevel(Direction dir);
     void signalGameOver();
     double BFSdist(Square* from, Square* to);
+    void hurtGeorge();
 
     // Getters
     Square* getSquareDir(Square* s, Direction dir);

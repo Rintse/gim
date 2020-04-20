@@ -7,18 +7,13 @@
 /*
 BIG TODO LIJST
 
-Health down when take hit
 bullet ronde
 barrier squares
 george moet groter
 sprites george en george health bar/getal
-set curSquare
-destructor
-
-
-
 CODE DUPLICATION OMSCHRIJVEN
 tgb ronde opschonen
+fix destructor
 */
 
 George::George() {}
@@ -28,7 +23,7 @@ George::George(Level* l, EmptySquare* s, int FPS) {
   curSquare = s;
   curRound = ROUND_TINYBABYGEORGES;
   frame = 0;
-  health = 100;
+  health = HEALTH;
   setParts();
   cooldownFrames = FPS*COOLDOWN_SECONDS;
   roundFrames = FPS*ROUND_SECONDS;
@@ -36,6 +31,13 @@ George::George(Level* l, EmptySquare* s, int FPS) {
   fs = new FastRandom();
   lvlWidth = lvl->getWidth();
   lvlHeight = lvl->getHeight();
+}
+
+George::~George(){
+  delete fs;
+  //for(int i; i < N_PARTS; i++) {
+  //  delete parts[i];
+  //}
 }
 
 void George::setParts(){
@@ -89,6 +91,7 @@ void George::act() {
   curRound = ROUND_LASERS;
   dynamic_cast<GeorgeGun*>(parts[3])->setRound(curRound);
   dynamic_cast<GeorgeGun*>(parts[5])->setRound(curRound);
+
   attackBullets();
   //attackLasers();
   //attackTinyGeorges();
@@ -251,5 +254,14 @@ Action George::followPlayer() {
     return (georgeLeft - playerX) >= (playerX - georgeRight)?
             ACTION_MOVERIGHT : ACTION_MOVELEFT;
   }
+  return ACTION_NONE;
+}
 
+bool George::takehit() {
+  health--;
+  return health == 0;
+}
+
+int George::takeHP() {
+  return health;
 }
