@@ -92,8 +92,8 @@ void George::act() {
   dynamic_cast<GeorgeGun*>(parts[3])->setRound(curRound);
   dynamic_cast<GeorgeGun*>(parts[5])->setRound(curRound);
 
-  attackBullets();
-  //attackLasers();
+  //attackBullets();
+  attackLasers();
   //attackTinyGeorges();
 
   // attack round has ended, George is in cooldown

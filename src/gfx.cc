@@ -34,6 +34,11 @@ void GFX::loadSprites() {
     sprites['D'] = SDL_LoadBMP("img/wall.bmp");
     sprites['E'] = SDL_LoadBMP("img/wall.bmp");
     sprites['F'] = SDL_LoadBMP("img/wall.bmp");
+    // George heart
+    sprites['4'] = SDL_LoadBMP("img/fullheart.bmp");
+    sprites['3'] = SDL_LoadBMP("img/75heart.bmp");
+    sprites['2'] = SDL_LoadBMP("img/50heart.bmp");
+    sprites['1'] = SDL_LoadBMP("img/25heart.bmp");
     // Other
     sprites['H'] = SDL_LoadBMP("img/hp.bmp");
     sprites['L'] = SDL_LoadBMP("img/heart.bmp");
@@ -41,7 +46,7 @@ void GFX::loadSprites() {
     sprites[' '] = SDL_LoadBMP("img/empty.bmp");
     sprites['o'] = SDL_LoadBMP("img/projectile.bmp");
     sprites['x'] = SDL_LoadBMP("img/projectile.bmp"); //TODO: bullet image
-    sprites['|'] = SDL_LoadBMP("img/projectile.bmp"); //TODO: laser image
+    sprites['|'] = SDL_LoadBMP("img/laserleft.bmp"); //TODO: laser image
 }
 
 void GFX::init() {
