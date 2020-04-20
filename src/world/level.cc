@@ -241,6 +241,11 @@ void Level::spawnEnemy(Square* s) {
     enemies.insert(tmp);
 }
 
+void Level::spawnHeart(Square* s) {
+    EmptySquare* es = dynamic_cast<EmptySquare*>(s);
+    es->setHeart(true);
+}
+
 void Level::generateRandomRoom() {
     for(int i = 0; i < width; i++) {
         for(int j = 0; j < height; j++) {
@@ -248,15 +253,13 @@ void Level::generateRandomRoom() {
                 if((i == 0 || i == width-1) && j == doory) {
                     Direction dir = i==0 ? DIR_LEFT : DIR_RIGHT;
                     board[i][j] = new DoorSquare(i,j,dir);
-                    continue;
                 }
                 else {
                     board[i][j] = new WallSquare(i,j);
                 }
             }
             else {
-                int rand = game->getRNG()->getLong() % 10;
-                if(rand == 0) {
+                if(game->getRNG()->getLong() % 10 == 0 && dist(i,j, width-1,doory) > 3) {
                     board[i][j] = new WallSquare(i,j);
                 }
                 else {
@@ -267,6 +270,11 @@ void Level::generateRandomRoom() {
                         if(rand < 0.005) { // Certain chance to spawn enemy
                             spawnEnemy(board[i][j]); //TODO: magic num
                             std::cout << "Enemy at " << i << ", " << j << std::endl;
+                        }
+                        rand = game->getRNG()->getDouble();
+                        if(rand < 0.005) {
+                            spawnHeart(board[i][j]);
+                            std::cout << "Heart at " << i << ", " << j << std::endl;
                         }
                     }
                 }
