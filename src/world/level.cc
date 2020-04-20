@@ -278,3 +278,11 @@ void Level::generateRandomRoom() {
 Square* Level::getSquare(int x, int y) {
     return board[x][y];
 }
+
+int Level::getWidth(){
+  return width;
+}
+
+int Level::getHeight(){
+  return height;
+}
