@@ -35,6 +35,8 @@ void GFX::loadSprites() {
     sprites['E'] = SDL_LoadBMP("img/wall.bmp");
     sprites['F'] = SDL_LoadBMP("img/wall.bmp");
     // Other
+    sprites['H'] = SDL_LoadBMP("img/hp.bmp");
+    sprites['L'] = SDL_LoadBMP("img/heart.bmp");
     sprites['#'] = SDL_LoadBMP("img/wall.bmp");
     sprites[' '] = SDL_LoadBMP("img/empty.bmp");
     sprites['o'] = SDL_LoadBMP("img/projectile.bmp");
@@ -80,6 +82,13 @@ void GFX::drawGame() {
             c = game->getLevel()->getSquare(i,j)->token();
             SDL_BlitScaled(sprites[c], &src, surface, &dst);
         }
+    }
+
+    int hp = game->getLevel()->getPlayer()->getHP();
+    dst.y = scale*(LVL_HEIGHT-1)*SPRITE_DIM;
+    for(int i = 0; i < hp; i++) {
+        dst.x = scale*i*SPRITE_DIM;
+        SDL_BlitScaled(sprites['H'], &src, surface, &dst);
     }
 
     SDL_UpdateWindowSurface(window);

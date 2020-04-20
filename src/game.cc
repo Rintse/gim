@@ -66,10 +66,11 @@ void Game::run() {
         // Update all entities
         Input in = kh->getInput();
         if(in.act == GAME_PAUSE) break;
-        player->act(in);
+
         curLvl->updateProjectiles();
         curLvl->updateEnemies();
         curLvl->updateGeorge();
+        player->act(in);
 
         // Draw to the screen
         gfx.drawGame();

@@ -10,7 +10,7 @@ Player::Player() {}
 Player::Player(Level* l) {
     curLvl = l;
     facing = DIR_UP;
-    health = 1;
+    health = 6;
 }
 
 void Player::setSquare(EmptySquare* s) {
@@ -22,9 +22,16 @@ void Player::setLevel(Level* l) {
 }
 
 void Player::takeDamage() {
-    if(--health < 1) {
-        curLvl->signalGameOver();
-    }
+    std::cout << "OUCH" << std::endl;
+    if(--health < 1) { curLvl->signalGameOver(); }
+}
+
+void Player::pickupHeart() {
+    if(health < 9) health++;
+}
+
+int Player::getHP() {
+    return health;
 }
 
 void Player::shoot() {
@@ -83,8 +90,9 @@ void Player::move(Direction dir) {
         EmptySquare* es = dynamic_cast<EmptySquare*>(s);
         // Touching enemies is not allowed
         if(es->getEnemy() != 0) {
-            curLvl->signalGameOver();
-            return;
+            takeDamage();
+            curLvl->removeEnemy(es->getEnemy());
+            es->setEnemy(0);
         }
         curSquare->setPlayer(0);
         es->setPlayer(this);
