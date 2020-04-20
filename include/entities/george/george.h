@@ -14,6 +14,7 @@
 
 // other
 #define N_TINYBABYGEORGES 12
+#define HEALTH 100
 
 class Level;
 class Square;
@@ -22,8 +23,11 @@ class George {
 public:
     George();
     George(Level* l, EmptySquare* s, int FPS);
+    ~George();
 
     void act();
+    bool takehit();
+    int takeHP();
 
 private:
     EmptySquare* curSquare;
