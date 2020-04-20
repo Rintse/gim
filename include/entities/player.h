@@ -4,6 +4,9 @@
 #include "tools/directions.h"
 #include "tools/actions.h"
 
+#define SLOW_LO_FRAMES 1
+#define FAST_LO_FRAMES 0
+
 class Level;
 class EmptySquare;
 struct Input;
@@ -28,6 +31,8 @@ private:
     Level* curLvl;
     EmptySquare* curSquare;
     Direction facing;
+    int lockout;
+    int curLOFrames;
 };
 
 #endif

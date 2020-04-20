@@ -11,6 +11,8 @@ Player::Player(Level* l) {
     curLvl = l;
     facing = DIR_UP;
     health = 1;
+    lockout = 0;
+    curLOFrames = SLOW_LO_FRAMES;
 }
 
 void Player::setSquare(EmptySquare* s) {
@@ -46,6 +48,8 @@ void Player::shoot() {
 }
 
 void Player::act(Input in) {
+    if(in.sprint) { curLOFrames = FAST_LO_FRAMES; }
+    else { curLOFrames = SLOW_LO_FRAMES; }
     switch (in.act) {
         case ACTION_MOVEUP: move(DIR_UP); break;
         case ACTION_MOVEDOWN: move(DIR_DOWN); break;
@@ -75,6 +79,11 @@ EmptySquare* Player::getSquare() {
 
 
 void Player::move(Direction dir) {
+    if(lockout < curLOFrames) {
+      lockout++;
+      return;
+    }
+    lockout = 0;
     // Get the square in the intended new position
     Square* s = curLvl->getSquareDir(curSquare, dir);
     if(s == NULL) { return; }

@@ -33,10 +33,12 @@ Input KeyHandler::getInput() {
 
     Input in;
     in.fired = false;
+    in.sprint = false;
     in.act = ACTION_NONE;
 
     // Character controls
     if(keys[SDLK_SPACE]) { in.fired = true; }
+    if(keys[SDLK_LSHIFT]) { in.sprint = true; }
     // Always use movement key that was pressed down last (and is still pressed)
     if(!movementQ.empty()) {
         if(movementQ.back() == SDLK_w) in.act = ACTION_MOVEUP;

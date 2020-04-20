@@ -9,6 +9,7 @@
 struct Input {
     Action act;
     bool fired;
+    bool sprint;
 };
 
 class KeyHandler {
