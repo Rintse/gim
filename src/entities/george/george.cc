@@ -262,6 +262,6 @@ bool George::takehit() {
   return health == 0;
 }
 
-int George::takeHP() {
+int George::getHP() {
   return health;
 }

@@ -296,3 +296,7 @@ int Level::getHeight(){
 bool Level::noEnemies() {
   return enemies.empty();
 }
+
+George* Level::getGeorge() {
+  return george;
+}
