@@ -11,11 +11,6 @@ Enemy::Enemy(Level* l, EmptySquare* s) : pathfind(l) {
 }
 
 int Enemy::act() {
-    if(lockout < LOCKOUTFRAMES) {
-        lockout++;
-        return 0;
-    }
-    lockout = 0;
     switch (pathfind.getNextStep(curSquare)) {
         case ACTION_MOVEUP: return move(DIR_UP); break;
         case ACTION_MOVEDOWN: return move(DIR_DOWN); break;
@@ -40,6 +35,13 @@ char Enemy::token() {
 }
 
 int Enemy::move(Direction dir) {
+    if(!pathfind.bypassLockout) { // Bypass lockout for dodging
+        if(lockout < LOCKOUTFRAMES) {
+            lockout++;
+            return 0;
+        }
+        lockout = 0;
+    } else {pathfind.bypassLockout = false;}
     // Get the square in the intended new position
     Square* s = lvl->getSquareDir(curSquare, dir);
     if(s == NULL) return 0;

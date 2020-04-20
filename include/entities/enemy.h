@@ -16,6 +16,7 @@ public:
     Enemy(Level* l, EmptySquare* s);
     int act();
     int move(Direction dir);
+    int move(Direction dir, bool bypassLockout);
     EmptySquare* getSquare();
     char token();
 

@@ -12,3 +12,10 @@ std::string dir_tostr(Direction dir) {
         default: case DIR_RIGHT: return "right";
     }
 }
+
+std::pair<Direction,Direction> perpendiculars(Direction dir) {
+    switch (dir) {
+        case DIR_UP: case DIR_DOWN: return std::make_pair(DIR_LEFT, DIR_RIGHT);
+        default: case DIR_LEFT: case DIR_RIGHT: return std::make_pair(DIR_UP, DIR_DOWN);
+    }
+}

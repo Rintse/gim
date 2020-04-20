@@ -1,10 +1,9 @@
 #ifndef pathfind_h
 #define pathfind_h
 
-#define WEIGHT_PLAYER 2
-#define WEIGHT_PROJECTILE 5
 #define SEARCH_DST 15 // Minimum distance before prioritySearchign
-#define SEARCH_DELTA 5 // Extra search depth to account for obstacles
+#define MINDIST_PROJ 3
+#define DODGE_CHANCE 0.4
 
 #include "tools/directions.h"
 #include "tools/actions.h"
@@ -15,6 +14,7 @@
 class Level;
 class Square;
 class EmptySquare;
+class Projectile;
 
 class PathFind {
     public:
@@ -23,7 +23,10 @@ class PathFind {
         ~PathFind();
         Direction AStar(Square* curPos);
         Action getNextStep(Square* curPos);
+        Direction dodgeProjectile(Square* curPos, Projectile* p);
+        Projectile* findCloseProjectile(Square* curPos);
 
+        bool bypassLockout;
 
     private:
         FastRandom rng;

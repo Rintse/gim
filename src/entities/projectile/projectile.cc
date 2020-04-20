@@ -41,3 +41,7 @@ int Projectile::move() {
 
     return 0;
 }
+
+Direction Projectile::getDirection() {
+    return dir;
+}

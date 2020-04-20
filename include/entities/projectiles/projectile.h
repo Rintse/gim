@@ -13,6 +13,7 @@ public:
   int move();
   EmptySquare* getSquare();
   virtual char token() = 0;
+  Direction getDirection();
 
 protected:
   Level* lvl;

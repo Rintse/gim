@@ -2,6 +2,7 @@
 #define directions_h
 
 #include <string>
+#include <utility>
 
 #define NUM_DIRECTIONS 4
 
@@ -15,5 +16,7 @@ enum Direction {
 std::string dir_tostr(Direction dir);
 
 Direction opposite_dir(Direction dir);
+
+std::pair<Direction,Direction> perpendiculars(Direction dir);
 
 #endif
