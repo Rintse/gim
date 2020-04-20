@@ -20,6 +20,8 @@ public:
     char token();
     EmptySquare* getSquare();
     void takeDamage();
+    void pickupHeart();
+    int getHP();
 
 private:
     int health;

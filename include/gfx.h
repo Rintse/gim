@@ -15,6 +15,7 @@ class GFX {
         void loadSprites();
         void init();
     private:
+        int scale;
         Game* game;
         SDL_Surface* surface;
         std::map<char, SDL_Surface*> sprites;

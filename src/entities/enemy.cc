@@ -1,5 +1,6 @@
 #include "entities/enemy.h"
 #include "world/level.h"
+#include <iostream>
 
 Enemy::Enemy() {}
 

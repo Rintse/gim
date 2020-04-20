@@ -56,7 +56,6 @@ private:
     Square*** board;
     int height, width;
     int doorx, doory;
-    Square* lastSquare; //TODO:delete?
 
     std::set<Projectile*> projectiles;
     std::set<Enemy*> enemies;
