@@ -48,6 +48,7 @@ private:
     void attackTinyGeorges();
     void spawnGeorges();
     Action avoidPlayer();
+    Action followPlayer();
 };
 
 #endif
