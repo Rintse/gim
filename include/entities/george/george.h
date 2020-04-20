@@ -14,7 +14,7 @@
 
 // other
 #define N_TINYBABYGEORGES 12
-#define HEALTH 100
+#define HEALTH 40
 
 class Level;
 class Square;
@@ -27,7 +27,7 @@ public:
 
     void act();
     bool takehit();
-    int takeHP();
+    int getHP();
 
 private:
     EmptySquare* curSquare;

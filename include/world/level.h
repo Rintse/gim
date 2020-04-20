@@ -46,6 +46,7 @@ public:
     Square* getSquareDir(Square* s, Direction dir);
     Square* getSquare(int x, int y);
     Player* getPlayer();
+    George* getGeorge();
     std::set<Projectile*>* getProjectiles();
     int getWidth();
     int getHeight();

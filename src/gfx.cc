@@ -4,7 +4,7 @@
 
 GFX::GFX(Game* g) {
     game = g;
-    scale = 2;
+    scale = 1;
 
     // Helper rectangle
     dst.w = dst.h = SPRITE_DIM*scale;
@@ -79,14 +79,29 @@ void GFX::init() {
 
 
 void GFX::drawHeader() {
-    char c = 'H';
+    char c;
+    char heart[] = {'4', '1', '2', '3'};
 
-    int hp = game->getLevel()->getPlayer()->getHP();
-    dst.y = scale*(LVL_HEIGHT-1)*SPRITE_DIM;
-    for(int i = 0; i < LVL_WIDTH; i++) {
-        dst.x = scale*i*SPRITE_DIM;
-        if(i >= hp) c = game->getLevel()->getSquare(i,(LVL_HEIGHT-1))->token();
-        SDL_BlitScaled(sprites[c], &src, surface, &dst);
+    if(game->getLevel()->getGeorge() != 0) {
+      int hpIndex = game->getLevel()->getGeorge()->getHP()% 4;
+      int hpScaled = (ceil)(game->getLevel()->getGeorge()->getHP()/4);
+
+      dst.y = 0;
+      for(int i = 0; i < LVL_WIDTH; i++) {
+          dst.x = scale*i*SPRITE_DIM;
+          if (i < hpScaled) c = heart[0];
+          else if (i == hpScaled && hpIndex != 0) c = heart[hpIndex];
+          else c = game->getLevel()->getSquare(i,0)->token();
+          SDL_BlitScaled(sprites[c], &src, surface, &dst);
+      }
+    }
+    else
+    {
+      for(int i = 0; i < LVL_WIDTH; i++) {
+          dst.x = scale*i*SPRITE_DIM;
+          c = game->getLevel()->getSquare(i,(LVL_HEIGHT-1))->token();
+          SDL_BlitScaled(sprites[c], &src, surface, &dst);
+      }
     }
 }
 
