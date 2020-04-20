@@ -2,6 +2,26 @@
 #include "world/squares/square.h"
 #include "world/level.h"
 
+#include <iostream>
+
+/*
+BIG TODO LIJST
+
+Health down when take hit
+tbg ronde aflopen
+bullet ronde
+barrier squares
+george moet groter
+sprites george en george health bar/getal
+set curSquare
+destructor
+
+
+
+CODE DUPLICATION OMSCHRIJVEN
+tgb ronde opschonen
+*/
+
 George::George() {}
 
 George::George(Level* l, EmptySquare* s, int FPS) {
@@ -14,6 +34,9 @@ George::George(Level* l, EmptySquare* s, int FPS) {
   cooldownFrames = FPS*COOLDOWN_SECONDS;
   roundFrames = FPS*ROUND_SECONDS;
   dir = DIR_RIGHT;
+  fs = new FastRandom();
+  lvlWidth = lvl->getWidth();
+  lvlHeight = lvl->getHeight();
 }
 
 void George::setParts(){
@@ -44,6 +67,9 @@ void George::setParts(){
 
 void George::inputToParts() {
   int start = 0, end = N_PARTS, inc = 1;
+  if(input.act < ACTION_NONE) {
+    dir = static_cast<Direction>(input.act);
+  }
 
   if(input.act == ACTION_MOVERIGHT) {
     start = N_PARTS-1;
@@ -54,6 +80,7 @@ void George::inputToParts() {
   for(int i = start; i != end; i += inc) {
     parts[i]->act(input);
   }
+  curSquare = parts[0]->getSquare();
 }
 
 void George::act() {
@@ -63,7 +90,8 @@ void George::act() {
   curRound = ROUND_LASERS;
   dynamic_cast<GeorgeGun*>(parts[3])->setRound(curRound);
   dynamic_cast<GeorgeGun*>(parts[5])->setRound(curRound);
-  attackLasers();
+  //attackLasers();
+  attackTinyGeorges();
 
   // attack round has ended, George is in cooldown
   /*if(frame > roundFrames) {
@@ -127,7 +155,65 @@ void George::attackLasers() {
 }
 
 void George::attackTinyGeorges() {
-  // willekeurige beweging op de x as?
-  // spawn tiny baby georges op willekeurige plek
+  input.fired = false;
+  input.act = avoidPlayer();
+
+  if(frame == 0) {
+    spawnGeorges();
+  }
+
   return;
+}
+
+void George::spawnGeorges() {
+  int randX = 0, randY = 0;
+  Square* tmp;
+
+  for(int i = 0; i < N_TINYBABYGEORGES; i++){
+    tmp = lvl->getSquare(randX, randY);
+
+    while(tmp->type() != SQUARE_FLOOR ||
+          (tmp->type() == SQUARE_FLOOR &&
+          (dynamic_cast<EmptySquare*>(tmp)->getEnemy() != 0 ||
+          dynamic_cast<EmptySquare*>(tmp)->getPlayer() != 0))) {
+      randX = fs->getLong() % (lvlWidth-2) + 1;
+      randY = fs->getLong() % (lvlHeight-2) + 1;
+      tmp = lvl->getSquare(randX, randY);
+    }
+
+    lvl->spawnEnemy(tmp);
+  }
+}
+
+Action George::avoidPlayer() {
+  int playerX = lvl->getPlayer()->getSquare()->getX();
+  int georgeLeft = curSquare->getX();
+  int georgeRight = georgeLeft+WIDTH;
+
+  // player is in front of george
+  if (playerX >= georgeLeft && playerX <= georgeRight) {
+    if(lvl->getSquareDir(parts[5]->getSquare(), dir)->type() != SQUARE_FLOOR) {
+      return ACTION_MOVELEFT;
+    }
+    else if (lvl->getSquareDir(parts[0]->getSquare(), dir)->type() != SQUARE_FLOOR) {
+      return ACTION_MOVERIGHT;
+    }
+
+    return static_cast<Action>(dir);
+  }
+
+  // player is left of george
+  if (playerX <= georgeLeft) {
+    if(lvl->getSquareDir(parts[5]->getSquare(), dir)->type() != SQUARE_FLOOR) {
+      return ACTION_NONE;
+    }
+    return ACTION_MOVERIGHT;
+  }
+
+  if (lvl->getSquareDir(parts[0]->getSquare(), dir)->type() != SQUARE_FLOOR) {
+    return ACTION_NONE;
+  }
+
+  // player is right of george
+  return ACTION_MOVELEFT;
 }

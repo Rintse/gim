@@ -45,6 +45,8 @@ public:
     Square* getSquare(int x, int y);
     Player* getPlayer();
     std::set<Projectile*>* getProjectiles();
+    int getWidth();
+    int getHeight();
 
 private:
     void setGeorge();
