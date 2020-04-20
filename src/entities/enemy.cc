@@ -15,7 +15,6 @@ int Enemy::act() {
         return 0;
     }
     lockout = 0;
-
     switch (pathfind.getNextStep(curSquare)) {
         case ACTION_MOVEUP: return move(DIR_UP); break;
         case ACTION_MOVEDOWN: return move(DIR_DOWN); break;

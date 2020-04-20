@@ -264,7 +264,7 @@ void Level::generateRandomRoom() {
                     // Only spawn enemy if far enough from doors
                     if(dist(i,j, 0,doory) > 15 && dist(i,j, width-1,doory) > 15) {
                         double rand = game->getRNG()->getDouble();
-                        if(rand < 0.005) { // Certain chance to spawn enemy
+                        if(/*rand < 0.005*/i==30&&j==30) { // Certain chance to spawn enemy
                             spawnEnemy(board[i][j]); //TODO: magic num
                             std::cout << "Enemy at " << i << ", " << j << std::endl;
                         }
