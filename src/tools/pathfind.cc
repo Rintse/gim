@@ -107,7 +107,7 @@ Direction PathFind::dodgeProjectile(Square* curPos, Projectile* p) {
     if(option1 && option2 && option1Dst == option2Dst) {
         return (rng.getLong()%2 == 0) ? dirs.first : dirs.second;
     }
-    
+
     return opposite_dir(p->getDirection());
 }
 
@@ -134,12 +134,10 @@ Action PathFind::getNextStep(Square* curPos) {
     }
 
     if(dist(curPos, lvl->getPlayer()->getSquare()) > SEARCH_DST) {
-        return ACTION_NONE;
         return static_cast<Action>(rng.getLong()%(ACTION_NONE+1));
     }
     else {
         Direction d = AStar(curPos);
-        return ACTION_NONE;
         return static_cast<Action>(d);
     }
 }
