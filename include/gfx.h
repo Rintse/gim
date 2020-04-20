@@ -14,7 +14,10 @@ class GFX {
         void drawGame();
         void loadSprites();
         void init();
+        void drawFooter();
+        void drawHeader();
     private:
+        SDL_Rect src, dst;
         int scale;
         Game* game;
         SDL_Surface* surface;

@@ -22,7 +22,6 @@ void Player::setLevel(Level* l) {
 }
 
 void Player::takeDamage() {
-    std::cout << "OUCH" << std::endl;
     if(--health < 1) { curLvl->signalGameOver(); }
 }
 
