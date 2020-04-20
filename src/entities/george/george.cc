@@ -89,8 +89,9 @@ void George::act() {
   curRound = ROUND_LASERS;
   dynamic_cast<GeorgeGun*>(parts[3])->setRound(curRound);
   dynamic_cast<GeorgeGun*>(parts[5])->setRound(curRound);
+  attackBullets();
   //attackLasers();
-  attackTinyGeorges();
+  //attackTinyGeorges();
 
   // attack round has ended, George is in cooldown
   /*
@@ -130,6 +131,7 @@ void George::act() {
 void George::attackBullets() {
   // schiet bullets vanaf de 2 gun squares
   // volg de player een beetje op de x as
+  input.act = followPlayer();
   return;
 }
 
@@ -189,7 +191,7 @@ void George::spawnGeorges() {
 Action George::avoidPlayer() {
   int playerX = lvl->getPlayer()->getSquare()->getX();
   int georgeLeft = curSquare->getX();
-  int georgeRight = georgeLeft + WIDTH;
+  int georgeRight = georgeLeft + WIDTH-1;
 
   // player is in front of george
   if (playerX >= georgeLeft && playerX <= georgeRight) {
@@ -216,4 +218,38 @@ Action George::avoidPlayer() {
 
   // player is right of george
   return ACTION_MOVELEFT;
+}
+
+Action George::followPlayer() {
+  int playerX = lvl->getPlayer()->getSquare()->getX();
+  int georgeLeft = curSquare->getX();
+  int georgeRight = georgeLeft + WIDTH-1;
+
+  // player is left of george
+  if (playerX < georgeLeft) {
+    return ACTION_MOVELEFT;
+  }
+
+  // player is right of george
+  if (playerX > georgeRight) {
+    return ACTION_MOVERIGHT;
+  }
+
+  if (playerX == georgeLeft || playerX == georgeRight){
+    return ACTION_NONE;
+  }
+
+  // player is in front of george
+  if (playerX > georgeLeft && playerX < georgeRight) {
+    if(lvl->getSquareDir(parts[5]->getSquare(), dir)->type() != SQUARE_FLOOR) {
+      return ACTION_MOVELEFT;
+    }
+    else if (lvl->getSquareDir(parts[0]->getSquare(), dir)->type() != SQUARE_FLOOR) {
+      return ACTION_MOVERIGHT;
+    }
+
+    return (georgeLeft - playerX) >= (playerX - georgeRight)?
+            ACTION_MOVERIGHT : ACTION_MOVELEFT;
+  }
+
 }
