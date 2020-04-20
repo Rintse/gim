@@ -47,6 +47,7 @@ public:
     std::set<Projectile*>* getProjectiles();
     int getWidth();
     int getHeight();
+    bool noEnemies();
 
 private:
     void setGeorge();

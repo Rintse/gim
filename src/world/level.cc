@@ -286,3 +286,7 @@ int Level::getWidth(){
 int Level::getHeight(){
   return height;
 }
+
+bool Level::noEnemies() {
+  return enemies.empty();
+}

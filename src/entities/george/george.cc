@@ -8,7 +8,6 @@
 BIG TODO LIJST
 
 Health down when take hit
-tbg ronde aflopen
 bullet ronde
 barrier squares
 george moet groter
@@ -94,12 +93,17 @@ void George::act() {
   attackTinyGeorges();
 
   // attack round has ended, George is in cooldown
-  /*if(frame > roundFrames) {
+  /*
+  if(curRound == ROUND_TINYBABYGEORGES && lvl->noEnemies()){
+    //door naar volgende ronde
+  }
+
+  if(frame > roundFrames) {
     frame = (frame + 1) % (int)(roundFrames + cooldownFrames);
   }
 
   else {
-    if(frame == 0){ // start of new attack round
+    if(frame == 0 ){ // start of new attack round
       curRound = static_cast<Round>(((int)curRound + 1) % 3);
       dynamic_cast<GeorgeGun*>(parts[3])->setRound(curRound);
       dynamic_cast<GeorgeGun*>(parts[5])->setRound(curRound);
@@ -135,10 +139,8 @@ void George::attackLasers() {
   if(dir == DIR_RIGHT) {
     if(lvl->getSquareDir(parts[5]->getSquare(), dir)->type() == SQUARE_FLOOR) {
       input.act = ACTION_MOVERIGHT;
-      // TODO en 2
     }
     else {
-      dir = DIR_LEFT;
       input.act = ACTION_MOVELEFT;
     }
   }
@@ -148,7 +150,6 @@ void George::attackLasers() {
       input.act = ACTION_MOVELEFT;
     }
     else {
-      dir = DIR_RIGHT;
       input.act = ACTION_MOVERIGHT;
     }
   }
@@ -188,7 +189,7 @@ void George::spawnGeorges() {
 Action George::avoidPlayer() {
   int playerX = lvl->getPlayer()->getSquare()->getX();
   int georgeLeft = curSquare->getX();
-  int georgeRight = georgeLeft+WIDTH;
+  int georgeRight = georgeLeft + WIDTH;
 
   // player is in front of george
   if (playerX >= georgeLeft && playerX <= georgeRight) {
@@ -202,16 +203,15 @@ Action George::avoidPlayer() {
     return static_cast<Action>(dir);
   }
 
-  // player is left of george
-  if (playerX <= georgeLeft) {
-    if(lvl->getSquareDir(parts[5]->getSquare(), dir)->type() != SQUARE_FLOOR) {
-      return ACTION_NONE;
-    }
-    return ACTION_MOVERIGHT;
+  // if george against wall
+  if(lvl->getSquareDir(parts[5]->getSquare(), dir)->type() != SQUARE_FLOOR ||
+     lvl->getSquareDir(parts[0]->getSquare(), dir)->type() != SQUARE_FLOOR) {
+    return ACTION_NONE;
   }
 
-  if (lvl->getSquareDir(parts[0]->getSquare(), dir)->type() != SQUARE_FLOOR) {
-    return ACTION_NONE;
+  // player is left of george
+  if (playerX <= georgeLeft) {
+    return ACTION_MOVERIGHT;
   }
 
   // player is right of george
