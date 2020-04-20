@@ -5,6 +5,7 @@
 #include <limits>
 #include <queue>
 #include "tools/distance.h"
+#include <chrono>
 
 PathFind::PathFind() {}
 
@@ -15,117 +16,79 @@ PathFind::PathFind(Level* l) {
 PathFind::~PathFind() {}
 
 struct FringeItem {
-    FringeItem(Square* _s, double _score) {
+    FringeItem(Square* _s, double _bestDst) {
         s = _s;
-        score = _score;
+        bestDst = _bestDst;
     }
     Square* s;
-    double score;
+    double bestDst;
 };
 struct FringeCmp {
-    bool operator()(const FringeItem& lhs, const FringeItem& rhs)
-    {
-        return lhs.score < rhs.score;
+    bool operator()(const FringeItem& lhs, const FringeItem& rhs) {
+        return lhs.bestDst > rhs.bestDst; // Low first
     }
 };
 
-double PathFind::giveScore(Square* s, std::set<Square*> toFind) {
-    // Penalise minimum distance from targets
-    double minDst = std::numeric_limits<double>::infinity();
-    for(auto &i : toFind) {
-        double tdst = dist(i, s);
-        if(tdst < minDst) {
-            minDst = tdst;
-        }
-    }
-    double score = -WEIGHT_PLAYER * minDst;
-
-    // Reward distance from closes projectile
-    std::set<Projectile*>* pjts = lvl->getProjectiles();
-    if(pjts->empty()) return score;
-    minDst = std::numeric_limits<double>::infinity();
-    for(auto &i : *pjts) {
-        double tdst = dist(i->getSquare(), s);
-        if(tdst < minDst) {
-            minDst = tdst;
-        }
-    }
-    score += WEIGHT_PROJECTILE * minDst;
-    return score;
-}
-
-std::map<Square*,double> PathFind::prioritySearch(std::set<Square*> toFind, int depth) {
-    std::map<Square*,double> distances;
-    for(auto& i : toFind) distances[i] = std::numeric_limits<double>::infinity();
+Direction PathFind::AStar(Square* curPos) {
     std::priority_queue<FringeItem,std::vector<FringeItem>,FringeCmp> q;
-    Square* ps = lvl->getPlayer()->getSquare();
-    q.push(FringeItem(ps, giveScore(ps, toFind)));
-    distances[ps] = 0;
+    std::set<Square*> visited({curPos});
+    std::set<Square*> fringe;
+    std::map<Square*, Direction> originalDir;
+    std::map<Square*, int> distances;
 
-    while(!q.empty() && !toFind.empty()) { // BFS
+    // Keep track of direct neighbours so that best first step can be selected
+    for(int d = DIR_UP; d <= DIR_RIGHT; d++) {
+        Square* directNeighbour = lvl->getSquareDir(curPos, static_cast<Direction>(d));
+        if(directNeighbour->type() != SQUARE_FLOOR) continue;
+        EmptySquare* es = dynamic_cast<EmptySquare*>(directNeighbour);
+        if(es->getEnemy() != 0) continue; // Already occupied
+
+        originalDir[directNeighbour] = static_cast<Direction>(d);
+        distances[directNeighbour] = 1;
+        q.push(FringeItem(directNeighbour,1));
+        fringe.insert(directNeighbour);
+    }
+
+    while(!q.empty()) { // Dijkstra
         Square* cur = q.top().s;
-        std::vector<FringeItem> toAdd;
+        visited.insert(cur);
 
         for(int d = DIR_UP; d <= DIR_RIGHT; d++) {
             Square* neighbour = lvl->getSquareDir(cur, static_cast<Direction>(d));
-            if(neighbour->type() == SQUARE_FLOOR) { // Only consider empties
-                distances[neighbour] = distances[cur]+1;
-                if(toFind.find(neighbour) != toFind.end()) { // Found a toFind
-                    toFind.erase(neighbour);
+            if(neighbour == 0) continue;
+            if(neighbour->type() != SQUARE_FLOOR) continue;
+            if(visited.find(neighbour) == visited.end()) {
+                if(dynamic_cast<EmptySquare*>(cur)->getPlayer() != 0) {
+                    return originalDir[cur];
                 }
-                if(distances[neighbour] <= depth) { // Add neighbour to queue
-                    toAdd.push_back(FringeItem(neighbour, giveScore(neighbour, toFind)));
+                // Update if new distance is smaller
+                if( distances.find(neighbour) == distances.end() ||
+                    (distances.find(neighbour) != distances.end() &&
+                    distances[cur] + 1 < distances[neighbour]))
+                {
+                    distances[neighbour] = distances[cur]+1;
+                    originalDir[neighbour] = originalDir[cur];
+                }
+
+                if(fringe.find(neighbour) == fringe.end()) {
+                    q.push(FringeItem(neighbour,distances[neighbour] + dist(neighbour, lvl->getPlayer()->getSquare())));
+                    fringe.insert(neighbour);
                 }
             }
         }
-
+        fringe.erase(cur);
         q.pop();
-        for(auto &i : toAdd) q.push(i);
     }
-    // Couldn't find player
-    return distances;
+    //Shouldn't happen
+    return DIR_UP;
 }
 
 Action PathFind::getNextStep(Square* curPos) {
-    // If euclidean distance too far, don't bother with search
-    if(dist(lvl->getPlayer()->getSquare(), curPos) > SEARCH_DST) {
-        return ACTION_NONE;
-        return static_cast<Action>(rng.getLong()%(int)ACTION_MOVERIGHT+1);
+    if(dist(curPos, lvl->getPlayer()->getSquare()) > SEARCH_DST) {
+        return static_cast<Action>(rng.getLong()%(ACTION_NONE+1));
     }
     else {
-        std::map<Square*,Action> acts;
-        std::set<Square*> toFind({ curPos });
-        acts[curPos] = ACTION_NONE;
-
-        for(int d = DIR_UP; d <= DIR_RIGHT; d++) {
-            Square* tmp = lvl->getSquareDir(curPos, static_cast<Direction>(d));
-            acts[tmp] = static_cast<Action>(d);
-            if( tmp->type() == SQUARE_FLOOR &&
-                dynamic_cast<EmptySquare*>(tmp)->getEnemy() == 0)
-            {
-                toFind.insert(tmp);
-            }
-        }
-        // Find distances to all squares we can move to
-        auto dsts = prioritySearch(toFind, SEARCH_DST+SEARCH_DELTA);
-        // Determine best action
-        std::vector<Action> best;
-        double bestDst = std::numeric_limits<double>::infinity();
-        for(auto & i : toFind) {
-            std::cout << act_tostr(static_cast<Action>(acts[i])) << ": " <<
-            dsts[i] << std::endl;
-            if(dsts[i] == bestDst) {
-                best.push_back(acts[i]);
-            }
-            else if(dsts[i] < bestDst) {
-                best = {acts[i]};
-            }
-        }
-        int idx = rng.getLong()%best.size();
-        std::cout << "Final choice: " << act_tostr(best[idx]) << std::endl;
-        return best[idx];
+        Direction d = AStar(curPos);
+        return static_cast<Action>(d);
     }
-
-    return ACTION_NONE;
-
 }
