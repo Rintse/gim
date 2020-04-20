@@ -20,8 +20,11 @@ class EmptySquare : public Square {
         void setProjectile(Projectile* p);
         void setEnemy(Enemy* e);
         void setGeorgepart(GeorgePart* g);
+        bool hasHeart();
+        void setHeart(bool h);
 
     private:
+        bool heart;
         Player* player;
         Projectile* projectile;
         Enemy* enemy;

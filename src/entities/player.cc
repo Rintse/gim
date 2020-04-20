@@ -10,7 +10,7 @@ Player::Player() {}
 Player::Player(Level* l) {
     curLvl = l;
     facing = DIR_UP;
-    health = 6;
+    health = 1;
 }
 
 void Player::setSquare(EmptySquare* s) {
@@ -92,6 +92,10 @@ void Player::move(Direction dir) {
             takeDamage();
             curLvl->removeEnemy(es->getEnemy());
             es->setEnemy(0);
+        }
+        if(es->hasHeart()) {
+            pickupHeart();
+            es->setHeart(false);
         }
         curSquare->setPlayer(0);
         es->setPlayer(this);
