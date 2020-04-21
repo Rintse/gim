@@ -9,14 +9,16 @@ GeorgeGun::GeorgeGun(Level* l, EmptySquare* s) : GeorgePart (l,s) {
 }
 
 void GeorgeGun::act(Input i) {
-  switch (i.act) {
-      case ACTION_MOVEUP: dir = DIR_UP; break;
-      case ACTION_MOVEDOWN: dir = DIR_DOWN; break;
-      case ACTION_MOVERIGHT: dir = DIR_RIGHT; break;
-      case ACTION_MOVELEFT: dir = DIR_LEFT; break;
-      default: break;
+  if(i.act != ACTION_NONE) {
+    switch (i.act) {
+        case ACTION_MOVEUP: dir = DIR_UP; break;
+        case ACTION_MOVEDOWN: dir = DIR_DOWN; break;
+        case ACTION_MOVERIGHT: dir = DIR_RIGHT; break;
+        case ACTION_MOVELEFT: dir = DIR_LEFT; break;
+        default: break;
+    }
+    move(dir);
   }
-  move(dir);
 
   if(i.fired){
     if(curRound == ROUND_BULLETS){

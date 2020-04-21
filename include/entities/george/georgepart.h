@@ -11,6 +11,7 @@ class GeorgePart {
 public:
     GeorgePart();
     GeorgePart(Level* l, EmptySquare* s);
+    virtual ~GeorgePart() {};
 
     virtual void act(Input i) = 0;
     virtual char token() = 0;

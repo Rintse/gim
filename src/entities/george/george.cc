@@ -35,10 +35,11 @@ George::George(Level* l, EmptySquare* s, int FPS) {
 
 George::~George(){
   delete fs;
-  //for(int i; i < N_PARTS; i++) {
-  //  delete parts[i];
-  //}
+  for(int i = 0; i < N_PARTS; i++) {
+    delete parts[i];
+  }
 }
+
 
 void George::setParts(){
   EmptySquare* tmp;
@@ -94,7 +95,7 @@ void George::act() {
 
   //attackBullets();
   //attackLasers();
-  //attackTinyGeorges();
+  attackTinyGeorges();
 
   // attack round has ended, George is in cooldown
   /*
