@@ -19,6 +19,8 @@ public:
 
 protected:
     Round curRound;
+    Direction dir;
+    
     void shootBullet();
     void shootLaser();
 };

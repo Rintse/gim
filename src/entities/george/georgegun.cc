@@ -10,12 +10,13 @@ GeorgeGun::GeorgeGun(Level* l, EmptySquare* s) : GeorgePart (l,s) {
 
 void GeorgeGun::act(Input i) {
   switch (i.act) {
-      case ACTION_MOVEUP: move(DIR_UP); break;
-      case ACTION_MOVEDOWN: move(DIR_DOWN); break;
-      case ACTION_MOVERIGHT: move(DIR_RIGHT); break;
-      case ACTION_MOVELEFT: move(DIR_LEFT); break;
+      case ACTION_MOVEUP: dir = DIR_UP; break;
+      case ACTION_MOVEDOWN: dir = DIR_DOWN; break;
+      case ACTION_MOVERIGHT: dir = DIR_RIGHT; break;
+      case ACTION_MOVELEFT: dir = DIR_LEFT; break;
       default: break;
   }
+  move(dir);
 
   if(i.fired){
     if(curRound == ROUND_BULLETS){
@@ -44,7 +45,7 @@ void GeorgeGun::shootLaser(){
   }
   else {
     Projectile* tmp = dynamic_cast<Projectile*>(
-        new GeorgeLaser(lvl, dynamic_cast<EmptySquare*>(curSquare), DIR_DOWN));
+        new GeorgeLaser(lvl, dynamic_cast<EmptySquare*>(curSquare), DIR_DOWN, dir));
     lvl->newProjectile(tmp);
   }
 }

@@ -10,7 +10,7 @@ BIG TODO LIJST
 bullet ronde
 barrier squares
 george moet groter
-sprites george en george health bar/getal
+sprites george
 CODE DUPLICATION OMSCHRIJVEN
 tgb ronde opschonen
 fix destructor
@@ -93,7 +93,7 @@ void George::act() {
   dynamic_cast<GeorgeGun*>(parts[5])->setRound(curRound);
 
   //attackBullets();
-  attackLasers();
+  //attackLasers();
   //attackTinyGeorges();
 
   // attack round has ended, George is in cooldown

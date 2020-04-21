@@ -35,6 +35,11 @@ int Projectile::move() {
               lvl->hurtGeorge();
               return -1;
             }
+            // A player is never hit with his own projectiles
+            // When a player is hit by a george projectile he gets hurt
+            if(tmp->getPlayer() != 0) {
+              tmp->getPlayer()->takeDamage();
+            }
 
             // Move onto the square
             curSquare->setProjectile(0);

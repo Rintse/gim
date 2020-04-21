@@ -4,10 +4,11 @@
 
 GeorgeLaser::GeorgeLaser() {}
 
-GeorgeLaser::GeorgeLaser(Level* l, EmptySquare* s, Direction d) : Projectile(l,s,d) {
+GeorgeLaser::GeorgeLaser(Level* l, EmptySquare* s, Direction d, Direction g) : Projectile(l,s,d) {
     speed = 1;
+    gDir = g;
 }
 
 char GeorgeLaser::token(){
-  return '|';
+  return gDir == DIR_RIGHT ? '/' : '|';
 }
