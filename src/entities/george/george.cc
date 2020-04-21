@@ -93,9 +93,9 @@ void George::act() {
   dynamic_cast<GeorgeGun*>(parts[3])->setRound(curRound);
   dynamic_cast<GeorgeGun*>(parts[5])->setRound(curRound);
 
-  //attackBullets();
+  attackBullets();
   //attackLasers();
-  attackTinyGeorges();
+  //attackTinyGeorges();
 
   // attack round has ended, George is in cooldown
   /*
@@ -252,10 +252,16 @@ Action George::followPlayer() {
       return ACTION_MOVERIGHT;
     }
 
-    return (georgeLeft - playerX) >= (playerX - georgeRight)?
-            ACTION_MOVERIGHT : ACTION_MOVELEFT;
+    else if((georgeLeft - playerX) > (playerX - georgeRight)) {
+      return ACTION_MOVELEFT;
+    }
+
+    else if ((georgeLeft - playerX) < (playerX - georgeRight)) {
+      return ACTION_MOVERIGHT;
+    }
   }
-  return ACTION_NONE;
+
+  return static_cast<Action>(dir);
 }
 
 bool George::takehit() {
