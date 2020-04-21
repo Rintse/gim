@@ -50,7 +50,7 @@ void GFX::loadSprites() {
     sprites['#'] = SDL_LoadBMP("img/wall.bmp");
     sprites[' '] = SDL_LoadBMP("img/empty.bmp");
     sprites['o'] = SDL_LoadBMP("img/projectile.bmp");
-    sprites['x'] = SDL_LoadBMP("img/projectile.bmp"); //TODO: bullet image
+    sprites['x'] = SDL_LoadBMP("img/bullet.bmp");
     sprites['/'] = SDL_LoadBMP("img/laserleft.bmp");
     sprites['|'] = SDL_LoadBMP("img/laserright.bmp");
 }

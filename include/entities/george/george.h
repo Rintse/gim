@@ -7,6 +7,7 @@
 // bossfight phase length
 #define COOLDOWN_SECONDS 1
 #define ROUND_SECONDS 20
+#define BULLET_PAUSE 10
 
 // george size
 #define N_PARTS 6

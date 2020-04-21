@@ -89,7 +89,7 @@ void George::act() {
   input.act = ACTION_NONE;
   input.fired = false;
 
-  curRound = ROUND_LASERS;
+  curRound = ROUND_BULLETS;
   dynamic_cast<GeorgeGun*>(parts[3])->setRound(curRound);
   dynamic_cast<GeorgeGun*>(parts[5])->setRound(curRound);
 
@@ -133,8 +133,13 @@ void George::act() {
 }
 
 void George::attackBullets() {
-  // schiet bullets vanaf de 2 gun squares
-  // volg de player een beetje op de x as
+  if (frame % BULLET_PAUSE == 0) {
+    input.fired = true;
+  }
+  else {
+    input.fired = false;
+  }
+
   input.act = followPlayer();
   return;
 }
