@@ -70,6 +70,16 @@ void George::setParts(){
 
 void George::inputToParts() {
   int start = 0, end = N_PARTS, inc = 1;
+
+  // random behaviour in ROUND_BULLETS and ROUND_TINYBABYGEORGES
+  if (curRound != ROUND_LASERS && fs->getLong() % 2 == 0) {
+    switch(fs->getLong() % 3) {
+      case 0: input.act = ACTION_MOVELEFT;
+      case 1: input.act = ACTION_MOVERIGHT;
+      case 2: input.act = ACTION_NONE;
+    }
+  }
+
   if(input.act < ACTION_NONE) {
     dir = static_cast<Direction>(input.act);
   }
