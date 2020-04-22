@@ -10,7 +10,7 @@
 
 PathFind::PathFind() {}
 
-PathFind::PathFind(Level* l) {
+PathFind::PathFind(Level* l) : rng(FastRandom((uint64_t)this)) {
     lvl = l;
     bypassLockout = false;
 }

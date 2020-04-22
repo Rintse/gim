@@ -9,10 +9,15 @@ Enemy::Enemy(Level* l, EmptySquare* s) : pathfind(l) {
     curSquare = s;
     lockout = 0;
     facing = DIR_UP;
+    nextAction = ACTION_NONE;
+}
+
+void Enemy::decideMove() {
+    nextAction = pathfind.getNextStep(curSquare);
 }
 
 int Enemy::act() {
-    switch (pathfind.getNextStep(curSquare)) {
+    switch (nextAction) {
         case ACTION_MOVEUP: return move(DIR_UP); break;
         case ACTION_MOVEDOWN: return move(DIR_DOWN); break;
         case ACTION_MOVERIGHT: return move(DIR_RIGHT); break;

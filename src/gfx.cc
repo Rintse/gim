@@ -4,7 +4,7 @@
 
 GFX::GFX(Game* g) {
     game = g;
-    scale = 1; //TODO: niet hier defined
+    scale = DEFAULT_SCALE; //TODO: niet hier defined
 
     // Helper rectangle
     dst.w = dst.h = SPRITE_DIM*scale;

@@ -7,6 +7,7 @@
 class FastRandom {
 public:
     FastRandom();
+    FastRandom(uint64_t seed);
     double getDouble();
     uint64_t getLong();
 private:

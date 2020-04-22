@@ -10,7 +10,7 @@ Player::Player() {}
 Player::Player(Level* l) {
     curLvl = l;
     facing = DIR_UP;
-    health = 1;
+    health = 999;
     lockout = 0;
     curLOFrames = SLOW_LO_FRAMES;
 }

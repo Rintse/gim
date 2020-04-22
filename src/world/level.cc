@@ -8,6 +8,7 @@
 #include <queue>
 #include <map>
 #include <limits>
+#include <thread>
 #include "game.h"
 #include "entities/projectiles/playerprojectile.h"
 #include "entities/projectiles/georgebullet.h"
@@ -95,6 +96,13 @@ void Level::removeEnemy(Enemy* e) {
 }
 
 void Level::updateEnemies() {
+    std::thread* enemyThreads = new std::thread[enemies.size()];
+    int idx = 0;
+    for(auto &i : enemies) {
+        enemyThreads[idx] = std::thread(&Enemy::decideMove, i);
+        enemyThreads[idx++].join();
+    }
+    delete[] enemyThreads;
     std::vector<Enemy*> toDelete;
     for(auto &i: enemies) {
         if(i->act() == -1) {
@@ -273,7 +281,7 @@ void Level::generateRandomRoom() {
                     // Only spawn enemy if far enough from doors
                     if(dist(i,j, 0,doory) > 15 && dist(i,j, width-1,doory) > 15) {
                         double rand = game->getRNG()->getDouble();
-                        if(rand < 0.005) { // Certain chance to spawn enemy
+                        if(rand < 0.01) { // Certain chance to spawn enemy
                             spawnEnemy(board[i][j]); //TODO: magic num
                             std::cout << "Enemy at " << i << ", " << j << std::endl;
                         }

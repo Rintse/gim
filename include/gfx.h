@@ -5,6 +5,8 @@
 #include <map>
 #include <vector>
 
+#define DEFAULT_SCALE 2
+
 class Game;
 
 class GFX {

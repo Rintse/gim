@@ -14,6 +14,7 @@ class Enemy {
 public:
     Enemy();
     Enemy(Level* l, EmptySquare* s);
+    void decideMove();
     int act();
     int move(Direction dir);
     int move(Direction dir, bool bypassLockout);
@@ -21,6 +22,7 @@ public:
     char token();
 
 private:
+    Action nextAction;
     PathFind pathfind;
     Level* lvl;
     EmptySquare* curSquare;

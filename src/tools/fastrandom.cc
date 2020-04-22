@@ -8,6 +8,12 @@ FastRandom::FastRandom(){ // TODO, set Seeding
     z=521288629;
 }
 
+FastRandom::FastRandom(uint64_t seed){ // TODO, set Seeding
+    x=seed;
+    y=362436069;
+    z=521288629;
+}
+
 double FastRandom::getDouble() {
     return (double)getLong()/(double)0xFFFFFFFFFFFFFFFF;
 }
