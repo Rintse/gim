@@ -21,7 +21,7 @@ George::George() {}
 George::George(Level* l, EmptySquare* s, int FPS) {
   lvl = l;
   curSquare = s;
-  curRound = ROUND_TINYBABYGEORGES;
+  curRound = ROUND_BULLETS;
   frame = 0;
   health = HEALTH;
   setParts();
@@ -31,6 +31,7 @@ George::George(Level* l, EmptySquare* s, int FPS) {
   fs = new FastRandom();
   lvlWidth = lvl->getWidth();
   lvlHeight = lvl->getHeight();
+  cooldown = false;
 }
 
 George::~George(){
@@ -86,47 +87,26 @@ void George::inputToParts() {
 }
 
 void George::act() {
-  input.act = ACTION_NONE;
-  input.fired = false;
-
-  curRound = ROUND_BULLETS;
-  dynamic_cast<GeorgeGun*>(parts[3])->setRound(curRound);
-  dynamic_cast<GeorgeGun*>(parts[5])->setRound(curRound);
-
-  attackBullets();
-  //attackLasers();
-  //attackTinyGeorges();
-
-  // attack round has ended, George is in cooldown
-  /*
-  if(curRound == ROUND_TINYBABYGEORGES && lvl->noEnemies()){
-    //door naar volgende ronde
+  if(cooldown && frame >= cooldownFrames) {
+    frame = 0;
+    cooldown = false;
   }
 
-  if(frame > roundFrames) {
-    frame = (frame + 1) % (int)(roundFrames + cooldownFrames);
-  }
-
-  else {
-    if(frame == 0 ){ // start of new attack round
-      curRound = static_cast<Round>(((int)curRound + 1) % 3);
-      dynamic_cast<GeorgeGun*>(parts[3])->setRound(curRound);
-      dynamic_cast<GeorgeGun*>(parts[5])->setRound(curRound);
-    }
-
+  if(!cooldown) {
     // each round has a different attack type
     switch(curRound){
-      case 0:
-        attackBullets(i);
+      case ROUND_BULLETS:
+        attackBullets();
         break;
-      case 1:
-        attackLasers(i);
+      case ROUND_LASERS:
+        attackLasers();
         break;
-      case 2:
-        attackTinyGeorges(i);
+      case ROUND_TINYBABYGEORGES:
+        attackTinyGeorges();
         break;
     }
-  }*/
+    cooldown = setRound();
+  }
 
   inputToParts();
   frame++;
@@ -276,4 +256,33 @@ bool George::takehit() {
 
 int George::getHP() {
   return health;
+}
+
+bool George::setRound() {
+  switch(curRound){
+    case ROUND_BULLETS:
+    case ROUND_LASERS:
+      if (frame >= roundFrames) {
+        advanceRound();
+        return true;
+      }
+      break;
+    case ROUND_TINYBABYGEORGES:
+      if (lvl->noEnemies()) {
+        advanceRound();
+        return true;
+      }
+      break;
+    default: break;
+  }
+  return false;
+}
+
+void George::advanceRound() {
+  frame = 0;
+  input.act = ACTION_NONE;
+  input.fired = false;
+  curRound = static_cast<Round>(((int)curRound + 1) % 3);
+  dynamic_cast<GeorgeGun*>(parts[3])->setRound(curRound);
+  dynamic_cast<GeorgeGun*>(parts[5])->setRound(curRound);
 }

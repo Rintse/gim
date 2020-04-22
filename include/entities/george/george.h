@@ -45,6 +45,7 @@ private:
     int roundFrames;
     int lvlWidth;
     int lvlHeight;
+    bool cooldown;
 
     void setParts();
     void inputToParts();
@@ -54,6 +55,8 @@ private:
     void spawnGeorges();
     Action avoidPlayer();
     Action followPlayer();
+    bool setRound();
+    void advanceRound();
 };
 
 #endif
