@@ -1,0 +1,6 @@
+# C extensions
+*.o
+*.d
+
+# Executable
+george
