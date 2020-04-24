@@ -11,6 +11,8 @@ void KeyHandler::updateKeys() {
         if(events.type == SDL_KEYDOWN) {
             SDL_Keycode key = events.key.keysym.sym;
             keys[key] = true;
+
+            // Make a queue for movement keys so that they override each other
             if(key == SDLK_w || key == SDLK_s || key == SDLK_d || key == SDLK_a) {
                 auto it = std::find(movementQ.begin(), movementQ.end(), key);
                 if(it == movementQ.end()) {
@@ -19,10 +21,16 @@ void KeyHandler::updateKeys() {
             }
         }
         else if(events.type == SDL_KEYUP) {
-            keys[events.key.keysym.sym] = false;
-            auto it = std::find(movementQ.begin(), movementQ.end(), events.key.keysym.sym);
-            if(it != movementQ.end()) {
-                movementQ.erase(it);
+            SDL_Keycode key = events.key.keysym.sym;
+            // Make sure a pause press gets handled
+            if(key != SDLK_ESCAPE && key != SDLK_RETURN) {
+                keys[key] = false;
+            }
+            if(key == SDLK_w || key == SDLK_s || key == SDLK_d || key == SDLK_a) {
+                auto it = std::find(movementQ.begin(), movementQ.end(), key);
+                if(it != movementQ.end()) {
+                    movementQ.erase(it);
+                }
             }
         }
     }
@@ -39,6 +47,12 @@ Input KeyHandler::getInput() {
     // Character controls
     if(keys[SDLK_SPACE]) { in.fired = true; }
     if(keys[SDLK_LSHIFT]) { in.sprint = true; }
+    if(keys[SDLK_ESCAPE]) {
+        in.act = GAME_PAUSE;
+        keys[SDLK_ESCAPE] = false;
+        return in; 
+    }
+
     // Always use movement key that was pressed down last (and is still pressed)
     if(!movementQ.empty()) {
         if(movementQ.back() == SDLK_w) in.act = ACTION_MOVEUP;
@@ -46,9 +60,10 @@ Input KeyHandler::getInput() {
         else if(movementQ.back() == SDLK_d) in.act = ACTION_MOVERIGHT;
         else if(movementQ.back() == SDLK_a) in.act = ACTION_MOVELEFT;
     }
-
-    // Game controls
-    if(keys[SDLK_ESCAPE]) { in.act = GAME_PAUSE; }
+    else if(keys[SDLK_RETURN]) {
+        in.act = GAME_CLOSE;
+        keys[SDLK_RETURN] = false;
+    }
 
     return in;
 }

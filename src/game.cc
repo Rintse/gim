@@ -17,6 +17,7 @@ void sleep_remaining(std::chrono::time_point<std::chrono::high_resolution_clock>
 
 Game::Game() : gfx(GFX(this)){
     gameOver = false;
+    paused = false;
 }
 
 Game::~Game(){
@@ -62,18 +63,28 @@ void Game::init() {
 void Game::run() {
     while(!gameOver) {
         auto t1 = std::chrono::high_resolution_clock::now();
-
-        // Update all entities
         Input in = kh->getInput();
-        if(in.act == GAME_PAUSE) break;
+        if(in.act == GAME_PAUSE) {
+            paused = !paused;
+            continue;
+        }
+        else if(in.act == GAME_CLOSE) {
+            if(paused) break;
+        }
 
-        curLvl->updateProjectiles();
-        curLvl->updateEnemies();
-        curLvl->updateGeorge();
-        player->act(in);
+        if(paused) {
+            gfx.drawPauseMenu();
+        }
+        else {
+            // Update all entities
+            curLvl->updateProjectiles();
+            curLvl->updateEnemies();
+            curLvl->updateGeorge();
+            player->act(in);
+            // Draw to the screen
+            gfx.drawGame();
+        }
 
-        // Draw to the screen
-        gfx.drawGame();
         sleep_remaining(t1);
     }
 }

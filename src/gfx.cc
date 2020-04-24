@@ -1,5 +1,6 @@
 #include "gfx.h"
 #include "game.h"
+#include <SDL2/SDL_ttf.h>
 #include <iostream>
 
 GFX::GFX(Game* g) {
@@ -76,6 +77,17 @@ void GFX::init() {
     }
 
     loadSprites();
+    TTF_Init();
+    TTF_Font* font = TTF_OpenFont("img/Amatic-Bold.ttf", 48);
+    SDL_Color foregroundColor = { 255, 255, 255 };
+    SDL_Color backgroundColor = { 0, 0, 255 };
+    pauseText = TTF_RenderText_Shaded(font,
+        "PAUSED\n\nPress enter to quit\nPress esc to continue",
+        foregroundColor,
+        backgroundColor
+    );
+    pauseX = (2*LVL_WIDTH*SPRITE_DIM - pauseText->w) / 2;
+    pauseY = (2*LVL_HEIGHT*SPRITE_DIM - pauseText->h) / 2;
 }
 
 
@@ -113,6 +125,21 @@ void GFX::drawFooter() {
         if(i >= hp) c = game->getLevel()->getSquare(i,(LVL_HEIGHT-1))->token();
         SDL_BlitScaled(sprites[c], &src, surface, &dst);
     }
+}
+
+
+void GFX::drawPauseMenu() {
+    std::cout << "drawing pause menu" << std::endl;
+    SDL_Rect pos, surfdims;
+    pos.x = pauseX;
+    pos.y = pauseY;
+    surfdims.x = 0;
+    surfdims.y = 0;
+    pos.w = surfdims.w = pauseText->w;
+    pos.h = surfdims.h = pauseText->h;
+
+    SDL_BlitSurface(pauseText, &surfdims, surface, &pos);
+
 }
 
 

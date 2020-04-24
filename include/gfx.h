@@ -18,11 +18,14 @@ class GFX {
         void init();
         void drawFooter();
         void drawHeader();
+        void drawPauseMenu();
     private:
         SDL_Rect src, dst;
         int scale;
         Game* game;
         SDL_Surface* surface;
+        int pauseX, pauseY;
+        SDL_Surface* pauseText;
         std::map<char, SDL_Surface*> sprites;
         SDL_Window* window;
 };

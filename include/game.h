@@ -33,6 +33,7 @@ class Game {
         Level *curLvl;
         std::vector<Level*> levels;
         bool gameOver;
+        bool paused;
 };
 
 #endif
