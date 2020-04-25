@@ -16,8 +16,7 @@ void sleep_remaining(std::chrono::time_point<std::chrono::high_resolution_clock>
 
 
 Game::Game() : gfx(GFX(this)){
-    gameOver = false;
-    paused = false;
+    gameOver = paused = false;
 }
 
 Game::~Game(){

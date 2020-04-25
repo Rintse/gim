@@ -5,7 +5,7 @@
 
 GFX::GFX(Game* g) {
     game = g;
-    scale = DEFAULT_SCALE; //TODO: niet hier defined
+    scale = DEFAULT_SCALE;
 
     // Helper rectangle
     dst.w = dst.h = SPRITE_DIM*scale;
@@ -17,6 +17,8 @@ GFX::~GFX() {
     for(auto &i : sprites) {
         SDL_FreeSurface(i.second);
     }
+    delete[] pauseX;
+    delete[] pauseText;
     SDL_DestroyWindow(window);
     SDL_Quit();
 }
@@ -56,12 +58,33 @@ void GFX::loadSprites() {
     sprites['|'] = SDL_LoadBMP("img/laserright.bmp");
 }
 
+void GFX::initPauseMenu() {
+    TTF_Init();
+    TTF_Font* font = TTF_OpenFont("img/Amatic-Bold.ttf", 48);
+    SDL_Color backgroundColor = { 97, 60, 120 };
+    SDL_Color foregroundColor = { 42, 44, 44 };
+    pauseText = new SDL_Surface*[3];
+    pauseX = new int[3];
+    pauseText[0] = TTF_RenderText_Shaded(
+        font, " PAUSED ", foregroundColor, backgroundColor
+    );
+    pauseText[1] = TTF_RenderText_Shaded(
+        font, " Press esc to continue ", foregroundColor, backgroundColor
+    );
+    pauseText[2] = TTF_RenderText_Shaded(
+        font, " Press enter to quit ", foregroundColor, backgroundColor
+    );
+    int totalheight = pauseText[0]->h + pauseText[1]->h + pauseText[2]->h;
+    pauseY = (2*LVL_HEIGHT*SPRITE_DIM - totalheight) / 2;
+    for(int i = 0; i < 3; i++)
+        pauseX[i] = (2*LVL_WIDTH*SPRITE_DIM - pauseText[i]->w) / 2;
+}
+
 void GFX::init() {
     if( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
         printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
     }
     else {
-        //Create window
         window = SDL_CreateWindow(  "Notorious George",
                                     SDL_WINDOWPOS_UNDEFINED,
                                     SDL_WINDOWPOS_UNDEFINED,
@@ -77,17 +100,7 @@ void GFX::init() {
     }
 
     loadSprites();
-    TTF_Init();
-    TTF_Font* font = TTF_OpenFont("img/Amatic-Bold.ttf", 48);
-    SDL_Color foregroundColor = { 255, 255, 255 };
-    SDL_Color backgroundColor = { 0, 0, 255 };
-    pauseText = TTF_RenderText_Shaded(font,
-        "PAUSED\n\nPress enter to quit\nPress esc to continue",
-        foregroundColor,
-        backgroundColor
-    );
-    pauseX = (2*LVL_WIDTH*SPRITE_DIM - pauseText->w) / 2;
-    pauseY = (2*LVL_HEIGHT*SPRITE_DIM - pauseText->h) / 2;
+    initPauseMenu();
 }
 
 
@@ -129,17 +142,19 @@ void GFX::drawFooter() {
 
 
 void GFX::drawPauseMenu() {
-    std::cout << "drawing pause menu" << std::endl;
     SDL_Rect pos, surfdims;
-    pos.x = pauseX;
+
     pos.y = pauseY;
-    surfdims.x = 0;
-    surfdims.y = 0;
-    pos.w = surfdims.w = pauseText->w;
-    pos.h = surfdims.h = pauseText->h;
+    surfdims.x = surfdims.y = 0;
+    for(int i = 0; i < 3; i++) {
+        pos.x = pauseX[i];
+        pos.w = surfdims.w = pauseText[i]->w;
+        pos.h = surfdims.h = pauseText[i]->h;
+        SDL_BlitSurface(pauseText[i], &surfdims, surface, &pos);
+        pos.y += pauseText[i]->h;
+    }
 
-    SDL_BlitSurface(pauseText, &surfdims, surface, &pos);
-
+    SDL_UpdateWindowSurface(window);
 }
 
 
@@ -157,7 +172,6 @@ void GFX::drawGame() {
 
     drawHeader();
     drawFooter();
-
 
     SDL_UpdateWindowSurface(window);
 }

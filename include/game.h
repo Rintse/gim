@@ -31,6 +31,7 @@ class Game {
         FastRandom randgen;
         Player* player;
         Level *curLvl;
+        Level* prevLvl;
         std::vector<Level*> levels;
         bool gameOver;
         bool paused;

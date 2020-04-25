@@ -16,6 +16,7 @@ class GFX {
         void drawGame();
         void loadSprites();
         void init();
+        void initPauseMenu();
         void drawFooter();
         void drawHeader();
         void drawPauseMenu();
@@ -24,8 +25,9 @@ class GFX {
         int scale;
         Game* game;
         SDL_Surface* surface;
-        int pauseX, pauseY;
-        SDL_Surface* pauseText;
+        int* pauseX;
+        int pauseY;
+        SDL_Surface** pauseText;
         std::map<char, SDL_Surface*> sprites;
         SDL_Window* window;
 };
