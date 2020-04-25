@@ -80,10 +80,13 @@ class LevelGenerator {
         void initBoard(int w, int h, Direction in_dir, int in_index,
                                      Direction out_dir, int out_index);
 
+        Square*** bossRoom(int w, int h, pos door);
+        Square*** startRoom(int w, int h, int room_door_row, int boss_door_column);
+
         pos mutatePath(Direction to, int max, int width, double mut_rate, pos start);
+
         //starts type of path on location (x,y) into direction
-        void straightPath(Direction d, int length, int width, double mut_rate, pos start);
-        void straightUntil(Direction d, int width, double mut_rate, pos start, pos end);
+        void straightPath(Direction d, int width, double mut_rate, pos start, pos end);
         pos uPath(Direction d, Direction turn_d, int length, int turn_length, int width, double mut_rate, pos start);
 };
 

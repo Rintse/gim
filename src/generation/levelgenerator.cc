@@ -1,4 +1,8 @@
 #include "generation/levelgenerator.h"
+#include "world/squares/wall.h"
+#include "world/squares/empty.h"
+#include "world/squares/door.h"
+
 #include <stdlib.h>
 
 
@@ -84,7 +88,10 @@ void LevelGenerator::printCharBoard() const {
 }
 
 Square* createSquare(char c) {
-    //TODO
+    // switch(c) {
+    //     case '-': return new
+    //
+    // }
     return NULL;
 }
 
@@ -98,6 +105,73 @@ Square*** createBoard(int width, int height, char*** c_board) {
             board[i][j] = createSquare(*c_board[i][j]);
 
     return board;
+}
+
+Square*** LevelGenerator::bossRoom(int w, int h, pos door) {
+    Square*** square_board = new Square**[h];
+
+    for(int i = 0; i < h; i++) {
+        square_board[i] = new Square*[w];
+
+        for(int j = 0; j < w; j++) {
+            // Edges
+            if(i == 0 || j == 0 || i == h-1 || j == w-1) {
+                // Door on bottom
+                if(i == door.row && j == door.col)
+                    square_board[i][j] = new DoorSquare(i,j,DIR_DOWN);
+                else // Walls around the entire thing
+                    square_board[i][j] = new WallSquare(i,j);
+            }
+            else {
+                square_board[i][j] = new EmptySquare(i,j);
+            }
+        }
+    }
+
+    return square_board;
+}
+
+Square*** LevelGenerator::startRoom(int w, int h, int room_door_row, int boss_door_column) {
+    Square*** square_board = new Square**[h];
+
+    for(int i = 0; i < h; i++) {
+        square_board[i] = new Square*[w];
+
+        for(int j = 0; j < w; j++) {
+            // Edges
+            if(i == 0 || j == 0 || i == h-1 || j == w-1) {
+                // Doors on top, left, right
+                if( (i == 0 && j == boss_door_column) ||
+                    ((j == 0 || j == w-1) && i == room_door_row) ) {
+                    Direction dir;
+
+                    if(j == 0)
+                        dir = DIR_LEFT;
+                    else if(j == h-1)
+                        dir = DIR_RIGHT;
+                    else
+                        dir = DIR_UP;
+
+                    square_board[i][j] = new DoorSquare(i,j,dir);
+                }
+                else { // Walls around the entire thing
+                    square_board[i][j] = new WallSquare(i,j);
+                }
+            }
+            // Hallway
+            else if((j < boss_door_column-6 && i < room_door_row-6) ||
+                    (j > boss_door_column+6 && i < room_door_row-6) ||
+                    (j < boss_door_column-6 && i > room_door_row+6) ||
+                    (j > boss_door_column+6 && i > room_door_row+6)) {
+
+                square_board[i][j] = new WallSquare(i,j);
+            }
+            else {
+                square_board[i][j] = new EmptySquare(i,j);
+            }
+        }
+    }
+    return square_board;
 }
 
 Square*** LevelGenerator::cpeRoom() {
@@ -114,14 +188,12 @@ Square*** LevelGenerator::cpeRoom() {
 
     pos walk = entrance;
     walk.advance(opposite_dir(in), 1);
-    // if(in == opposite_dir(out) && (entrance.row == exit.row || entrance.col == exit.col)) {
-    //     if(in == RIGHT || in ==LEFT) {
-            straightUntil(opposite_dir(in), 2, 0.7, walk, exit);
-    //     }
-    //     if(in == UP || in == DOWN) {
-    //         straightPath(opposite_dir(in), abs(exit.row - entrance.row), 1, mut, walk);
-    //     }
-    // }
+
+    pos finish = exit;
+    finish.advance(opposite_dir(out), 1);
+
+    straightPath(opposite_dir(in), 2, 0.7, walk, finish);
+
     //TODO arbitrary starting position RL/UD: Z/N-shape random corners
 
     return NULL;
@@ -138,18 +210,15 @@ int LevelGenerator::distanceToEdge(Direction d, pos p) {
     return -1;
 }
 
-pos LevelGenerator::mutatePath(Direction to, int m, int width, double mut_rate, pos start) {
+pos LevelGenerator::mutatePath(Direction to, int parent_remainder, int width, double mut_rate, pos start) {
     double r = rand();
     double max = RAND_MAX;
-    // double c = (double)rand.getLong()/(double)rand.getMax();
     double c = r/max;
-    // std::cerr << "r_num : " << r << std::endl << std::endl;
-    // std::cerr << "r_max : " << max << std::endl << std::endl;
-    // std::cerr << "chance: " << c << std::endl << std::endl;
+
     if( c < mut_rate) {
         int n_mutations = 2;
         int split_type;
-        pos new_pos = start;
+        pos new_pos = start; //continue where we left off
 
         switch(rand()%n_mutations) {
             case 0:
@@ -158,37 +227,53 @@ pos LevelGenerator::mutatePath(Direction to, int m, int width, double mut_rate, 
                 if(split_type != 1) {
                     Direction ldir = left_dir(to);
 
-                    if(distanceToEdge(ldir, start) > 1 && m > 2) {
+                    if(distanceToEdge(ldir, start)-1 > 1 && parent_remainder > 2) {
                         int l = rand()%(distanceToEdge(ldir, start)-1)+1;
-                        int turn_l = rand()%(m-1)+1;;
+                        int turn_l = rand()%(parent_remainder-1)+1;
 
-                        new_pos = uPath(ldir, to, l, turn_l, width, mut_rate*0.6, start);
+                        new_pos = uPath(ldir, to, l, turn_l, width, mut_rate*0.4, start);
                     }
                 }
                 if(split_type != 0) {
                     Direction rdir = right_dir(to);
 
-                    if(distanceToEdge(rdir, start) > 1 && m > 2) {
-                        int l = rand()%(distanceToEdge(rdir, start)-1)+1;;
-                        // std::cerr << "d=" << distanceToEdge(rdir, start) << std::endl;
-                        int turn_l = rand()%(m-1)+1;;
+                    if(distanceToEdge(rdir, start) > 1 && parent_remainder > 2) {
+                        int l = rand()%(distanceToEdge(rdir, start)-1)+1;
+                        int turn_l = rand()%(parent_remainder-1)+1;
 
-                        new_pos = uPath(rdir, to, l, turn_l, width, mut_rate*0.6, start);
+                        new_pos = uPath(rdir, to, l, turn_l, width, mut_rate*0.4, start);
                     }
                 }
-                return new_pos; //TODO: properly discontinue original path (on some P?)
+                return new_pos;
 
-            case 1: //split {Left T, Right T, + split}
+            case 1:
                 split_type = rand()%5; //determine what split to perform
 
                 //split_type: 0=left, 1=right, 2=both
                 if(split_type != 1) {
-                    pos left = start; left.advance(left_dir(to), 1);
-                    straightPath(left_dir(to), rand()%distanceToEdge(left_dir(to), start),    width, mut_rate*0.7, left);
+                    Direction ldir = left_dir(to);
+                    int max_length = distanceToEdge(ldir, start)-1;
+
+                    if(max_length > 1) {
+                        int l = rand()%(max_length-1)+1;
+                        start.advance(ldir, 1);
+                        pos left = start; left.advance(ldir, l + 1);
+
+                        straightPath(ldir, width, mut_rate*0.5, start, left);
+                    }
+                    else split_type = 1;
                 }
                 if(split_type != 0) {
-                    pos right = start; right.advance(right_dir(to), 1);
-                    straightPath(right_dir(to), rand()%distanceToEdge(right_dir(to), start), width, mut_rate*0.7, right);
+                    Direction rdir = right_dir(to);
+                    int max_length = distanceToEdge(rdir, start) - 1;
+
+                    if(max_length > 1) {
+                        int l = rand()%(max_length-1)+1;
+                        start.advance(rdir, 1);
+                        pos right = start; right.advance(rdir, l + 1);
+
+                        straightPath(right_dir(to), width, mut_rate*0.5, start, right);
+                    }
                 }
 
                 return new_pos;
@@ -197,32 +282,11 @@ pos LevelGenerator::mutatePath(Direction to, int m, int width, double mut_rate, 
     return start;
 }
 
-void LevelGenerator::straightPath(Direction d, int length, int width, double mut_rate, pos start) {
-
-    // std::cerr << "LevelGenerator: straightPath(dir=" << d << ", length=" << length << ", width=" << width << ", mut=" << mut_rate << ", start=(" << start.row << ", " << start.col << ") )" << std::endl;
-
-    for(int i = 0; i < length; start.advance(d, 1), i++) {
-        if(start.col >= width && start.row >= height) //edge of screen
-            return;
-        if(board[start.row][start.col] == 'O') //rejoined the path
-            return;
-
-        if(board[start.row][start.col] == 'F') //rejoined the path
-            return;
-
-        board[start.row][start.col] = 'F'; //floor
-
-        if((i != 0 && i%width == 0))
-            start = mutatePath(d, length-i, width, mut_rate, start);
-    }
-}
-
-void LevelGenerator::straightUntil(Direction d, int width, double mut_rate, pos start, pos end) {
+void LevelGenerator::straightPath(Direction d, int width, double mut_rate, pos start, pos end) {
 
     int i = 0;
-    while(start.row < height && start.col < height &&
-          start.row >= 0      && start.col >= 0) {
-        // std::cerr << start.row << ", " << start.col << " | vs | " << end.row << ", " << end.col << std::endl;
+    while(start.row < height-1 && start.col < height-1 &&
+          start.row > 0      && start.col > 0) {
 
         board[start.row][start.col] = 'F';
 
@@ -266,13 +330,13 @@ pos LevelGenerator::uPath(Direction d, Direction turn_d, int length, int turn_le
         // board[end.row][end.col] = 'E';
         // printCharBoard();
 
-        straightUntil(d, width, mut_rate, start, turn1);
+        straightPath(d, width, mut_rate, start, turn1);
         turn1.advance(turn_d, 1); //make turn
 
-        straightUntil(turn_d, width, mut_rate, turn1, turn2);
+        straightPath(turn_d, width, mut_rate, turn1, turn2);
         turn2.advance(opposite_dir(d), 1);
 
-        straightUntil(opposite_dir(d), width, mut_rate, turn2, end);
+        straightPath(opposite_dir(d), width, mut_rate, turn2, end);
 
         return end;
 }
