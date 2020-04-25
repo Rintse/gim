@@ -19,3 +19,84 @@ std::pair<Direction,Direction> perpendiculars(Direction dir) {
         default: case DIR_LEFT: case DIR_RIGHT: return std::make_pair(DIR_UP, DIR_DOWN);
     }
 }
+
+//return the left perpendicular direction relative to 'd'
+Direction left_dir(Direction d) {
+    switch(d) {
+        case DIR_UP:
+            return DIR_LEFT;
+        case DIR_DOWN:
+            return DIR_RIGHT;
+        case DIR_LEFT:
+            return DIR_DOWN;
+        case DIR_RIGHT:
+            return DIR_UP;
+    }
+    return DIR_UP;
+}
+
+//return the left perpendicular direction relative to 'd'
+Direction right_dir(Direction d) {
+    switch(d) {
+        case DIR_UP:
+            return DIR_RIGHT;
+        case DIR_DOWN:
+            return DIR_LEFT;
+        case DIR_LEFT:
+            return DIR_UP;
+        case DIR_RIGHT:
+            return DIR_DOWN;
+    }
+    return DIR_UP;
+}
+
+bool operator ==(Direction l, Direction r)
+{
+    return static_cast<Direction> (
+        static_cast<std::underlying_type<Direction>::type>(l) ==
+        static_cast<std::underlying_type<Direction>::type>(r)
+    );
+}
+
+Direction operator |(Direction l, Direction r)
+{
+    return static_cast<Direction> (
+        static_cast<std::underlying_type<Direction>::type>(l) |
+        static_cast<std::underlying_type<Direction>::type>(r)
+    );
+}
+
+Direction operator &(Direction l, Direction r)
+{
+    return static_cast<Direction> (
+        static_cast<std::underlying_type<Direction>::type>(l) &
+        static_cast<std::underlying_type<Direction>::type>(r)
+    );
+}
+
+Direction operator ~(Direction r)
+{
+    return static_cast<Direction> (
+        ~static_cast<std::underlying_type<Direction>::type>(r)
+    );
+}
+
+Direction& operator |=(Direction &l, Direction r)
+{
+    l = static_cast<Direction> (
+        static_cast<std::underlying_type<Direction>::type>(l) |
+        static_cast<std::underlying_type<Direction>::type>(r)
+    );
+
+    return l;
+}
+
+Direction& operator &=(Direction &l, Direction r)
+{
+    l = static_cast<Direction> (
+        static_cast<std::underlying_type<Direction>::type>(l) &
+        static_cast<std::underlying_type<Direction>::type>(r)
+    );
+
+    return l;
+}

@@ -3,6 +3,7 @@ SRC_DIR			= src
 MAIN_DIR		= main
 SOURCES			= $(shell find $(SRC_DIR)/ -name '*.cc')
 MAIN_SRC		= $(shell find $(MAIN_DIR)/ -name '*.cc')
+# MAIN_SRC		= gentest.cc
 OBJECTS			= $(SOURCES:.cc=.o)
 MAIN_OBJ		= $(MAIN_SRC:.cc=.o)
 DEPS 			= $(OBJECTS:.o=.d)

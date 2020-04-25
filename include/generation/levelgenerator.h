@@ -2,8 +2,7 @@
 #define level_gen_h
 
 #include "world/squares/square.h"
-#include "generation/direction.h"
-#include "tools/fastrandom.h"
+#include "tools/directions.h"
 #include <iostream>
 // class that generates game boards
 // methods allocate the board on the heap and pass a reference to be given to a Level
@@ -13,26 +12,22 @@ struct pos {
     int row;
     int col;
 
-    void advance(DIR_MASK d, int step) {
+    void advance(Direction d, int step) {
         switch(d) {
-            case UP:
+            case DIR_UP:
             this->row -= step;
             break;
 
-            case DOWN:
+            case DIR_DOWN:
             this->row += step;
             break;
 
-            case LEFT:
+            case DIR_LEFT:
             this->col -= step;
             break;
 
-            case RIGHT:
+            case DIR_RIGHT:
             this->col += step;
-            break;
-
-            default:
-                std::cerr << "pos::advance: Invalid direction" << std::endl;
             break;
         }
     }
@@ -73,23 +68,23 @@ class LevelGenerator {
         int width;
         int height;
         pos entrance;
-        DIR_MASK in;
+        Direction in;
         pos exit;
-        DIR_MASK out;
+        Direction out;
         double mut;
         char** board = NULL;
         FastRandom randoom;
 
-        int distanceToEdge(DIR_MASK d, pos p);
-        pos generateDoors(DIR_MASK d, int i) const;
-        void initBoard(int w, int h, DIR_MASK in_dir, int in_index,
-                                     DIR_MASK out_dir, int out_index);
+        int distanceToEdge(Direction d, pos p);
+        pos generateDoors(Direction d, int i) const;
+        void initBoard(int w, int h, Direction in_dir, int in_index,
+                                     Direction out_dir, int out_index);
 
-        pos mutatePath(DIR_MASK to, int max, int width, double mut_rate, pos start);
+        pos mutatePath(Direction to, int max, int width, double mut_rate, pos start);
         //starts type of path on location (x,y) into direction
-        void straightPath(DIR_MASK d, int length, int width, double mut_rate, pos start);
-        void straightUntil(DIR_MASK d, int width, double mut_rate, pos start, pos end);
-        pos uPath(DIR_MASK d, DIR_MASK turn_d, int length, int turn_length, int width, double mut_rate, pos start);
+        void straightPath(Direction d, int length, int width, double mut_rate, pos start);
+        void straightUntil(Direction d, int width, double mut_rate, pos start, pos end);
+        pos uPath(Direction d, Direction turn_d, int length, int turn_length, int width, double mut_rate, pos start);
 };
 
 #endif

@@ -17,6 +17,23 @@ std::string dir_tostr(Direction dir);
 
 Direction opposite_dir(Direction dir);
 
+Direction left_dir(Direction d);
+
+Direction right_dir(Direction d);
+
 std::pair<Direction,Direction> perpendiculars(Direction dir);
+
+bool operator ==(Direction l, Direction r);
+
+Direction operator |(Direction l, Direction r);
+
+Direction operator &(Direction l, Direction r);
+
+Direction operator ~(Direction r);
+
+Direction& operator |=(Direction &l, Direction r);
+
+Direction& operator &=(Direction &l, Direction r);
+
 
 #endif
