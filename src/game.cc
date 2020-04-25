@@ -5,7 +5,6 @@
 #include "tools/actions.h"
 #include "tools/key_input.h"
 
-
 void sleep_remaining(std::chrono::time_point<std::chrono::high_resolution_clock> t1) {
     auto updateT = std::chrono::duration_cast<std::chrono::milliseconds>
                         (std::chrono::high_resolution_clock::now() - t1);
@@ -47,7 +46,12 @@ FastRandom* Game::getRNG() {
     return &randgen;
 }
 
-void Game::init() {
+int Game::init() {
+    int err = 0;
+    if(gfx.checkScreenSize() != 0) {
+        err = -1;
+    }
+
     curLvl = new Level(LVL_WIDTH, LVL_HEIGHT, this);
     player = new Player(curLvl);
     curLvl->setPlayer(player);
@@ -56,7 +60,9 @@ void Game::init() {
     levels.push_back(curLvl);
 
     gfx.init();
+
     kh = new KeyHandler();
+    return err;
 }
 
 void Game::run() {

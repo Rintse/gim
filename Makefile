@@ -12,7 +12,7 @@ MAIN_TARGET		= george
 CC				= g++
 CFLAGS			= -std=c++11 -g -Wall
 CPPFLAGS 		= $(addprefix -I, $(INC_DIR)) -pedantic
-SDLFLAGS		= $(shell pkg-config --cflags --libs sdl2) -lSDL2_ttf
+SDLFLAGS		= $(shell pkg-config x11 --libs) $(shell pkg-config --cflags --libs sdl2) -lSDL2_ttf
 THREADFLAGS		= -pthread
 
 .PHONY: all clean

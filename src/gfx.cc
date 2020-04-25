@@ -2,15 +2,11 @@
 #include "game.h"
 #include <SDL2/SDL_ttf.h>
 #include <iostream>
+#include <X11/Xlib.h>
 
 GFX::GFX(Game* g) {
     game = g;
     scale = DEFAULT_SCALE;
-
-    // Helper rectangle
-    dst.w = dst.h = SPRITE_DIM*scale;
-    src.w = src.h = SPRITE_DIM;
-    src.x = src.y = 0;
 }
 
 GFX::~GFX() {
@@ -24,7 +20,6 @@ GFX::~GFX() {
 }
 
 void GFX::loadSprites() {
-    printf( "Loading sprites\n");
     // Player
     sprites['^'] = SDL_LoadBMP("img/player/up.bmp");
     sprites['>'] = SDL_LoadBMP("img/player/right.bmp");
@@ -58,6 +53,7 @@ void GFX::loadSprites() {
     sprites['|'] = SDL_LoadBMP("img/laserright.bmp");
 }
 
+
 void GFX::initPauseMenu() {
     TTF_Init();
     TTF_Font* font = TTF_OpenFont("img/Amatic-Bold.ttf", 48);
@@ -75,12 +71,37 @@ void GFX::initPauseMenu() {
         font, " Press enter to quit ", foregroundColor, backgroundColor
     );
     int totalheight = pauseText[0]->h + pauseText[1]->h + pauseText[2]->h;
-    pauseY = (2*LVL_HEIGHT*SPRITE_DIM - totalheight) / 2;
+    pauseY = (scale*LVL_HEIGHT*SPRITE_DIM - totalheight) / 2;
     for(int i = 0; i < 3; i++)
-        pauseX[i] = (2*LVL_WIDTH*SPRITE_DIM - pauseText[i]->w) / 2;
+        pauseX[i] = (scale*LVL_WIDTH*SPRITE_DIM - pauseText[i]->w) / 2;
 }
 
-void GFX::init() {
+
+int GFX::checkScreenSize() {
+    int err = 0;
+    Display* d = XOpenDisplay(NULL);
+    Screen*  s = DefaultScreenOfDisplay(d);
+    if(s->height < LVL_HEIGHT*SPRITE_DIM || s->width < LVL_WIDTH*SPRITE_DIM) {
+        std::cout << "Screen resolution not supported" << std::endl;
+        std::cout << "Current: " << s->width << "x" << s->height << std::endl;
+        std::cout << "Minimum: " << LVL_WIDTH*SPRITE_DIM
+        << "x" << LVL_HEIGHT*SPRITE_DIM << "." << std::endl;
+        err = -1;
+    }
+
+    int xscale = s->width / (LVL_WIDTH*SPRITE_DIM);
+    int yscale = s->height / (LVL_HEIGHT*SPRITE_DIM);
+    scale = xscale < yscale ? xscale : yscale;
+    height = scale*LVL_HEIGHT*SPRITE_DIM;
+    width = scale*LVL_WIDTH*SPRITE_DIM;
+    // Helper rectangle
+    dst.w = dst.h = SPRITE_DIM*scale;
+    src.w = src.h = SPRITE_DIM;
+    src.x = src.y = 0;
+    return err;
+}
+
+int GFX::init() {
     if( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
         printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
     }
@@ -88,8 +109,7 @@ void GFX::init() {
         window = SDL_CreateWindow(  "Notorious George",
                                     SDL_WINDOWPOS_UNDEFINED,
                                     SDL_WINDOWPOS_UNDEFINED,
-                                    2*LVL_WIDTH*SPRITE_DIM,
-                                    2*LVL_HEIGHT*SPRITE_DIM,
+                                    width, height,
                                     SDL_WINDOW_SHOWN    );
         if( window == NULL ) {
             printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -101,6 +121,8 @@ void GFX::init() {
 
     loadSprites();
     initPauseMenu();
+
+    return 0;
 }
 
 

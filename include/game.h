@@ -21,7 +21,7 @@ class Game {
         Level* getLevel();
         void addLevel(Level* l);
         FastRandom* getRNG();
-        void init();
+        int init();
         void run();
         void over();
 
