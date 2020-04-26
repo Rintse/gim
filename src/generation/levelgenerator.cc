@@ -5,10 +5,14 @@
 
 #include <stdlib.h>
 
-
 // 'I' IN
 // 'O' OUT
 //  0  EMPTY
+
+LevelGenerator::LevelGenerator(int w, int h) {
+    initBoard(w, h, DIR_LEFT, h/2, DIR_RIGHT, h/2);
+    mut = 0.7;
+}
 
 //d: side of the board, the door is on
 pos LevelGenerator::generateDoors(Direction d, int i) const {
@@ -70,11 +74,6 @@ void LevelGenerator::initBoard(int w, int h,
     srand(time(NULL));
 }
 
-LevelGenerator::LevelGenerator(int w, int h) {
-    initBoard(w, h, DIR_LEFT, h/2, DIR_RIGHT, h/2);
-    mut = 0.3;
-}
-
 void LevelGenerator::printCharBoard() const {
     std::cerr << "LevelGenerator: Print board" << std::endl;
     for(int i = 0; i < height; i++) {
@@ -87,24 +86,28 @@ void LevelGenerator::printCharBoard() const {
     std::cout << "=======================================================" << std::endl;
 }
 
-Square* createSquare(char c) {
-    // switch(c) {
-    //     case '-': return new
-    //
-    // }
-    return NULL;
+Square* LevelGenerator::createSquare(char c, int row, int column) {
+    switch(c) {
+        case '-': return new WallSquare(row, column);
+        case 'F': return new EmptySquare(row, column);
+        case 'I': return new DoorSquare(row, column, in);
+        case 'O': return new DoorSquare(row, column, out);
+
+        default:
+            return new WallSquare(row, column);
+    }
 }
 
-Square*** createBoard(int width, int height, char*** c_board) {
-    Square*** board = new Square**[width];
-    for(int i = 0; i < width; i++)
-        board[i] = new Square*[height];
+Square*** LevelGenerator::createBoard() {
+    Square*** square_board = new Square**[height];
+    for(int i = 0; i < height; i++)
+        square_board[i] = new Square*[width];
 
-    for(int i = 0; i < width; i++)
-        for(int j = 0; j < height; j++)
-            board[i][j] = createSquare(*c_board[i][j]);
+    for(int i = 0; i < height; i++)
+        for(int j = 0; j < width; j++)
+            square_board[i][j] = createSquare(board[i][j], i, j);
 
-    return board;
+    return square_board;
 }
 
 Square*** LevelGenerator::bossRoom(int w, int h, pos door) {
@@ -192,11 +195,11 @@ Square*** LevelGenerator::cpeRoom() {
     pos finish = exit;
     finish.advance(opposite_dir(out), 1);
 
-    straightPath(opposite_dir(in), 2, 0.7, walk, finish);
+    straightPath(opposite_dir(in), 2, mut, walk, finish);
 
     //TODO arbitrary starting position RL/UD: Z/N-shape random corners
 
-    return NULL;
+    return createBoard();
 }
 
 //No.  squares between p and edge d
