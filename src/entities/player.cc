@@ -10,9 +10,16 @@ Player::Player() {}
 Player::Player(Level* l) {
     curLvl = l;
     facing = DIR_UP;
-    health = 999;
-    lockout = 0;
-    curLOFrames = SLOW_LO_FRAMES;
+    health = 2;
+    curSLO = curMLO = -1;
+    moveLockout = SLOW_MLO;
+    shootLockout = START_SLO;
+}
+
+void Player::decreaseSLO() {
+    if(shootLockout > 1) {
+        shootLockout -= 4;
+    }
 }
 
 void Player::setSquare(EmptySquare* s) {
@@ -27,7 +34,7 @@ void Player::takeDamage() {
     if(--health < 1) { curLvl->signalGameOver(); }
 }
 
-void Player::pickupHeart() {
+void Player::increaseHP() {
     if(health < 9) health++;
 }
 
@@ -36,6 +43,9 @@ int Player::getHP() {
 }
 
 void Player::shoot() {
+    if(curSLO >= 0) return;
+    else curSLO = shootLockout;
+
     Square* s = curLvl->getSquareDir(curSquare, facing);
     if(s->type() != SQUARE_FLOOR) {
         return;
@@ -47,9 +57,17 @@ void Player::shoot() {
     }
 }
 
+void Player::advanceLockouts() {
+    if(curMLO >= 0) curMLO--; // Movement
+    if(curSLO >= 0) curSLO--; // Firing
+}
+
 void Player::act(Input in) {
-    if(in.sprint) { curLOFrames = FAST_LO_FRAMES; }
-    else { curLOFrames = SLOW_LO_FRAMES; }
+    advanceLockouts();
+
+    if(in.sprint) { moveLockout = FAST_MLO; }
+    else { moveLockout = SLOW_MLO; }
+
     switch (in.act) {
         case ACTION_MOVEUP: move(DIR_UP); break;
         case ACTION_MOVEDOWN: move(DIR_DOWN); break;
@@ -57,6 +75,7 @@ void Player::act(Input in) {
         case ACTION_MOVELEFT: move(DIR_LEFT); break;
         default: break;
     }
+
     if(in.fired) {
         shoot();
     }
@@ -79,11 +98,9 @@ EmptySquare* Player::getSquare() {
 
 
 void Player::move(Direction dir) {
-    if(lockout < curLOFrames) {
-      lockout++;
-      return;
-    }
-    lockout = 0;
+    if(curMLO >= 0) return;
+    else curMLO = moveLockout;
+
     // Get the square in the intended new position
     Square* s = curLvl->getSquareDir(curSquare, dir);
     if(s == NULL) { return; }
@@ -102,14 +119,15 @@ void Player::move(Direction dir) {
             curLvl->removeEnemy(es->getEnemy());
             es->setEnemy(0);
         }
-        if(es->hasHeart()) {
-            pickupHeart();
-            es->setHeart(false);
+        if(es->getPowerup() != 0) {
+            es->getPowerup()->get(this);
+            delete es->getPowerup();
+            es->setPowerup(0);
         }
+        // Make the move
         curSquare->setPlayer(0);
         es->setPlayer(this);
         curSquare = es;
         facing = dir;
-        //std::cout << "moved to " << es->getX() << ", " << es->getY() << std::endl;
     }
 }

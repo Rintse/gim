@@ -4,8 +4,9 @@
 #include "tools/directions.h"
 #include "tools/actions.h"
 
-#define SLOW_LO_FRAMES 1
-#define FAST_LO_FRAMES 0
+#define SLOW_MLO 1
+#define FAST_MLO 0
+#define START_SLO 25
 
 class Level;
 class EmptySquare;
@@ -19,11 +20,13 @@ public:
     void move(Direction dir);
     void shoot();
     void setSquare(EmptySquare* s);
+    void decreaseSLO();
     void setLevel(Level* l);
     char token();
+    void advanceLockouts();
     EmptySquare* getSquare();
     void takeDamage();
-    void pickupHeart();
+    void increaseHP();
     int getHP();
 
 private:
@@ -31,8 +34,8 @@ private:
     Level* curLvl;
     EmptySquare* curSquare;
     Direction facing;
-    int lockout;
-    int curLOFrames;
+    int moveLockout, shootLockout;
+    int curMLO, curSLO;
 };
 
 #endif

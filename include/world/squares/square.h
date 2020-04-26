@@ -2,6 +2,7 @@
 #define square_h
 
 #include "tools/directions.h"
+//TODO : verplaatsen includes
 #include "entities/player.h"
 #include "entities/enemy.h"
 #include "entities/george/georgepart.h"
@@ -20,7 +21,7 @@ class Square {
         virtual SquareType type() = 0;
         int getX();
         int getY();
-        
+
     protected:
         int x,y;
 };

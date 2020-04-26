@@ -44,7 +44,8 @@ void GFX::loadSprites() {
     sprites['1'] = SDL_LoadBMP("img/25heart.bmp");
     // Other
     sprites['H'] = SDL_LoadBMP("img/hp.bmp");
-    sprites['L'] = SDL_LoadBMP("img/heart.bmp");
+    sprites['h'] = SDL_LoadBMP("img/heart.bmp");
+    sprites['f'] = SDL_LoadBMP("img/hp.bmp"); // TOOD: bullet powerup sprite
     sprites['#'] = SDL_LoadBMP("img/wall.bmp");
     sprites[' '] = SDL_LoadBMP("img/empty.bmp");
     sprites['o'] = SDL_LoadBMP("img/projectile.bmp");
