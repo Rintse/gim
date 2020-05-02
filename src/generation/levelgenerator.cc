@@ -452,5 +452,5 @@ void LevelGenerator::spawnEnemy(Square* s) {
 
 void LevelGenerator::spawnHeart(Square* s) {
     EmptySquare* es = dynamic_cast<EmptySquare*>(s);
-    es->setHeart(true);
+    // es->setHeart(true); TODO is nieuw geegaan
 }
