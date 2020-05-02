@@ -34,15 +34,6 @@ Level::Level(int w, int h, Game* g) {
     }
 }
 
-// Level::Level(int w, int h, Game* g) {
-//     game = g;
-//     width = w;
-//     height = h;
-//     doorx = width/2;
-//     doory = height/2;
-//     george = 0;
-// }
-
 Level::~Level() {
     for(int i = 0; i < width; i++) {
         for(int j = 0; j < height; j++) {
@@ -170,6 +161,8 @@ void Level::switchLevel(Direction dir) {
 
 
 // Level* Level::newLevel(Direction dir) {
+//NOTE maakt LevelGenerator level (nog zonder enemies en powerups)
+//NOTE uncomment functie voor testen en comment 174-185 (Level::newLevel)
 //     Level* tmp = game->newLevel(width, height, dir);
 //
 //     tmp->setNeighbour(opposite_dir(dir), this);
