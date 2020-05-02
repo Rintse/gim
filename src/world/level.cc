@@ -14,6 +14,9 @@
 #include "entities/projectiles/georgebullet.h"
 #include "entities/projectiles/georgelaser.h"
 #include "tools/distance.h"
+#include "entities/powerups/hp.h"
+#include "entities/powerups/fasterbullets.h"
+
 
 Level::Level(){}
 
@@ -285,7 +288,7 @@ void Level::spawnEnemy(Square* s) {
 
 void Level::spawnHeart(Square* s) {
     EmptySquare* es = dynamic_cast<EmptySquare*>(s);
-    es->setHeart(true);
+    es->setPowerup(new Hp);
 }
 
 void Level::generateRandomRoom() {
