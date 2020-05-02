@@ -3,6 +3,7 @@
 
 #include "entities/player.h"
 #include "world/level.h"
+#include "generation/levelgenerator.h"
 #include "gfx.h"
 #include "tools/key_input.h"
 #include <vector>
@@ -20,6 +21,7 @@ class Game {
         void setLevel(Level* l);
         Level* getLevel();
         void addLevel(Level* l);
+        Level* newLevel(int width, int height, Direction dir);
         FastRandom* getRNG();
         int init();
         void run();
@@ -33,6 +35,7 @@ class Game {
         Level *curLvl;
         Level* prevLvl;
         std::vector<Level*> levels;
+        LevelGenerator levelgen;
         bool gameOver;
         bool paused;
 };

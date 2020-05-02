@@ -14,7 +14,7 @@ void sleep_remaining(std::chrono::time_point<std::chrono::high_resolution_clock>
 }
 
 
-Game::Game() : gfx(GFX(this)){
+Game::Game() : gfx(GFX(this)), levelgen(LevelGenerator(LVL_WIDTH, LVL_HEIGHT)) {
     gameOver = paused = false;
 }
 
@@ -28,6 +28,18 @@ Game::~Game(){
 
 void Game::addLevel(Level* l) {
     levels.push_back(l);
+}
+
+Level* Game::newLevel(int width, int height, Direction dir) {
+
+    Level* tmp = new Level(width, height, this);
+    levelgen.setLevel(tmp);
+
+    tmp->setRoom(levelgen.cpeRoom(DIR_LEFT, height/2, DIR_RIGHT, height/2));
+
+    tmp->setPlayer(player);
+
+    return tmp;
 }
 
 void Game::over() {
@@ -51,13 +63,32 @@ int Game::init() {
     if(gfx.checkScreenSize() != 0) {
         err = -1;
     }
-
+    //START ROOM
     curLvl = new Level(LVL_WIDTH, LVL_HEIGHT, this);
+
+    levelgen.setLevel(curLvl);
+    Square*** start = levelgen.startRoom(LVL_WIDTH, LVL_HEIGHT, LVL_HEIGHT/2, LVL_WIDTH/2);
+
     player = new Player(curLvl);
     curLvl->setPlayer(player);
-    curLvl->generateStartRoom();
+    curLvl->setRoom(start);
     curLvl->initPlayer();
-    levels.push_back(curLvl);
+
+    //BOSS ROOM
+    Level* bossLvl = new Level(LVL_WIDTH, LVL_HEIGHT, this);
+
+    levelgen.setLevel(bossLvl);
+    Square*** boss = levelgen.bossRoom(LVL_WIDTH, LVL_HEIGHT, {LVL_WIDTH/2, LVL_HEIGHT-1} );
+
+    bossLvl->setRoom(boss);
+    bossLvl->setGeorge();
+    bossLvl->setNeighbour(DIR_DOWN, curLvl);
+    bossLvl->setPlayer(player);
+
+    //Set Levels
+    curLvl->setNeighbour(DIR_UP, bossLvl);
+    addLevel(bossLvl);
+    addLevel(curLvl);
 
     gfx.init();
 

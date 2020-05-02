@@ -31,6 +31,15 @@ Level::Level(int w, int h, Game* g) {
     }
 }
 
+// Level::Level(int w, int h, Game* g) {
+//     game = g;
+//     width = w;
+//     height = h;
+//     doorx = width/2;
+//     doory = height/2;
+//     george = 0;
+// }
+
 Level::~Level() {
     for(int i = 0; i < width; i++) {
         for(int j = 0; j < height; j++) {
@@ -157,6 +166,15 @@ void Level::switchLevel(Direction dir) {
 }
 
 
+// Level* Level::newLevel(Direction dir) {
+//     Level* tmp = game->newLevel(width, height, dir);
+//
+//     tmp->setNeighbour(opposite_dir(dir), this);
+//     game->addLevel(tmp);
+//
+//     return tmp;
+// }
+
 Level* Level::newLevel(Direction dir) {
     // Create new level and populate its board
     Level* tmp = new Level(width, height, game);
@@ -241,7 +259,17 @@ void Level::generateStartRoom() {
             }
         }
     }
+
     createBossRoom();
+}
+
+void Level::setRoom(Square*** b) {
+    if(board != NULL) {
+        for (int i = 0; i < width; i++)
+            delete[] board[i];
+    }
+
+    board = b;
 }
 
 Player* Level::getPlayer() {

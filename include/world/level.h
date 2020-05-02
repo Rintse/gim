@@ -21,6 +21,7 @@ public:
     void generateBossRoom();
     void generateStartRoom();
     void generateRandomRoom();
+    void setRoom(Square*** b);
     Level* newLevel(Direction dir);
     void setPlayer(Player* p);
     void initPlayer();
@@ -42,6 +43,7 @@ public:
     double BFSdist(Square* from, Square* to);
     void hurtGeorge();
 
+    void setGeorge();
     // Getters
     Square* getSquareDir(Square* s, Direction dir);
     Square* getSquare(int x, int y);
@@ -53,7 +55,6 @@ public:
     bool noEnemies();
 
 private:
-    void setGeorge();
 
     Square*** board;
     int height, width;

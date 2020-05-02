@@ -3,9 +3,8 @@
 
 int main() {
     // Run game
-    LevelGenerator l(20, 20);
+    LevelGenerator l(20, 15);
     l.cpeRoom();
-    l.printCharBoard();
 
     return 0;
 }

@@ -9,33 +9,33 @@
 //
 
 struct pos {
-    int row;
-    int col;
+    int x;
+    int y;
 
     void advance(Direction d, int step) {
         switch(d) {
             case DIR_UP:
-            this->row -= step;
+            y -= step;
             break;
 
             case DIR_DOWN:
-            this->row += step;
+            y += step;
             break;
 
             case DIR_LEFT:
-            this->col -= step;
+            x -= step;
             break;
 
             case DIR_RIGHT:
-            this->col += step;
+            x += step;
             break;
         }
     }
 
     pos& operator =(const pos &r)
     {
-        row = r.row;
-        col = r.col;
+        x = r.x;
+        y = r.y;
 
         return *this;
     }
@@ -44,25 +44,16 @@ struct pos {
 class LevelGenerator {
     public:
         LevelGenerator(int width, int height);
-        void printCharBoard() const;
-        Square*** startRoom(int width, int height);
-        Square*** bossRoom(int width, int height);
-        Square*** emptyRoom(int width, int height);
+        void initBoard(int w, int h, Direction in_dir, int in_index,
+                        Direction out_dir, int out_index);
+        void initBoard(Level* l, int w, int h, Direction in_dir, int in_index,
+                        Direction out_dir, int out_index);
+        void setLevel(Level* l);
 
-        /**
-        *   Critical Path Evolution Room generation
-        *   Generates a maze-like room by starting with a simple 'critical path'
-        *   and mutating it
-        *   @param w        Level dimensions
-                   h
-        *   @param mut          Mutation rate, range [0.0 .. 1.0].
-                                Denotes how likely an arbitrary square is to be mutated
-                                Increases level complexity
-        *   @param path_width   Sets a standardized width for generated path, also
-                                (influences how far apart mutations may occur?)
-        *   @return             Pointer to a board on the heap, to be passed to a Level
-        */
+        void printCharBoard() const;
+        Square*** randomRoom(int w, int h, int room_doory, FastRandom &r);
         Square*** cpeRoom();
+        Square*** cpeRoom(Direction in_dir, int in_offset, Direction out_dir, int out_offset);
         Square*** bossRoom(int w, int h, pos door);
         Square*** startRoom(int w, int h, int room_door_row, int boss_door_column);
 
@@ -75,20 +66,23 @@ class LevelGenerator {
         Direction out;
         double mut;
         char** board = NULL;
-        FastRandom randoom;
+        Level* level;
+        std::set<Enemy*> enemies;
 
         int distanceToEdge(Direction d, pos p);
         pos generateDoors(Direction d, int i) const;
-        void initBoard(int w, int h, Direction in_dir, int in_index,
-                                     Direction out_dir, int out_index);
+        void clearChar();
 
-        Square* createSquare(char c, int row, int column);
+        Square* createSquare(char c, int x, int y);
+        void spawnEnemy(Square* s);
+        void spawnHeart(Square* s);
+
         Square*** createBoard();
 
-        pos mutatePath(Direction to, int max, int width, double mut_rate, pos start);
+        pos mutatePath(Direction to, int max, int interval, double mut_rate, pos start);
 
-        void straightPath(Direction d, int width, double mut_rate, pos start, pos end);
-        pos uPath(Direction d, Direction turn_d, int length, int turn_length, int width,
+        void straightPath(Direction d, int interval, double mut_rate, pos start, pos end);
+        pos uPath(Direction d, Direction turn_d, int length, int turn_length, int interval,
                     double mut_rate, pos start);
 };
 
