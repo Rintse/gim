@@ -20,13 +20,14 @@
 
 Level::Level(){}
 
-Level::Level(int w, int h, Game* g) {
+Level::Level(int w, int h, Game* g, int vd) {
     game = g;
     width = w;
     height = h;
     doorx = width/2;
     doory = height/2;
     george = 0;
+    viewDistance = (vd < 5) ? 5 : vd;
 
     board = new Square**[width];
     for(int i = 0; i < width; ++i) {
@@ -172,8 +173,9 @@ void Level::switchLevel(Direction dir) {
 // }
 
 Level* Level::newLevel(Direction dir) {
+    std::cout << "nieuw level" << std::endl;
     // Create new level and populate its board
-    Level* tmp = new Level(width, height, game);
+    Level* tmp = new Level(width, height, game, viewDistance-SIGHT_DEGRATION);
     tmp->generateRandomRoom();
 
     // Set all reference pointers
@@ -185,7 +187,7 @@ Level* Level::newLevel(Direction dir) {
 }
 
 void Level::createBossRoom() {
-    Level* tmp = new Level(width, height, game);
+    Level* tmp = new Level(width, height, game, width);
     tmp->generateBossRoom();
     tmp->setNeighbour(DIR_DOWN, this);
     tmp->setPlayer(player);
@@ -331,6 +333,10 @@ int Level::getWidth(){
 
 int Level::getHeight(){
   return height;
+}
+
+int Level::getViewDistance() {
+    return viewDistance;
 }
 
 bool Level::noEnemies() {

@@ -11,10 +11,12 @@
 
 class Game;
 
+#define SIGHT_DEGRATION 5
+
 class Level {
 public:
     Level();
-    Level(int w, int h, Game* g);
+    Level(int w, int h, Game* g, int vd);
     ~Level();
 
     // Initialisation
@@ -52,6 +54,7 @@ public:
     std::set<Projectile*>* getProjectiles();
     int getWidth();
     int getHeight();
+    int getViewDistance();
     bool noEnemies();
 
 private:
@@ -59,6 +62,7 @@ private:
     Square*** board;
     int height, width;
     int doorx, doory;
+    int viewDistance;
 
     std::set<Projectile*> projectiles;
     std::set<Enemy*> enemies;

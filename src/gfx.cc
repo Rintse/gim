@@ -3,6 +3,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <iostream>
 #include <X11/Xlib.h>
+#include "tools/distance.h"
 
 GFX::GFX(Game* g) {
     game = g;
@@ -13,6 +14,7 @@ GFX::~GFX() {
     for(auto &i : sprites) {
         SDL_FreeSurface(i.second);
     }
+    delete black;
     delete[] pauseX;
     delete[] pauseText;
     SDL_DestroyWindow(window);
@@ -122,6 +124,8 @@ int GFX::init() {
 
     loadSprites();
     initPauseMenu();
+    black =  SDL_CreateRGBSurface(0,SPRITE_DIM*scale,SPRITE_DIM*scale,32,0,0,0,0);
+    SDL_FillRect(black, NULL, SDL_MapRGB(black->format, 0, 0, 0));
 
     return 0;
 }
@@ -182,14 +186,22 @@ void GFX::drawPauseMenu() {
 
 
 void GFX::drawGame() {
-    char c;
+    Square* ps = game->getLevel()->getPlayer()->getSquare();
+    int viewDistance = game->getLevel()->getViewDistance();
+    std::cout << "viewDistance: " << viewDistance << std::endl;
 
     for(int j = 0; j < LVL_HEIGHT; j++) {
         for(int i = 0; i < LVL_WIDTH; i++) {
             dst.x = scale*i*SPRITE_DIM;
             dst.y = scale*j*SPRITE_DIM;
-            c = game->getLevel()->getSquare(i,j)->token();
-            SDL_BlitScaled(sprites[c], &src, surface, &dst);
+            Square* s = game->getLevel()->getSquare(i,j);
+            if(dist(ps, s) > viewDistance) {
+                SDL_BlitScaled(black, &src, surface, &dst);
+            }
+            else {
+                SDL_BlitScaled(sprites[s->token()], &src, surface, &dst);
+            }
+
         }
     }
 

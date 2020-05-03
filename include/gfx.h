@@ -31,6 +31,7 @@ class GFX {
         SDL_Surface* surface;
         SDL_Surface** pauseText;
         std::map<char, SDL_Surface*> sprites;
+        SDL_Surface* black;
         SDL_Window* window;
 };
 

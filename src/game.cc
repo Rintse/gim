@@ -30,9 +30,9 @@ void Game::addLevel(Level* l) {
     levels.push_back(l);
 }
 
-Level* Game::newLevel(int width, int height, Direction dir) {
+Level* Game::newLevel(int width, int height, Direction dir, int viewDistance) {
 
-    Level* tmp = new Level(width, height, this);
+    Level* tmp = new Level(width, height, this, viewDistance);
     levelgen.setLevel(tmp);
 
     tmp->setRoom(levelgen.cpeRoom(DIR_LEFT, height/2, DIR_RIGHT, height/2));
@@ -64,7 +64,7 @@ int Game::init() {
         err = -1;
     }
     //START ROOM
-    curLvl = new Level(LVL_WIDTH, LVL_HEIGHT, this);
+    curLvl = new Level(LVL_WIDTH, LVL_HEIGHT, this, LVL_WIDTH);
 
     levelgen.setLevel(curLvl);
     Square*** start = levelgen.startRoom(LVL_WIDTH, LVL_HEIGHT, LVL_HEIGHT/2, LVL_WIDTH/2);
@@ -75,7 +75,7 @@ int Game::init() {
     curLvl->initPlayer();
 
     //BOSS ROOM
-    Level* bossLvl = new Level(LVL_WIDTH, LVL_HEIGHT, this);
+    Level* bossLvl = new Level(LVL_WIDTH, LVL_HEIGHT, this, LVL_WIDTH);
 
     levelgen.setLevel(bossLvl);
     Square*** boss = levelgen.bossRoom(LVL_WIDTH, LVL_HEIGHT, {LVL_WIDTH/2, LVL_HEIGHT-1} );
