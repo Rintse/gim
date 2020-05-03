@@ -72,15 +72,17 @@ class LevelGenerator {
         pos generateDoors(Direction d, int i) const;
         void clearChar();
 
+        void setFloor(int x, int y, double enemy_rate, double &powerup_rate);
         Square* createSquare(char c, int x, int y);
         void spawnEnemy(Square* s);
         void spawnHeart(Square* s);
+        void spawnFBullet(Square* s);
 
         Square*** createBoard();
 
         pos mutatePath(Direction to, int max, int interval, double mut_rate, pos start);
 
-        void straightPath(Direction d, int interval, double mut_rate, pos start, pos end);
+        void straightPath(Direction d, int interval, double mut_rate, pos start, pos end, bool power);
         pos uPath(Direction d, Direction turn_d, int length, int turn_length, int interval,
                     double mut_rate, pos start);
 };

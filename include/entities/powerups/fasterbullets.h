@@ -1,5 +1,5 @@
-#ifndef hp_h
-#define hp_h
+#ifndef fb_h
+#define fb_h
 
 #include "entities/powerups/powerup.h"
 
