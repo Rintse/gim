@@ -6,6 +6,7 @@ Enemy::Enemy() {}
 
 Enemy::Enemy(Level* l, EmptySquare* s) : pathfind(l) {
     lvl = l;
+    l->addEnemy(this);
     curSquare = s;
     lockout = 0;
     facing = DIR_UP;
