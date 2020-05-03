@@ -1,9 +1,14 @@
 #include "generation/levelgenerator.h"
+
 #include "world/squares/wall.h"
 #include "world/squares/empty.h"
 #include "world/squares/door.h"
+
 #include "tools/distance.h"
 #include "tools/fastrandom.h"
+
+#include "entities/powerups/hp.h"
+#include "entities/powerups/fasterbullets.h"
 
 #include <stdlib.h>
 
@@ -447,10 +452,9 @@ void LevelGenerator::spawnEnemy(Square* s) {
     EmptySquare* es = dynamic_cast<EmptySquare*>(s);
     Enemy* tmp = new Enemy(level, es);
     es->setEnemy(tmp);
-    enemies.insert(tmp); //TODO give enemies to level & set level pointer
 }
 
 void LevelGenerator::spawnHeart(Square* s) {
     EmptySquare* es = dynamic_cast<EmptySquare*>(s);
-    // es->setHeart(true); TODO is nieuw geegaan
+    es->setPowerup(new Hp);
 }

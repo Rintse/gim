@@ -188,7 +188,7 @@ void GFX::drawPauseMenu() {
 void GFX::drawGame() {
     Square* ps = game->getLevel()->getPlayer()->getSquare();
     int viewDistance = game->getLevel()->getViewDistance();
-    std::cout << "viewDistance: " << viewDistance << std::endl;
+    // std::cout << "viewDistance: " << viewDistance << std::endl;
 
     for(int j = 0; j < LVL_HEIGHT; j++) {
         for(int i = 0; i < LVL_WIDTH; i++) {

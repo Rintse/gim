@@ -160,31 +160,28 @@ void Level::switchLevel(Direction dir) {
     player->setLevel(neighbours[dir]);
 }
 
+//wrapper om oude code werkend te houden
+//TODO function call vervangen door nieuwe
+Level* Level::newLevel(Direction dir) {
+    return game->newLevel(this, width, height, dir, viewDistance-SIGHT_DEGRATION);
+}
 
+/*
+ * NOTE DEPRECATED
+*/
 // Level* Level::newLevel(Direction dir) {
-//NOTE maakt LevelGenerator level (nog zonder enemies en powerups)
-//NOTE uncomment functie voor testen en comment 174-185 (Level::newLevel)
-//     Level* tmp = game->newLevel(width, height, dir);
+//     std::cout << "nieuw level" << std::endl;
+//     // Create new level and populate its board
+//     Level* tmp = new Level(width, height, game, viewDistance-SIGHT_DEGRATION);
+//     tmp->generateRandomRoom();
 //
+//     // Set all reference pointers
+//     tmp->setPlayer(player);
 //     tmp->setNeighbour(opposite_dir(dir), this);
 //     game->addLevel(tmp);
 //
 //     return tmp;
 // }
-
-Level* Level::newLevel(Direction dir) {
-    std::cout << "nieuw level" << std::endl;
-    // Create new level and populate its board
-    Level* tmp = new Level(width, height, game, viewDistance-SIGHT_DEGRATION);
-    tmp->generateRandomRoom();
-
-    // Set all reference pointers
-    tmp->setPlayer(player);
-    tmp->setNeighbour(opposite_dir(dir), this);
-    game->addLevel(tmp);
-
-    return tmp;
-}
 
 void Level::createBossRoom() {
     Level* tmp = new Level(width, height, game, width);
@@ -278,7 +275,6 @@ void Level::spawnEnemy(Square* s) {
     EmptySquare* es = dynamic_cast<EmptySquare*>(s);
     Enemy* tmp = new Enemy(this, es);
     es->setEnemy(tmp);
-    enemies.insert(tmp);
 }
 
 void Level::spawnHeart(Square* s) {
@@ -337,6 +333,10 @@ int Level::getHeight(){
 
 int Level::getViewDistance() {
     return viewDistance;
+}
+
+void Level::addEnemy(Enemy* e) {
+    enemies.insert(e);
 }
 
 bool Level::noEnemies() {

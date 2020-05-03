@@ -55,6 +55,7 @@ public:
     int getWidth();
     int getHeight();
     int getViewDistance();
+    void addEnemy(Enemy* e);
     bool noEnemies();
 
 private:

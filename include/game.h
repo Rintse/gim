@@ -21,7 +21,7 @@ class Game {
         void setLevel(Level* l);
         Level* getLevel();
         void addLevel(Level* l);
-        Level* newLevel(int width, int height, Direction dir, int viewDistance);
+        Level* newLevel(Level* neighbour, int width, int height, Direction dir, int viewDistance);
         FastRandom* getRNG();
         int init();
         void run();

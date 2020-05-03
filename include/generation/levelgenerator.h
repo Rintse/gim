@@ -67,7 +67,6 @@ class LevelGenerator {
         double mut;
         char** board = NULL;
         Level* level;
-        std::set<Enemy*> enemies;
 
         int distanceToEdge(Direction d, pos p);
         pos generateDoors(Direction d, int i) const;
