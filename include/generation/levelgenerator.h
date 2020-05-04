@@ -4,6 +4,7 @@
 #include "world/squares/square.h"
 #include "tools/directions.h"
 #include <iostream>
+#include <vector>
 // class that generates game boards
 // methods allocate the board on the heap and pass a reference to be given to a Level
 //
@@ -67,12 +68,14 @@ class LevelGenerator {
         double mut;
         char** board = NULL;
         Level* level;
+        std::vector<pos> power_positions;
 
         int distanceToEdge(Direction d, pos p);
         pos generateDoors(Direction d, int i) const;
         void clearChar();
 
-        void setFloor(int x, int y, double enemy_rate, double &powerup_rate);
+        void setFloor(int x, int y, double enemy_rate);
+        void setPowers();
         Square* createSquare(char c, int x, int y);
         void spawnEnemy(Square* s);
         void spawnHeart(Square* s);
@@ -82,7 +85,7 @@ class LevelGenerator {
 
         pos mutatePath(Direction to, int max, int interval, double mut_rate, pos start);
 
-        void straightPath(Direction d, int interval, double mut_rate, pos start, pos end, bool power);
+        void straightPath(Direction d, int interval, double mut_rate, pos start, pos end, int power);
         pos uPath(Direction d, Direction turn_d, int length, int turn_length, int interval,
                     double mut_rate, pos start);
 };
