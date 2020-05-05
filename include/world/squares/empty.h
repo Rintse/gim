@@ -7,6 +7,7 @@
 class EmptySquare : public Square {
     public:
         EmptySquare(int _x, int _y);
+        EmptySquare(int _x, int _y, bool b);
         ~EmptySquare();
 
         SquareType type();
@@ -17,6 +18,7 @@ class EmptySquare : public Square {
         Enemy* getEnemy();
         GeorgePart* getGeorgepart();
         Powerup* getPowerup();
+        bool getBarrier();
         // Setters
         void setPlayer(Player* p);
         void setProjectile(Projectile* p);
@@ -31,6 +33,7 @@ class EmptySquare : public Square {
         Projectile* projectile;
         Enemy* enemy;
         GeorgePart* georgepart;
+        bool barrier;
 };
 
 #endif

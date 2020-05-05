@@ -112,22 +112,24 @@ void Player::move(Direction dir) {
     }
     // Move onto new floor square
     else if(s->type() == SQUARE_FLOOR){
-        EmptySquare* es = dynamic_cast<EmptySquare*>(s);
-        // Touching enemies is not allowed
-        if(es->getEnemy() != 0) {
-            takeDamage();
-            curLvl->removeEnemy(es->getEnemy());
-            es->setEnemy(0);
+        if(!static_cast<EmptySquare*>(s)->getBarrier()) {
+          EmptySquare* es = dynamic_cast<EmptySquare*>(s);
+          // Touching enemies is not allowed
+          if(es->getEnemy() != 0) {
+              takeDamage();
+              curLvl->removeEnemy(es->getEnemy());
+              es->setEnemy(0);
+          }
+          if(es->getPowerup() != 0) {
+              es->getPowerup()->get(this);
+              delete es->getPowerup();
+              es->setPowerup(0);
+          }
+          // Make the move
+          curSquare->setPlayer(0);
+          es->setPlayer(this);
+          curSquare = es;
+          facing = dir;
         }
-        if(es->getPowerup() != 0) {
-            es->getPowerup()->get(this);
-            delete es->getPowerup();
-            es->setPowerup(0);
-        }
-        // Make the move
-        curSquare->setPlayer(0);
-        es->setPlayer(this);
-        curSquare = es;
-        facing = dir;
     }
 }

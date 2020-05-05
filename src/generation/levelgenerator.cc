@@ -192,6 +192,9 @@ Square*** LevelGenerator::bossRoom(int w, int h, pos door) {
                     square_board[i][j] = new WallSquare(i,j);
                 }
             }
+            else if(j < 7) {
+              square_board[i][j] = new EmptySquare(i,j,true);
+            }
             else {
                 square_board[i][j] = new EmptySquare(i,j);
             }

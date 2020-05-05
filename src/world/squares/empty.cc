@@ -6,7 +6,19 @@ EmptySquare::EmptySquare(int x, int y) : Square(x,y) {
     enemy = 0;
     georgepart = 0;
     pu = 0;
+    barrier = false;
 }
+
+EmptySquare::EmptySquare(int x, int y, bool b) : Square(x,y) {
+    player = 0;
+    projectile = 0;
+    enemy = 0;
+    georgepart = 0;
+    pu = 0;
+    barrier = b;
+}
+
+
 EmptySquare::~EmptySquare() {}
 
 SquareType EmptySquare::type() {
@@ -28,6 +40,7 @@ Projectile* EmptySquare::getProjectile() { return projectile; }
 Enemy* EmptySquare::getEnemy() { return enemy; }
 GeorgePart* EmptySquare::getGeorgepart() { return georgepart; }
 Powerup* EmptySquare::getPowerup() { return pu; }
+bool EmptySquare::getBarrier() {return barrier; }
 
 // Setters
 void EmptySquare::setPlayer(Player* p) { player = p; }
