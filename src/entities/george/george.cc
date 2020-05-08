@@ -7,13 +7,9 @@
 /*
 BIG TODO LIJST
 
-bullet ronde
-barrier squares
 george moet groter
 sprites george
 CODE DUPLICATION OMSCHRIJVEN
-tgb ronde opschonen
-fix destructor
 */
 
 George::George() {}
@@ -43,29 +39,34 @@ George::~George(){
 
 
 void George::setParts(){
-  EmptySquare* tmp;
-  parts[0] = dynamic_cast<GeorgePart*>(new GeorgeA(lvl, curSquare));
-  curSquare->setGeorgepart(parts[0]);
+  char tokens[N_PARTS];
+  for (int i = 0; i < N_PARTS; i++) {
+    tokens[i] = '#';
+  }
 
-  tmp = dynamic_cast<EmptySquare*>(lvl->getSquareDir(curSquare, DIR_RIGHT));
-  parts[1] = dynamic_cast<GeorgePart*>(new GeorgeB(lvl, tmp));
-  tmp->setGeorgepart(parts[1]);
+  EmptySquare* tmp = curSquare, *left = curSquare;
 
-  tmp = dynamic_cast<EmptySquare*>(lvl->getSquareDir(tmp, DIR_RIGHT));
-  parts[2] = dynamic_cast<GeorgePart*>(new GeorgeC(lvl, tmp));
-  tmp->setGeorgepart(parts[2]);
+  for(int i = 0; i < N_PARTS; i++) {
+    // GUNS
+    if(i == N_PARTS-1 || i == N_PARTS - WIDTH) {
+      parts[i] = dynamic_cast<GeorgePart*>(new GeorgeGun(lvl, tmp, tokens[i]));
+      tmp->setGeorgepart(parts[i]);
+    }
+    // no guns
+    else {
+      parts[i] = dynamic_cast<GeorgePart*>(new GeorgeNoGun(lvl, tmp, tokens[i]));
+      tmp->setGeorgepart(parts[i]);
+    }
 
-  tmp = dynamic_cast<EmptySquare*>(lvl->getSquareDir(curSquare, DIR_DOWN));
-  parts[3] = dynamic_cast<GeorgePart*>(new GeorgeD(lvl, tmp));
-  tmp->setGeorgepart(parts[3]);
-
-  tmp = dynamic_cast<EmptySquare*>(lvl->getSquareDir(tmp, DIR_RIGHT));
-  parts[4] = dynamic_cast<GeorgePart*>(new GeorgeE(lvl, tmp));
-  tmp->setGeorgepart(parts[4]);
-
-  tmp = dynamic_cast<EmptySquare*>(lvl->getSquareDir(tmp, DIR_RIGHT));
-  parts[5] = dynamic_cast<GeorgePart*>(new GeorgeF(lvl, tmp));
-  tmp->setGeorgepart(parts[5]);
+    // set next square
+    if(i % WIDTH == WIDTH-1 && i != N_PARTS-1) {
+      tmp = dynamic_cast<EmptySquare*>(lvl->getSquareDir(left, DIR_DOWN));
+      left = tmp;
+    }
+    else {
+      tmp = dynamic_cast<EmptySquare*>(lvl->getSquareDir(tmp, DIR_RIGHT));
+    }
+  }
 }
 
 void George::inputToParts() {
@@ -78,6 +79,10 @@ void George::inputToParts() {
       case 1: input.act = ACTION_MOVERIGHT;
       case 2: input.act = ACTION_NONE;
     }
+  }
+  // slow george down a bit...
+  else if (curRound == ROUND_LASERS && frame % 2 == 1) {
+    input.act = ACTION_NONE;
   }
 
   if(input.act < ACTION_NONE) {
@@ -138,7 +143,7 @@ void George::attackLasers() {
   input.fired = true;
 
   if(dir == DIR_RIGHT) {
-    if(lvl->getSquareDir(parts[5]->getSquare(), dir)->type() == SQUARE_FLOOR) {
+    if(lvl->getSquareDir(parts[N_PARTS-1]->getSquare(), dir)->type() == SQUARE_FLOOR) {
       input.act = ACTION_MOVERIGHT;
     }
     else {
@@ -194,7 +199,7 @@ Action George::avoidPlayer() {
 
   // player is in front of george
   if (playerX >= georgeLeft && playerX <= georgeRight) {
-    if(lvl->getSquareDir(parts[5]->getSquare(), dir)->type() != SQUARE_FLOOR) {
+    if(lvl->getSquareDir(parts[N_PARTS-1]->getSquare(), dir)->type() != SQUARE_FLOOR) {
       return ACTION_MOVELEFT;
     }
     else if (lvl->getSquareDir(parts[0]->getSquare(), dir)->type() != SQUARE_FLOOR) {
@@ -205,7 +210,7 @@ Action George::avoidPlayer() {
   }
 
   // if george against wall
-  if(lvl->getSquareDir(parts[5]->getSquare(), dir)->type() != SQUARE_FLOOR ||
+  if(lvl->getSquareDir(parts[N_PARTS-1]->getSquare(), dir)->type() != SQUARE_FLOOR ||
      lvl->getSquareDir(parts[0]->getSquare(), dir)->type() != SQUARE_FLOOR) {
     return ACTION_NONE;
   }
@@ -240,7 +245,7 @@ Action George::followPlayer() {
 
   // player is in front of george
   if (playerX > georgeLeft && playerX < georgeRight) {
-    if(lvl->getSquareDir(parts[5]->getSquare(), dir)->type() != SQUARE_FLOOR) {
+    if(lvl->getSquareDir(parts[N_PARTS-1]->getSquare(), dir)->type() != SQUARE_FLOOR) {
       return ACTION_MOVELEFT;
     }
     else if (lvl->getSquareDir(parts[0]->getSquare(), dir)->type() != SQUARE_FLOOR) {
@@ -293,6 +298,6 @@ void George::advanceRound() {
   input.act = ACTION_NONE;
   input.fired = false;
   curRound = static_cast<Round>(((int)curRound + 1) % 3);
-  dynamic_cast<GeorgeGun*>(parts[3])->setRound(curRound);
-  dynamic_cast<GeorgeGun*>(parts[5])->setRound(curRound);
+  dynamic_cast<GeorgeGun*>(parts[N_PARTS-WIDTH])->setRound(curRound);
+  dynamic_cast<GeorgeGun*>(parts[N_PARTS-1])->setRound(curRound);
 }

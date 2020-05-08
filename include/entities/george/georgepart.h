@@ -10,17 +10,18 @@ class EmptySquare;
 class GeorgePart {
 public:
     GeorgePart();
-    GeorgePart(Level* l, EmptySquare* s);
+    GeorgePart(Level* l, EmptySquare* s, char t);
     virtual ~GeorgePart() {};
 
     virtual void act(Input i) = 0;
-    virtual char token() = 0;
+    char token();
 
     EmptySquare* getSquare();
 
 protected:
     EmptySquare* curSquare;
     Level* lvl;
+    char georgeToken;
 
     void move(Direction dir);
 };

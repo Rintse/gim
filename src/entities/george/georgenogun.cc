@@ -4,7 +4,7 @@
 
 GeorgeNoGun::GeorgeNoGun() {}
 
-GeorgeNoGun::GeorgeNoGun(Level* l, EmptySquare* s) : GeorgePart (l,s) {}
+GeorgeNoGun::GeorgeNoGun(Level* l, EmptySquare* s, char t) : GeorgePart (l,s,t) {}
 
 void GeorgeNoGun::act(Input i) {
   switch (i.act) {

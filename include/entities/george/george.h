@@ -1,17 +1,18 @@
 #ifndef george_h
 #define george_h
 
-#include "georgeparts.h"
+#include "georgenogun.h"
+#include "georgegun.h"
 #include "tools/fastrandom.h"
 
 // bossfight phase length
 #define COOLDOWN_SECONDS 1
-#define ROUND_SECONDS 20
+#define ROUND_SECONDS 10
 #define BULLET_PAUSE 10
 
 // george size
-#define N_PARTS 6
-#define WIDTH 3
+#define N_PARTS 21
+#define WIDTH 7
 
 // other
 #define N_TINYBABYGEORGES 12

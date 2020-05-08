@@ -6,9 +6,14 @@
 
 GeorgePart::GeorgePart() {}
 
-GeorgePart::GeorgePart(Level* l, EmptySquare* s) {
+GeorgePart::GeorgePart(Level* l, EmptySquare* s, char t) {
   lvl = l;
   curSquare = s;
+  georgeToken = t;
+}
+
+char GeorgePart::token() {
+  return georgeToken;
 }
 
 EmptySquare* GeorgePart::getSquare() {

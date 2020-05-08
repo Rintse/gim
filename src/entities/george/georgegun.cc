@@ -4,7 +4,7 @@
 
 GeorgeGun::GeorgeGun() {}
 
-GeorgeGun::GeorgeGun(Level* l, EmptySquare* s) : GeorgePart (l,s) {
+GeorgeGun::GeorgeGun(Level* l, EmptySquare* s, char t) : GeorgePart (l,s,t) {
   curRound = ROUND_BULLETS;
 }
 

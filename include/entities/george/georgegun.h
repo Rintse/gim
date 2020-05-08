@@ -12,7 +12,7 @@ class Square;
 class GeorgeGun : public GeorgePart {
 public:
     GeorgeGun();
-    GeorgeGun(Level* l, EmptySquare* s);
+    GeorgeGun(Level* l, EmptySquare* s, char t);
 
     void act(Input i);
     void setRound(Round round);
@@ -20,7 +20,7 @@ public:
 protected:
     Round curRound;
     Direction dir;
-    
+
     void shootBullet();
     void shootLaser();
 };
