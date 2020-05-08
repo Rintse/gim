@@ -57,6 +57,7 @@ int Enemy::move(Direction dir) {
         EmptySquare* es = dynamic_cast<EmptySquare*>(s);
         // Two enemies may not occupy the same square
         if(es->getEnemy() != 0) return 0;
+        if(es->getGeorgepart() != 0) return 0;
         // If you touch a projectile, you die
         if(es->getProjectile() != 0) return -1;
         // If you touch the player, he takes damage, you die

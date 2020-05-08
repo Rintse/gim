@@ -252,11 +252,11 @@ Action George::followPlayer() {
       return ACTION_MOVERIGHT;
     }
 
-    else if((georgeLeft - playerX) > (playerX - georgeRight)) {
+    else if((playerX - georgeLeft) > (georgeRight - playerX)) {
       return ACTION_MOVELEFT;
     }
 
-    else if ((georgeLeft - playerX) < (playerX - georgeRight)) {
+    else if ((playerX - georgeLeft) < (georgeRight - playerX)) {
       return ACTION_MOVERIGHT;
     }
   }
