@@ -37,12 +37,9 @@ George::~George(){
   }
 }
 
-
 void George::setParts(){
-  char tokens[N_PARTS];
-  for (int i = 0; i < N_PARTS; i++) {
-    tokens[i] = '#';
-  }
+  char tokens[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+                    'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U'};
 
   EmptySquare* tmp = curSquare, *left = curSquare;
 
