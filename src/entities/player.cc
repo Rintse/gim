@@ -52,7 +52,11 @@ void Player::shoot() {
     }
     else {
         Projectile* tmp = dynamic_cast<Projectile*>(
-            new PlayerProjectile(curLvl, dynamic_cast<EmptySquare*>(s), facing));
+            new PlayerProjectile(curLvl, dynamic_cast<EmptySquare*>(s), facing)
+        );
+
+        dynamic_cast<EmptySquare*>(s)->setProjectile(tmp);
+
         curLvl->newProjectile(tmp);
     }
 }
