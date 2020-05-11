@@ -183,24 +183,16 @@ Square*** LevelGenerator::bossRoom(int w, int h, pos door) {
     for(int i = 0; i < w; i++) {
         for(int j = 0; j < h; j++) {
             // Edges
-            if(i == 0 || j == 0 || i == w-1 || j == h-1) {
-                // Door on bottom
-                if(j == h-1 && i == door.x) {
-                    square_board[i][j] = new DoorSquare(i,j,DIR_DOWN);
-                }
-                else { // Walls around the entire thing
-                    square_board[i][j] = new WallSquare(i,j);
-                }
-            }
-            else if(j < 7) {
-              square_board[i][j] = new EmptySquare(i,j,true);
-            }
-            else {
+            if(j == door.y && i == door.x)
+                square_board[i][j] = new DoorSquare(i,j,DIR_DOWN);
+            else if(i == 0 || j == 0 || i == w-1 || j == h-1)
+                square_board[i][j] = new WallSquare(i,j);
+            else if(j < 7)
+                square_board[i][j] = new EmptySquare(i,j,true);
+            else
                 square_board[i][j] = new EmptySquare(i,j);
-            }
         }
     }
-
     return square_board;
 }
 

@@ -157,7 +157,7 @@ void GFX::drawHeader() {
             dst.x = scale*i*SPRITE_DIM;
             if(i < full) c = '4';
             else if( i == full && quart != 0) c = quart + 48;
-            else c = game->getLevel()->getSquare(i,(LVL_HEIGHT-1))->token();
+            else c = game->getLevel()->getSquare(i,0)->token();
             SDL_BlitScaled(sprites[c], &src, surface, &dst);
         }
     }
