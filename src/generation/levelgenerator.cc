@@ -17,6 +17,10 @@
 #define N_POWERS 3 //TODO make procedural
 #define MIN_MUT_LENGTH 3
 
+#define BASE_MUT 0.8
+#define STRAIGHT_DECAY 0.5
+#define U_DECAY 0.5
+
 LevelGenerator::LevelGenerator(int w, int h) {
     initBoard(w, h, DIR_LEFT, h/2, DIR_RIGHT, h/2);
     mut = 0.7;
@@ -303,7 +307,7 @@ Square*** LevelGenerator::cpeRoom() {
     pos finish = exit;
     finish.advance(opposite_dir(out), 1);
 
-    straightPath(opposite_dir(in), width, mut, walk, finish, -1);
+    straightPath(opposite_dir(in), width, BASE_MUT, walk, finish, -1);
 
     //TODO? arbitrary starting position RL/UD: Z/N-shape random corners
 
@@ -365,25 +369,25 @@ pos LevelGenerator::mutatePath(Direction to, int parent_remainder, int path_offs
             int l = rand()%(ldist-1-MIN_MUT_LENGTH) + MIN_MUT_LENGTH;
             pos end = start; end.advance(ldir, l);
 
-            if(parent_remainder > min_width && rand()%2) {
+            if(parent_remainder > min_width && rand()%10 < 7) {
                 u_widthL = rand()%(parent_remainder - min_width) + min_width;
 
-                lpos = uPath(ldir, to, l, u_widthL, path_offset, mut_rate*0.6, start);
+                lpos = uPath(ldir, to, l, u_widthL, path_offset, mut_rate*U_DECAY, start);
                 leftu = true;
             } else
-                straightPath(ldir, path_offset, mut_rate*0.6, start, end, l);//select if uPath not possible or on 50% chance
+                straightPath(ldir, path_offset, mut_rate*STRAIGHT_DECAY, start, end, l);//select if uPath not possible or on 50% chance
         }
         if(doright && MIN_MUT_LENGTH < rdist-1) {
             int l = rand()%(rdist-1-MIN_MUT_LENGTH) + MIN_MUT_LENGTH;
             pos end = start; end.advance(rdir, l);
 
-            if(parent_remainder > min_width && rand()%2) {
+            if(parent_remainder > min_width && rand()%10 < 7) {
                 u_widthR = rand()%(parent_remainder - min_width) + min_width;
 
-                rpos = uPath(rdir, to, l, u_widthR, path_offset, mut_rate*0.6, start);
+                rpos = uPath(rdir, to, l, u_widthR, path_offset, mut_rate*U_DECAY, start);
                 rightu = true;
             } else
-                straightPath(rdir, path_offset, mut_rate*0.6, start, end, l); //select if uPath not possible or on 50% chance
+                straightPath(rdir, path_offset, mut_rate*STRAIGHT_DECAY, start, end, l); //select if uPath not possible or on 50% chance
         }
 
         //determine behaviour of continuing path
@@ -543,17 +547,17 @@ pos LevelGenerator::uPath(Direction d, Direction turn_d, int length, int turn_le
         pos end = start;
         end.advance(turn_d, turn_length);
 
-        // board[start.row][start.col] = '*';
-        // board[turn1.row][turn1.col] = '1';
-        // board[turn2.row][turn2.col] = '2';
-        // board[end.row][end.col] = 'E';
+        // board[start.x][start.y] = '*';
+        // board[turn1.x][turn1.y] = '1';
+        // board[turn2.x][turn2.y] = '2';
+        // board[end.x][end.y] = 'E';
         // printCharBoard();
 
         straightPath(d, path_offset, mut_rate, start, turn1, -1);
-        turn1.advance(turn_d, 1); //make turn
+        // turn1.advance(turn_d, 1); //make turn
 
         straightPath(turn_d, path_offset, mut_rate, turn1, turn2, -1);
-        turn2.advance(opposite_dir(d), 1);
+        // turn2.advance(opposite_dir(d), 1);
 
         straightPath(opposite_dir(d), path_offset, mut_rate, turn2, end, -1);
 
