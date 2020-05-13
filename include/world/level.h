@@ -20,15 +20,11 @@ public:
     ~Level();
 
     // Initialisation
-    void generateBossRoom();
-    void generateStartRoom();
-    void generateRandomRoom();
     void setRoom(Square*** b);
     Level* newLevel(Direction dir);
     void setPlayer(Player* p);
     void initPlayer();
     void initPlayer(Direction dir);
-    void createBossRoom();
     void spawnEnemy(Square* s);
     void spawnHeart(Square* s);
 
@@ -44,8 +40,8 @@ public:
     void signalGameOver();
     double BFSdist(Square* from, Square* to);
     void hurtGeorge();
-
     void setGeorge();
+    
     // Getters
     Square* getSquareDir(Square* s, Direction dir);
     Square* getSquare(int x, int y);
