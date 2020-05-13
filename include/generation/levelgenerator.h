@@ -68,14 +68,26 @@ class LevelGenerator {
         double mut;
         char** board = NULL;
         Level* level;
+
         std::vector<pos> power_positions;
+        std::vector<pos> enemy_positions;
+
+        int depth = 0;
+        int remain;
+        int target_mut;
+
+        int n_floor;
+        int n_mut = 0;
+        int n_powers = 3;
+        int enemy_percent = 5;
 
         int distanceToEdge(Direction d, pos p);
         pos generateDoors(Direction d, int i) const;
         void clearChar();
 
-        void setFloor(int x, int y, double enemy_rate);
+        void setFloor(int x, int y);
         void setPowers();
+        void setEnemies();
         Square* createSquare(char c, int x, int y);
         void spawnEnemy(Square* s);
         void spawnHeart(Square* s);
@@ -85,7 +97,7 @@ class LevelGenerator {
 
         pos mutatePath(Direction to, int max, int interval, double mut_rate, pos start);
 
-        void straightPath(Direction d, int interval, double mut_rate, pos start, pos end, int power);
+        void straightPath(Direction d, int interval, double mut_rate, pos start, pos end, int length, bool power);
         pos uPath(Direction d, Direction turn_d, int length, int turn_length, int interval,
                     double mut_rate, pos start);
 };

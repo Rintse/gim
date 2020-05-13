@@ -13,13 +13,11 @@
 #include <stdlib.h>
 #include <algorithm>
 
-#define ENEMY_SPAWN 0.01
-#define N_POWERS 3 //TODO make procedural
 #define MIN_MUT_LENGTH 3
 
-#define BASE_MUT 0.8
-#define STRAIGHT_DECAY 0.5
-#define U_DECAY 0.5
+#define BASE_MUT 0.9
+#define STRAIGHT_DECAY 0.4
+#define U_DECAY 0.4
 
 LevelGenerator::LevelGenerator(int w, int h) {
     initBoard(w, h, DIR_LEFT, h/2, DIR_RIGHT, h/2);
@@ -126,11 +124,20 @@ void LevelGenerator::clearChar() {
 void LevelGenerator::setPowers() {
     std::random_shuffle(power_positions.begin(), power_positions.end());
 
-    for (int i = 0; i < N_POWERS && power_positions.size() > 0; i++) {
-        pos temp = power_positions.back();
+    for (int i = 0; i < n_powers && i < power_positions.size(); i++) {
+        pos temp = power_positions[i];
         board[temp.x][temp.y] = 'P';
 
         power_positions.pop_back();
+    }
+}
+
+void LevelGenerator::setEnemies() {
+    std::random_shuffle(enemy_positions.begin(), enemy_positions.end());
+
+    for (int i = 0; i < (enemy_percent*n_floor)/1000 && i < enemy_positions.size(); i++) {
+        pos temp = enemy_positions[i];
+        board[temp.x][temp.y] = 'E';
     }
 }
 
@@ -166,6 +173,7 @@ Square*** LevelGenerator::createBoard() {
     std::cerr << "LevelGenerator: createBoard start" << std::endl;
 
     setPowers();
+    setEnemies();
 
     Square*** square_board = new Square**[width];
     for(int i = 0; i < width; i++)
@@ -297,9 +305,12 @@ Square*** LevelGenerator::cpeRoom(Direction in_dir, int in_offset, Direction out
 Square*** LevelGenerator::cpeRoom() {
     std::cerr << "LevelGenerator: cpeRoom start" << std::endl;
 
-    int width = 1; //0 = 1 path, 1 = 3 path, 2 = 5 path
+    int p_width = 1; //0 = 1 path, 1 = 3 path, 2 = 5 path
 
     power_positions.clear();
+    enemy_positions.clear();
+    n_floor = 0;
+    n_mut = 0;
 
     pos walk = entrance;
     walk.advance(opposite_dir(in), 1);
@@ -307,10 +318,14 @@ Square*** LevelGenerator::cpeRoom() {
     pos finish = exit;
     finish.advance(opposite_dir(out), 1);
 
-    straightPath(opposite_dir(in), width, BASE_MUT, walk, finish, -1);
+    remain = (width - 2)/(2*p_width+1); //projected number of floor tiles to be  placed
+    target_mut = 25;
+    //Tiers: {0-3}, {3-9}, {10-18}, {19-28} ...
+
+    straightPath(opposite_dir(in), p_width, BASE_MUT, walk, finish, width -2, false);
 
     //TODO? arbitrary starting position RL/UD: Z/N-shape random corners
-
+    // dbg(n_mut);
     return createBoard();
 }
 
@@ -342,9 +357,11 @@ pos LevelGenerator::mutatePath(Direction to, int parent_remainder, int path_offs
         bool doleft = false; bool doright = false; //are L/R selected to be performed
         bool leftu = false;  bool rightu = false;  //has L/R performed a upath?
 
+        int min_length = 2*path_offset + 1;
+
         //choose randomly between { left, right, both } if possible
         //ptherwise take available
-        if(ldist > 0 && rdist > 0) { //TODO clean up this logic?
+        if(ldist > min_length && rdist > min_length) { //TODO clean up this logic?
             switch(rand()%5) {
                 case 0:
                     doleft = true;
@@ -357,10 +374,12 @@ pos LevelGenerator::mutatePath(Direction to, int parent_remainder, int path_offs
                     doright = true;
             }
         }
-        else if(ldist > 0) //only option
+        else if(ldist > min_length) { //only option
             doleft = true;
-        else if(rdist > 0)//only option
+        }
+        else if(rdist > min_length) { //only option
             doright = true;
+        }
 
         int u_widthL, u_widthR;
         int min_width = 2*(path_offset + 1); // minimum distance for worthwile uPath (ensures 1 sep between dir and back)
@@ -375,19 +394,19 @@ pos LevelGenerator::mutatePath(Direction to, int parent_remainder, int path_offs
                 lpos = uPath(ldir, to, l, u_widthL, path_offset, mut_rate*U_DECAY, start);
                 leftu = true;
             } else
-                straightPath(ldir, path_offset, mut_rate*STRAIGHT_DECAY, start, end, l);//select if uPath not possible or on 50% chance
+                straightPath(ldir, path_offset, mut_rate*STRAIGHT_DECAY, start, end, l, true);//select if uPath not possible or on 50% chance
         }
         if(doright && MIN_MUT_LENGTH < rdist-1) {
             int l = rand()%(rdist-1-MIN_MUT_LENGTH) + MIN_MUT_LENGTH;
             pos end = start; end.advance(rdir, l);
 
-            if(parent_remainder > min_width && rand()%10 < 7) {
+            if(parent_remainder > min_width && rand()%10 < 7) { //favor upath
                 u_widthR = rand()%(parent_remainder - min_width) + min_width;
 
                 rpos = uPath(rdir, to, l, u_widthR, path_offset, mut_rate*U_DECAY, start);
                 rightu = true;
             } else
-                straightPath(rdir, path_offset, mut_rate*STRAIGHT_DECAY, start, end, l); //select if uPath not possible or on 50% chance
+                straightPath(rdir, path_offset, mut_rate*STRAIGHT_DECAY, start, end, l, true); //select if uPath not possible or on 50% chance
         }
 
         //determine behaviour of continuing path
@@ -395,11 +414,11 @@ pos LevelGenerator::mutatePath(Direction to, int parent_remainder, int path_offs
         if(leftu && rightu) {
             //path has been rerouted at least once. Continuing is optional
             if(u_widthL > u_widthR) {
-                straightPath(to, path_offset, mut_rate, rpos, lpos, -1);
+                straightPath(to, path_offset, mut_rate, rpos, lpos, u_widthL-u_widthR, false);
                 new_pos = lpos;
             }
             else if(u_widthL < u_widthR) {
-                straightPath(to, path_offset, mut_rate, lpos, rpos, -1);
+                straightPath(to, path_offset, mut_rate, lpos, rpos, u_widthR-u_widthL, false);
                 new_pos = rpos;
             }
 
@@ -412,122 +431,61 @@ pos LevelGenerator::mutatePath(Direction to, int parent_remainder, int path_offs
         //path has only produced dead ends. Critical path must continue from start
 
     }
-        /*
-        switch(rand()%n_mutations) {
-            case 0:
-                split_type = rand()%5; //determine what reroute to perform
-                //0=left, 1=right, 2=both
-                if(split_type != 1) {
-                    Direction ldir = left_dir(to);
-
-                    if(distanceToEdge(ldir, start)-1 > 1 && parent_remainder-path_offset > 2) {
-                        int l = rand()%(distanceToEdge(ldir, start)-1)+1;
-                        int turn_l = rand()%(parent_remainder-1-path_offset)+1;
-
-                        new_pos = uPath(ldir, to, l, turn_l, path_offset, mut_rate*0.5, start);
-                    }
-                }
-                if(split_type != 0) {
-                    Direction rdir = right_dir(to);
-
-                    if(distanceToEdge(rdir, start) > 1 && parent_remainder-path_offset > 2) {
-                        int l = rand()%(distanceToEdge(rdir, start)-1)+1;
-                        int turn_l = rand()%(parent_remainder-1-path_offset)+1;
-
-                        new_pos = uPath(rdir, to, l, turn_l, path_offset, mut_rate*0.5, start);
-                    }
-                }
-                return new_pos;
-
-            case 1:
-                split_type = rand()%5; //determine what split to perform
-
-                //split_type: 0=left, 1=right, 2=both
-                if(split_type != 1) {
-                    Direction ldir = left_dir(to);
-                    int max_length = distanceToEdge(ldir, start)-1;
-                    if(max_length > 1) {
-                        int l = rand()%(max_length-1)+1;
-                        start.advance(ldir, 1);
-                        pos left = start; left.advance(ldir, l + 1);
-
-                        straightPath(ldir, path_offset, mut_rate*0.5, start, left, l+1);
-                    }
-                    else split_type = 1;
-                }
-                if(split_type != 0) {
-                    Direction rdir = right_dir(to);
-                    int max_length = distanceToEdge(rdir, start) - 1;
-
-                    if(max_length > 1) {
-                        int l = rand()%(max_length-1)+1;
-                        start.advance(rdir, 1);
-                        pos right = start; right.advance(rdir, l + 1);
-
-                        straightPath(rdir, path_offset, mut_rate*0.5, start, right, l+1);
-                    }
-                }
-
-                return new_pos;
-        }
-    }
-    */
     return start;
 }
 
-void LevelGenerator::setFloor(int x, int y, double enemy_rate) {
+void LevelGenerator::setFloor(int x, int y) {
     if(x >= width-1 || y >= height-1 || x <= 0 || y <= 0)
         return;
 
     if(board[x][y] == '-') {
-        if(dist(x, y, entrance.x, entrance.y) > 15 &&
-                dist(x, y, exit.x, exit.y)         > 15) {
+        if(dist(x, y, entrance.x, entrance.y) > 15 && dist(x, y, exit.x, exit.y) > 15)
+            enemy_positions.push_back({x, y});
 
-            double r = rand(); double max = RAND_MAX; double c = r/max;
-            if(c < enemy_rate){ // Certain chance to spawn enemy
-                board[x][y] = 'E';
-                return;
-            }
-        }
-
+        n_floor++;
         board[x][y] = 'F';
     }
 }
 
-void LevelGenerator::straightPath(Direction d, int path_offset, double mut_rate, pos start, pos end, int power) {
+void LevelGenerator::straightPath(Direction d, int path_offset, double mut_rate, pos start, pos end, int length, bool power) {
     int i = 0;
 
-    while(start.x < width-1 && start.y < height-1 &&
-          start.x > 0      && start.y > 0) {
+    if(power) { //beetje hacky, alleen puur straightPath heeft power aan het einde
+        n_mut++;
+        remain += length/(2*path_offset+1);
+    }
 
-        if(i == power && board[start.x][start.y] == '-')
+    while(start.x < width-1 && start.y < height-1 && start.x > 0 && start.y > 0) {
+
+        if(power && i == length && board[start.x][start.y] == '-')
             power_positions.push_back(start);
 
-        setFloor(start.x, start.y, ENEMY_SPAWN);
+        setFloor(start.x, start.y);
 
         for(int k = 1; k <= path_offset; k++) { //path width
             if(d == DIR_RIGHT || d == DIR_LEFT) {
-                setFloor(start.x, start.y+k, ENEMY_SPAWN);
-                setFloor(start.x, start.y-k, ENEMY_SPAWN);
+                setFloor(start.x, start.y+k);
+                setFloor(start.x, start.y-k);
             }
             else {
-                setFloor(start.x+k, start.y, ENEMY_SPAWN);
-                setFloor(start.x-k, start.y, ENEMY_SPAWN);
+                setFloor(start.x+k, start.y);
+                setFloor(start.x-k, start.y);
             }
         }
 
         if(start.x == end.x && start.y == end.y)
             return;
 
-        if((i > path_offset+1 && i%(2*(path_offset+1)) == 0)) {
-            int remain;
+        if((i > path_offset+1 && i%(2*path_offset+1) == 0)) {
+            remain--;
+            int r;
             if(d == DIR_RIGHT || d == DIR_LEFT)
-                remain = abs(end.x - start.x);
+                r = abs(end.x - start.x);
             else
-                remain = abs(end.y - start.y);
+                r = abs(end.y - start.y);
 
-            if(remain > path_offset)
-                start = mutatePath(d, remain, path_offset, mut_rate, start);
+            if(r > path_offset) //for old mutation: change (double)... to mut_rate
+                start = mutatePath(d, r, path_offset, (double)(target_mut-n_mut)/remain , start);
         }
 
         start.advance(d, 1);
@@ -537,6 +495,8 @@ void LevelGenerator::straightPath(Direction d, int path_offset, double mut_rate,
 }
 
 pos LevelGenerator::uPath(Direction d, Direction turn_d, int length, int turn_length, int path_offset, double mut_rate, pos start) {
+        n_mut++;
+        remain += (2*length + turn_length)/(2*path_offset+1);
 
         pos turn1 = start;
         turn1.advance(d, length);
@@ -553,13 +513,13 @@ pos LevelGenerator::uPath(Direction d, Direction turn_d, int length, int turn_le
         // board[end.x][end.y] = 'E';
         // printCharBoard();
 
-        straightPath(d, path_offset, mut_rate, start, turn1, -1);
+        straightPath(d, path_offset, mut_rate, start, turn1, length, false);
         // turn1.advance(turn_d, 1); //make turn
 
-        straightPath(turn_d, path_offset, mut_rate, turn1, turn2, -1);
+        straightPath(turn_d, path_offset, mut_rate, turn1, turn2, turn_length, false);
         // turn2.advance(opposite_dir(d), 1);
 
-        straightPath(opposite_dir(d), path_offset, mut_rate, turn2, end, -1);
+        straightPath(opposite_dir(d), path_offset, mut_rate, turn2, end, length, false);
 
         return end;
 }
