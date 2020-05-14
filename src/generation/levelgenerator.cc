@@ -121,28 +121,69 @@ void LevelGenerator::clearChar() {
     }
 }
 
-void LevelGenerator::setPowers() {
+void LevelGenerator::setPowers(Square *** b) {
     std::random_shuffle(power_positions.begin(), power_positions.end());
 
-    for (int i = 0; i < n_powers && i < power_positions.size(); i++) {
-        pos temp = power_positions[i];
-        board[temp.x][temp.y] = 'P';
 
-        power_positions.pop_back();
+    for (int i = 0; i < n_powers && i < (int64_t)power_positions.size(); i++) {
+        pos temp = power_positions[i];
+
+        if(rand()%2) spawnHeart(b[temp.x][temp.y]);
+        else spawnFBullet(b[temp.x][temp.y]);
+    }
+
+    for (int i = 0; i < n_powers - (int64_t)power_positions.size() && i < (int64_t)enemy_positions.size(); i++) {
+        pos temp = enemy_positions[i];
+
+        if(rand()%2) spawnHeart(b[temp.x][temp.y]);
+        else spawnFBullet(b[temp.x][temp.y]);
     }
 }
 
-void LevelGenerator::setEnemies() {
+void LevelGenerator::setEnemies(Square *** b) {
     std::random_shuffle(enemy_positions.begin(), enemy_positions.end());
 
-    for (int i = 0; i < (enemy_percent*n_floor)/1000 && i < enemy_positions.size(); i++) {
-        pos temp = enemy_positions[i];
-        board[temp.x][temp.y] = 'E';
+    for (int i = 0; i < (enemy_permille*n_floor)/1000 && i < (int64_t)enemy_positions.size(); i++) {
+        pos temp = enemy_positions.back();
+        spawnEnemy(b[temp.x][temp.y]);
+
+        enemy_positions.pop_back();
     }
+}
+
+void LevelGenerator::setDifficulty() {
+    switch(depth) { //TODO determine proper scaling
+        case 1:
+            target_mut = 3;
+            break;
+        case 2:
+            target_mut = 7;
+            break;
+        case 3:
+            target_mut = 12;
+            break;
+        case 4:
+            target_mut = 18;
+            break;
+        case 5:
+            target_mut = 25; //seems to be the maximum for a level that is not empty
+                             //possible TODO: dissallow new paths to intersect
+            break;
+        case 6:
+            target_mut = 35;
+            break;
+        default:
+            target_mut = 25;
+
+    }
+    //Tiers: {0-3}, {3-9}, {10-18}, {19-28} ...
+
+    enemy_permille = 5 + 2*(depth-1) + rand()%3;
+    n_powers = depth;
 }
 
 Square* LevelGenerator::createSquare(char c, int x, int y) {
-    Square* temp = NULL;
+
     switch(c) {
         case '-':
             return new WallSquare(x, y);
@@ -152,17 +193,6 @@ Square* LevelGenerator::createSquare(char c, int x, int y) {
             return new DoorSquare(x, y, in);
         case 'O':
             return new DoorSquare(x, y, out);
-        case 'E':
-            temp = new EmptySquare(x, y);
-            spawnEnemy(temp);
-
-            return temp;
-        case 'P':
-            temp = new EmptySquare(x, y);
-            if(rand()%2) spawnHeart(temp);
-            else spawnFBullet(temp);
-
-            return temp;
 
         default:
             return new WallSquare(x, y);
@@ -172,8 +202,6 @@ Square* LevelGenerator::createSquare(char c, int x, int y) {
 Square*** LevelGenerator::createBoard() {
     std::cerr << "LevelGenerator: createBoard start" << std::endl;
 
-    setPowers();
-    setEnemies();
 
     Square*** square_board = new Square**[width];
     for(int i = 0; i < width; i++)
@@ -183,6 +211,8 @@ Square*** LevelGenerator::createBoard() {
         for(int j = 0; j < height; j++)
             square_board[i][j] = createSquare(board[i][j], i, j);
 
+    setEnemies(square_board);
+    setPowers(square_board);
     // printCharBoard();
     clearChar();
     return square_board;
@@ -292,12 +322,13 @@ Square*** LevelGenerator::randomRoom(int w, int h, int room_doory, FastRandom &r
     return square_board;
 }
 
-Square*** LevelGenerator::cpeRoom(Direction in_dir, int in_offset, Direction out_dir, int out_offset) {
+Square*** LevelGenerator::cpeRoom(Direction in_dir, int in_offset, Direction out_dir, int out_offset, int d) {
     entrance = generateDoors(in_dir, in_offset);
     exit = generateDoors(out_dir, out_offset);
 
     in = in_dir;
     out = out_dir;
+    depth = d;
 
     return cpeRoom();
 }
@@ -319,12 +350,11 @@ Square*** LevelGenerator::cpeRoom() {
     finish.advance(opposite_dir(out), 1);
 
     remain = (width - 2)/(2*p_width+1); //projected number of floor tiles to be  placed
-    target_mut = 25;
-    //Tiers: {0-3}, {3-9}, {10-18}, {19-28} ...
+
+    setDifficulty();
 
     straightPath(opposite_dir(in), p_width, BASE_MUT, walk, finish, width -2, false);
 
-    //TODO? arbitrary starting position RL/UD: Z/N-shape random corners
     // dbg(n_mut);
     return createBoard();
 }

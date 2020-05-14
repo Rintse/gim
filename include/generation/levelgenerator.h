@@ -54,7 +54,7 @@ class LevelGenerator {
         void printCharBoard() const;
         Square*** randomRoom(int w, int h, int room_doory, FastRandom &r);
         Square*** cpeRoom();
-        Square*** cpeRoom(Direction in_dir, int in_offset, Direction out_dir, int out_offset);
+        Square*** cpeRoom(Direction in_dir, int in_offset, Direction out_dir, int out_offset, int d);
         Square*** bossRoom(int w, int h, pos door);
         Square*** startRoom(int w, int h, int room_door_row, int boss_door_column);
 
@@ -79,15 +79,16 @@ class LevelGenerator {
         int n_floor;
         int n_mut = 0;
         int n_powers = 3;
-        int enemy_percent = 5;
+        int enemy_permille = 5;
 
         int distanceToEdge(Direction d, pos p);
         pos generateDoors(Direction d, int i) const;
         void clearChar();
 
         void setFloor(int x, int y);
-        void setPowers();
-        void setEnemies();
+        void setPowers(Square *** b);
+        void setEnemies(Square *** b);
+        void setDifficulty();
         Square* createSquare(char c, int x, int y);
         void spawnEnemy(Square* s);
         void spawnHeart(Square* s);

@@ -35,7 +35,7 @@ Level* Game::newLevel(Level* neighbour, int width, int height, Direction dir, in
     Level* tmp = new Level(width, height, this, viewDistance, neighbour->getDepth()+1);
     levelgen.setLevel(tmp);
 
-    Square*** newBoard = levelgen.cpeRoom(DIR_LEFT, height/2, DIR_RIGHT, height/2);
+    Square*** newBoard = levelgen.cpeRoom(DIR_LEFT, height/2, DIR_RIGHT, height/2, tmp->getDepth());
 
     tmp->setRoom(newBoard);
     tmp->setPlayer(player);
