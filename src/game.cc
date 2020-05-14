@@ -32,12 +32,10 @@ void Game::addLevel(Level* l) {
 
 Level* Game::newLevel(Level* neighbour, int width, int height, Direction dir, int viewDistance) {
 
-    Level* tmp = new Level(width, height, this, viewDistance);
+    Level* tmp = new Level(width, height, this, viewDistance, neighbour->getDepth()+1);
     levelgen.setLevel(tmp);
 
-    //NOTE cpeRoom bevat nog een enemies/powerups
     Square*** newBoard = levelgen.cpeRoom(DIR_LEFT, height/2, DIR_RIGHT, height/2);
-    // Square*** newBoard = levelgen.randomRoom(width, height, height/2, randgen);
 
     tmp->setRoom(newBoard);
     tmp->setPlayer(player);

@@ -16,7 +16,7 @@ class Game;
 class Level {
 public:
     Level();
-    Level(int w, int h, Game* g, int vd);
+    Level(int w, int h, Game* g, int vd, int d = 0);
     ~Level();
 
     // Initialisation
@@ -41,16 +41,17 @@ public:
     double BFSdist(Square* from, Square* to);
     void hurtGeorge();
     void setGeorge();
-    
+
     // Getters
     Square* getSquareDir(Square* s, Direction dir);
     Square* getSquare(int x, int y);
     Player* getPlayer();
     George* getGeorge();
     std::set<Projectile*>* getProjectiles();
-    int getWidth();
-    int getHeight();
-    int getViewDistance();
+    int getWidth() const;
+    int getHeight() const;
+    int getViewDistance() const;
+    int getDepth() const;
     void addEnemy(Enemy* e);
     bool noEnemies();
 
@@ -60,6 +61,7 @@ private:
     int height, width;
     int doorx, doory;
     int viewDistance;
+    int depth;
 
     std::set<Projectile*> projectiles;
     std::set<Enemy*> enemies;

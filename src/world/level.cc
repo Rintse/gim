@@ -20,7 +20,7 @@
 
 Level::Level(){}
 
-Level::Level(int w, int h, Game* g, int vd) {
+Level::Level(int w, int h, Game* g, int vd, int d) {
     game = g;
     width = w;
     height = h;
@@ -28,11 +28,13 @@ Level::Level(int w, int h, Game* g, int vd) {
     doory = height/2;
     george = 0;
     viewDistance = (vd < 5) ? 5 : vd;
+    depth = d;
 
-    board = new Square**[width];
-    for(int i = 0; i < width; ++i) {
-        board[i] = new Square*[height];
-    }
+    board = NULL;
+    // board = new Square**[width];
+    // for(int i = 0; i < width; ++i) {
+    //     board[i] = new Square*[height];
+    // }
 }
 
 Level::~Level() {
@@ -166,53 +168,6 @@ Level* Level::newLevel(Direction dir) {
     return game->newLevel(this, width, height, dir, viewDistance-SIGHT_DEGRATION);
 }
 
-/*
- * NOTE DEPRECATED
-*/
-// Level* Level::newLevel(Direction dir) {
-//     std::cout << "nieuw level" << std::endl;
-//     // Create new level and populate its board
-//     Level* tmp = new Level(width, height, game, viewDistance-SIGHT_DEGRATION);
-//     tmp->generateRandomRoom();
-//
-//     // Set all reference pointers
-//     tmp->setPlayer(player);
-//     tmp->setNeighbour(opposite_dir(dir), this);
-//     game->addLevel(tmp);
-//
-//     return tmp;
-// }
-
-// void Level::createBossRoom() {
-//     Level* tmp = new Level(width, height, game, width);
-//     tmp->generateBossRoom();
-//     tmp->setNeighbour(DIR_DOWN, this);
-//     tmp->setPlayer(player);
-//     game->addLevel(tmp);
-//     neighbours[DIR_UP] = tmp;
-// }
-
-// void Level::generateBossRoom() {
-//     for(int i = 0; i < width; i++) {
-//         for(int j = 0; j < height; j++) {
-//             // Edges
-//             if(i == 0 || j == 0 || i == width-1 || j == height-1) {
-//                 // Door on bottom
-//                 if(j == height-1 && i == doorx) {
-//                     board[i][j] = new DoorSquare(i,j,DIR_DOWN);
-//                 }
-//                 else { // Walls around the entire thing
-//                     board[i][j] = new WallSquare(i,j);
-//                 }
-//             }
-//             else {
-//                 board[i][j] = new EmptySquare(i,j);
-//             }
-//         }
-//     }
-//     setGeorge();
-// }
-
 void Level::setGeorge() {
     int y = 3;
     int x = width/2 - 1;
@@ -225,38 +180,6 @@ void Level::hurtGeorge() {
     signalGameOver();
   }
 }
-
-// void Level::generateStartRoom() {
-//     for(int i = 0; i < width; i++) {
-//         for(int j = 0; j < height; j++) {
-//             // Edges
-//             if(i == 0 || j == 0 || i == width-1 || j == height-1) {
-//                 // Doors on top, left, right
-//                 if( (j == 0 && i == doorx) ||
-//                 ((i == 0 || i == width-1) && j == doory)) {
-//                     Direction dir;
-//                     if(i == 0) dir = DIR_LEFT;
-//                     else if(i == width-1) dir = DIR_RIGHT;
-//                     else dir = DIR_UP;
-//                     board[i][j] = new DoorSquare(i,j,dir);
-//                 }
-//                 else { // Walls around the entire thing
-//                     board[i][j] = new WallSquare(i,j);
-//                 }
-//             }
-//             // Hallway
-//             else if((i < doorx-6 && j < doory-6) || (i > doorx+6 && j < doory-6) ||
-//                     (i < doorx-6 && j > doory+6) || (i > doorx+6 && j > doory+6)) {
-//                 board[i][j] = new WallSquare(i,j);
-//             }
-//             else {
-//                 board[i][j] = new EmptySquare(i,j);
-//             }
-//         }
-//     }
-//
-//     createBossRoom();
-// }
 
 void Level::setRoom(Square*** b) {
     if(board != NULL) {
@@ -282,57 +205,24 @@ void Level::spawnHeart(Square* s) {
     es->setPowerup(new Hp);
 }
 
-// void Level::generateRandomRoom() {
-//     for(int i = 0; i < width; i++) {
-//         for(int j = 0; j < height; j++) {
-//             if(i == 0 || j == 0 || i == width-1 || j == height-1) {
-//                 if((i == 0 || i == width-1) && j == doory) {
-//                     Direction dir = i==0 ? DIR_LEFT : DIR_RIGHT;
-//                     board[i][j] = new DoorSquare(i,j,dir);
-//                 }
-//                 else {
-//                     board[i][j] = new WallSquare(i,j);
-//                 }
-//             }
-//             else {
-//                 if(game->getRNG()->getLong() % 10 == 0 && dist(i,j, width-1,doory) > 3) {
-//                     board[i][j] = new WallSquare(i,j);
-//                 }
-//                 else {
-//                     board[i][j] = new EmptySquare(i,j);
-//                     // Only spawn enemy if far enough from doors
-//                     if(dist(i,j, 0,doory) > 15 && dist(i,j, width-1,doory) > 15) {
-//                         double rand = game->getRNG()->getDouble();
-//                         if(rand < 0.01) { // Certain chance to spawn enemy
-//                             spawnEnemy(board[i][j]); //TODO: magic num
-//                             std::cout << "Enemy at " << i << ", " << j << std::endl;
-//                         }
-//                         rand = game->getRNG()->getDouble();
-//                         if(rand < 0.005) {
-//                             spawnHeart(board[i][j]);
-//                             std::cout << "Heart at " << i << ", " << j << std::endl;
-//                         }
-//                     }
-//                 }
-//             }
-//         }
-//     }
-// }
-
 Square* Level::getSquare(int x, int y) {
     return board[x][y];
 }
 
-int Level::getWidth(){
+int Level::getWidth() const {
   return width;
 }
 
-int Level::getHeight(){
+int Level::getHeight() const {
   return height;
 }
 
-int Level::getViewDistance() {
+int Level::getViewDistance() const {
     return viewDistance;
+}
+
+int Level::getDepth() const {
+    return depth;
 }
 
 void Level::addEnemy(Enemy* e) {
