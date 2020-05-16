@@ -9,6 +9,7 @@
 
 #include "entities/powerups/hp.h"
 #include "entities/powerups/fasterbullets.h"
+#include "/home/majeux/cpp-tools/dbg-macro/dbg.h"
 
 #include <stdlib.h>
 #include <algorithm>
@@ -21,7 +22,7 @@
 */
 LevelGenerator::LevelGenerator(int w, int h) {
     initBoard(w, h, DIR_LEFT, h/2, DIR_RIGHT, h/2);
-    
+
     srand(time(NULL));
 }
 
@@ -121,17 +122,16 @@ void LevelGenerator::spawnFBullet(Square* s) {
 void LevelGenerator::placePowers(Square *** b) {
     std::random_shuffle(power_positions.begin(), power_positions.end());
 
-
     for (int i = 0; i < target_powers && i < (int64_t)power_positions.size(); i++) {
         pos temp = power_positions[i];
-
+        dbg(temp.x); dbg(temp.y);
         if(rand()%2) spawnHeart(b[temp.x][temp.y]);
         else spawnFBullet(b[temp.x][temp.y]);
     }
 
     for (int i = 0; i < target_powers - (int64_t)power_positions.size() && i < (int64_t)enemy_positions.size(); i++) {
         pos temp = enemy_positions[i];
-
+        dbg(temp.x); dbg(temp.y);
         if(rand()%2) spawnHeart(b[temp.x][temp.y]);
         else spawnFBullet(b[temp.x][temp.y]);
     }
@@ -148,17 +148,21 @@ void LevelGenerator::placeEnemies(Square *** b) {
     }
 }
 
-void LevelGenerator::placeFloor(int x, int y) {
+void LevelGenerator::placeFloor(int x, int y, bool critical) {
     if(x >= width-1 || y >= height-1 || x <= 0 || y <= 0)
-    return;
+        return;
 
     if(board[x][y] == '-') {
         if(dist(x, y, entrance.x, entrance.y) > 15 && dist(x, y, exit.x, exit.y) > 15)
         enemy_positions.push_back({x, y});
 
         n_floor++;
-        board[x][y] = 'F';
     }
+
+    if(critical)
+        board[x][y] = 'C';
+    else
+        board[x][y] = 'F';
 }
 /////////////
 /*
@@ -169,7 +173,7 @@ Square* LevelGenerator::createSquare(char c, int x, int y) {
     switch(c) {
         case '-':
         return new WallSquare(x, y);
-        case 'F':
+        case 'F': case 'C':
         return new EmptySquare(x, y);
         case 'I':
         return new DoorSquare(x, y, in);
@@ -177,6 +181,7 @@ Square* LevelGenerator::createSquare(char c, int x, int y) {
         return new DoorSquare(x, y, out);
 
         default:
+        std::cerr << "a" << std::endl;
         return new WallSquare(x, y);
     }
 }
@@ -434,7 +439,7 @@ pos LevelGenerator::mutatePath(Direction to, int parent_remainder, int path_offs
             int l = rand()%(ldist-1-MIN_MUT_LENGTH) + MIN_MUT_LENGTH;
             pos end = start; end.advance(ldir, l);
 
-            if(parent_remainder > min_width && rand()%10 < 7) {
+            if(parent_remainder > min_width && rand()%10 < 6) {
                 u_widthL = rand()%(parent_remainder - min_width) + min_width;
 
                 lpos = uPath(ldir, to, l, u_widthL, path_offset, start);
@@ -490,10 +495,19 @@ void LevelGenerator::straightPath(Direction d, int path_offset, pos start, pos e
 
     while(start.x < width-1 && start.y < height-1 && start.x > 0 && start.y > 0) {
 
-        if(power && i == length && board[start.x][start.y] == '-')
-        power_positions.push_back(start);
 
-        placeFloor(start.x, start.y);
+        pos temp = start; temp.advance(d, 1 + path_offset, width, height);
+
+        if(power && board[temp.x][temp.y] == 'C') { //will be an intersection
+            std::cerr << "path truncated" << std::endl;
+            // printCharBoard();
+            return;
+        }
+
+        if(power && i == length && board[start.x][start.y] == '-')
+            power_positions.push_back(start);
+
+        placeFloor(start.x, start.y, true);
 
         for(int k = 1; k <= path_offset; k++) { //path width
             if(d == DIR_RIGHT || d == DIR_LEFT) {

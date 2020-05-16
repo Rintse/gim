@@ -32,6 +32,29 @@ struct pos {
             break;
         }
     }
+    void advance(Direction d, int step, int x_max, int y_max) {
+        switch(d) {
+            case DIR_UP:
+            if(y - step > 0)
+                y -= step;
+            break;
+
+            case DIR_DOWN:
+            if(y + step < y_max)
+                y += step;
+            break;
+
+            case DIR_LEFT:
+            if(x - step > 0)
+                x -= step;
+            break;
+
+            case DIR_RIGHT:
+            if(x + step < x_max)
+                x += step;
+            break;
+        }
+    }
 
     pos& operator =(const pos &r)
     {
@@ -104,7 +127,7 @@ class LevelGenerator {
         void spawnFBullet(Square* s);
         void placePowers(Square *** b);
         void placeEnemies(Square *** b);
-        void placeFloor(int x, int y);
+        void placeFloor(int x, int y, bool critical = false);
 
 
         //CHAR -> SQUARE BOARD CONVERSION
