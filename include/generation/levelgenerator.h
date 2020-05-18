@@ -69,6 +69,7 @@ class LevelGenerator {
     public:
         //CONSTRUCTION / INITIALIZATION
         LevelGenerator(int width, int height);
+        ~LevelGenerator();
         void initBoard(int w, int h, Direction in_dir, int in_index,
                         Direction out_dir, int out_index);
         void initBoard(Level* l, int w, int h, Direction in_dir, int in_index, Direction out_dir, int out_index);
@@ -99,6 +100,7 @@ class LevelGenerator {
 
         char** board = NULL; //intermediate board representation
         Level* level;        //level this board will belong to
+        // FastRandom* rand;
 
 
         //PROCEDURAL DIFFICULTY / REWARDS
@@ -120,6 +122,7 @@ class LevelGenerator {
         //AUX BOARD FUNCTIONS
         int distanceToEdge(Direction d, pos p);
         void clearChar();
+        void deleteCharBoard();
 
         //SQUARE PLACEMENT
         void spawnEnemy(Square* s);

@@ -17,12 +17,18 @@
 #define CRITICAL_MUT 0.9
 
 /*
-    CONSTRUCTION / INITIALIZATION
+    (DE)CONSTRUCTION / INITIALIZATION
 */
 LevelGenerator::LevelGenerator(int w, int h) {
     initBoard(w, h, DIR_LEFT, h/2, DIR_RIGHT, h/2);
 
-    srand(time(NULL));
+    // rand = new FastRandom(time(NULL));
+}
+
+LevelGenerator::~LevelGenerator() {
+    // delete rand;
+
+    deleteCharBoard();
 }
 
 //d: side of the board, the door is on
@@ -56,14 +62,8 @@ void LevelGenerator::initBoard(int w, int h,
     in = in_dir;
     out = out_dir;
 
-    if(board != NULL) { //TODO mogelijk resizen
-        std::cerr << "LevelGenerator: Delete board" << std::endl;
-        for(int i = 0; i < width; i++) {
-            if(board[i] != NULL)
-                delete[] board[i];
-        }
-        delete[] board;
-    }
+    deleteCharBoard();
+
     std::cerr << "LevelGenerator: Allocate board" << std::endl;
     board = new char*[width];
 
@@ -121,6 +121,8 @@ void LevelGenerator::spawnFBullet(Square* s) {
 void LevelGenerator::placePowers(Square *** b) {
     std::random_shuffle(power_positions.begin(), power_positions.end());
 
+    // printCharBoard();
+
     for (int i = 0; i < target_powers && i < (int64_t)power_positions.size(); i++) {
         pos temp = power_positions[i];
         // dbg(temp.x); dbg(temp.y);
@@ -139,7 +141,7 @@ void LevelGenerator::placePowers(Square *** b) {
 void LevelGenerator::placeEnemies(Square *** b) {
     std::random_shuffle(enemy_positions.begin(), enemy_positions.end());
 
-    for (int i = 0; i < (enemy_permille*n_floor)/1000 && i < (int64_t)enemy_positions.size(); i++) {
+    for (int i = 0; i < std::max(1, (enemy_permille*n_floor)/1000) && i < (int64_t)enemy_positions.size(); i++) {
         pos temp = enemy_positions.back();
         spawnEnemy(b[temp.x][temp.y]);
 
@@ -230,6 +232,18 @@ void LevelGenerator::clearChar() {
         }
     }
 }
+
+void LevelGenerator::deleteCharBoard() {
+    if(board != NULL) { //TODO mogelijk resizen
+        std::cerr << "LevelGenerator: Delete board" << std::endl;
+        for(int i = 0; i < width; i++) {
+            if(board[i] != NULL)
+                delete[] board[i];
+        }
+        delete[] board;
+    }
+}
+
 
 //No.  squares between p and edge d
 int LevelGenerator::distanceToEdge(Direction d, pos p) {
@@ -437,7 +451,7 @@ pos LevelGenerator::mutatePath(Direction to, int parent_remainder, int path_offs
             int l = rand()%(ldist-1-MIN_MUT_LENGTH) + MIN_MUT_LENGTH;
             pos end = start; end.advance(ldir, l);
 
-            if(parent_remainder > min_width && rand()%10 < 6) {
+            if(parent_remainder > min_width && rand()%10 < 5) {
                 u_widthL = rand()%(parent_remainder - min_width) + min_width;
 
                 lpos = uPath(ldir, to, l, u_widthL, path_offset, start);
@@ -449,7 +463,7 @@ pos LevelGenerator::mutatePath(Direction to, int parent_remainder, int path_offs
             int l = rand()%(rdist-1-MIN_MUT_LENGTH) + MIN_MUT_LENGTH;
             pos end = start; end.advance(rdir, l);
 
-            if(parent_remainder > min_width && rand()%10 < 7) { //favor upath
+            if(parent_remainder > min_width && rand()%10 < 5) { //favor upath
                 u_widthR = rand()%(parent_remainder - min_width) + min_width;
 
                 rpos = uPath(rdir, to, l, u_widthR, path_offset, start);
@@ -474,9 +488,9 @@ pos LevelGenerator::mutatePath(Direction to, int parent_remainder, int path_offs
             return new_pos;
         }
         if(leftu)
-        return lpos;
+            return lpos;
         if(rightu)
-        return rpos;
+            return rpos;
         //path has only produced dead ends. Critical path must continue from start
 
     }
@@ -492,15 +506,6 @@ void LevelGenerator::straightPath(Direction d, int path_offset, pos start, pos e
     }
 
     while(start.x < width-1 && start.y < height-1 && start.x > 0 && start.y > 0) {
-
-
-        pos temp = start; temp.advance(d, 1 + path_offset, width, height);
-
-        if(power && board[temp.x][temp.y] == 'C') { //will be an intersection
-            std::cerr << "path truncated" << std::endl;
-            // printCharBoard();
-            return;
-        }
 
         if(power && i == length && board[start.x][start.y] == '-')
             power_positions.push_back(start);
@@ -519,7 +524,17 @@ void LevelGenerator::straightPath(Direction d, int path_offset, pos start, pos e
         }
 
         if(start.x == end.x && start.y == end.y)
-        return;
+            return;
+
+        pos temp = start; temp.advance(d, 2 + path_offset, width, height);
+
+        if(power && temp.x != start.x && temp.y != start.y && board[temp.x][temp.y] == 'C') { //there will be an intersection
+            if(i > length/2)
+                power_positions.push_back(start);
+            std::cerr << "path truncated" << std::endl;
+            // printCharBoard();
+            return;
+        }
 
         if((i > path_offset+1 && i%(2*path_offset+1) == 0)) {
             remain--;
