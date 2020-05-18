@@ -10,6 +10,7 @@ enum Action {
     ACTION_MOVERIGHT,
     ACTION_NONE,
     ACTION_SHOOT,
+    ACTION_PORTAL,
     GAME_CLOSE,
     GAME_PAUSE
 };

@@ -144,11 +144,20 @@ void GFX::drawFooter() {
 
     int hp = game->getLevel()->getPlayer()->getHP();
     dst.y = scale*(LVL_HEIGHT-1)*SPRITE_DIM;
-    for(int i = 0; i < LVL_WIDTH; i++) {
+    for(int i = 0; i < LVL_WIDTH-1; i++) {
         dst.x = scale*i*SPRITE_DIM;
         if(i >= hp) c = game->getLevel()->getSquare(i,(LVL_HEIGHT-1))->token();
         SDL_BlitScaled(sprites[c], &src, surface, &dst);
     }
+
+    dst.x = scale*(LVL_WIDTH-1)*SPRITE_DIM;
+    if(game->getLevel()->getPlayer()->getPortal()) {
+      c = 'p';
+    }
+    else {
+      c = game->getLevel()->getSquare(LVL_WIDTH-1,(LVL_HEIGHT-1))->token();
+    }
+    SDL_BlitScaled(sprites[c], &src, surface, &dst);
 }
 
 void GFX::drawPauseMenu() {

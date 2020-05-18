@@ -70,8 +70,10 @@ int Game::init() {
     }
     //START ROOM
     curLvl = new Level(LVL_WIDTH, LVL_HEIGHT, this, LVL_WIDTH);
+    startLvl = curLvl;
 
     levelgen.setLevel(curLvl);
+
     Square*** start = levelgen.startRoom(LVL_WIDTH, LVL_HEIGHT, LVL_HEIGHT/2, LVL_WIDTH/2);
 
     player = new Player(curLvl);
@@ -143,4 +145,8 @@ void Game::run() {
 
         sleep_remaining(t1);
     }
+}
+
+Level* Game::getStartLevel() {
+  return startLvl;
 }

@@ -29,6 +29,7 @@ class Game {
         ~Game();
         void setLevel(Level* l);
         Level* getLevel();
+        Level* getStartLevel();
         void addLevel(Level* l);
         Level* newLevel(Level* neighbour, int width, int height, Direction dir, int viewDistance);
         FastRandom* getRNG();
@@ -44,6 +45,7 @@ class Game {
         Player* player;
         Level *curLvl;
         Level* prevLvl;
+        Level* startLvl;
         std::vector<Level*> levels;
         LevelGenerator levelgen;
         Gamestate state;

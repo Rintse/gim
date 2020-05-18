@@ -4,14 +4,6 @@
 
 #include <iostream>
 
-/*
-BIG TODO LIJST
-
-george moet groter
-sprites george
-CODE DUPLICATION OMSCHRIJVEN
-*/
-
 George::George() {}
 
 George::George(Level* l, EmptySquare* s, int FPS) {
@@ -48,6 +40,7 @@ void George::setParts(){
     if(i == N_PARTS-1 || i == N_PARTS - WIDTH) {
       parts[i] = dynamic_cast<GeorgePart*>(new GeorgeGun(lvl, tmp, tokens[i]));
       tmp->setGeorgepart(parts[i]);
+      dynamic_cast<GeorgeGun*>(parts[i])->setRound(curRound);
     }
     // no guns
     else {

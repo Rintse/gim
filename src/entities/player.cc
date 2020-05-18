@@ -14,6 +14,7 @@ Player::Player(Level* l) {
     curSLO = curMLO = -1;
     moveLockout = SLOW_MLO;
     shootLockout = START_SLO;
+    portal = true;
 }
 
 void Player::decreaseSLO() {
@@ -77,6 +78,7 @@ void Player::act(Input in) {
         case ACTION_MOVEDOWN: move(DIR_DOWN); break;
         case ACTION_MOVERIGHT: move(DIR_RIGHT); break;
         case ACTION_MOVELEFT: move(DIR_LEFT); break;
+        case ACTION_PORTAL: toStart(); break;
         default: break;
     }
 
@@ -111,6 +113,7 @@ void Player::move(Direction dir) {
     // Touching doors makes you go to a new room
     else if(s->type() == SQUARE_DOOR) {
         Direction dir = dynamic_cast<DoorSquare*>(s)->getDir();
+        curSquare->setPlayer(0);
         curLvl->switchLevel(dir);
         facing = dir;
     }
@@ -136,4 +139,18 @@ void Player::move(Direction dir) {
           facing = dir;
         }
     }
+}
+
+bool Player::getPortal() {
+  return portal;
+}
+
+void Player::toStart() {
+  if(!portal) return;
+  else {
+    portal = false;
+    curSquare->setPlayer(0);
+    curLvl->toStartLevel();
+    facing = DIR_UP;
+  }
 }

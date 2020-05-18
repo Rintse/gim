@@ -177,6 +177,15 @@ void Level::hurtGeorge() {
   }
 }
 
+void Level::toStartLevel() {
+    std::cout << "to start level" << std::endl;
+
+    Level* startLvl = game->getStartLevel();
+    game->setLevel(startLvl);
+    startLvl->initPlayer();
+    player->setLevel(startLvl);
+}
+
 void Level::setRoom(Square*** b) {
     if(board != NULL) {
         for (int i = 0; i < width; i++)

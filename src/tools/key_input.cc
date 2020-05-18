@@ -50,7 +50,11 @@ Input KeyHandler::getInput() {
     if(keys[SDLK_ESCAPE]) {
         in.act = GAME_PAUSE;
         keys[SDLK_ESCAPE] = false;
-        return in; 
+        return in;
+    }
+    if(keys[SDLK_f]) {
+      in.act = ACTION_PORTAL;
+      return in;
     }
 
     // Always use movement key that was pressed down last (and is still pressed)

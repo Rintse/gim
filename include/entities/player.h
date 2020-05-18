@@ -28,14 +28,18 @@ public:
     void takeDamage();
     void increaseHP();
     int getHP();
+    bool getPortal();
 
 private:
+    void toStart();
+
     int health;
     Level* curLvl;
     EmptySquare* curSquare;
     Direction facing;
     int moveLockout, shootLockout;
     int curMLO, curSLO;
+    bool portal;
 };
 
 #endif

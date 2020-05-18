@@ -41,6 +41,7 @@ public:
     double BFSdist(Square* from, Square* to);
     void hurtGeorge();
     void setGeorge();
+    void toStartLevel();
 
     // Getters
     Square* getSquareDir(Square* s, Direction dir);

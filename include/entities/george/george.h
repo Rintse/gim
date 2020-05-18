@@ -11,11 +11,12 @@
 #define BULLET_PAUSE 10
 
 // george size
-#define N_PARTS 21
+#define HEIGHT 3
 #define WIDTH 7
+#define N_PARTS HEIGHT * WIDTH
 
 // other
-#define N_TINYBABYGEORGES 12
+#define N_TINYBABYGEORGES 10
 #define HEALTH 40
 
 class Level;

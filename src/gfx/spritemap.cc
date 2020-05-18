@@ -49,6 +49,7 @@ std::map<char, SDL_Surface*> getSpriteMap() {
     sprites['x'] = SDL_LoadBMP("img/bullet.bmp");
     sprites['/'] = SDL_LoadBMP("img/laserleft.bmp");
     sprites['|'] = SDL_LoadBMP("img/laserright.bmp");
+    sprites['p'] = SDL_LoadBMP("img/portal.bmp");
 
     return sprites;
 }
