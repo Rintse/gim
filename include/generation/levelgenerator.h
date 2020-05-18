@@ -32,6 +32,29 @@ struct pos {
             break;
         }
     }
+    void advance(Direction d, int step, int x_max, int y_max) {
+        switch(d) {
+            case DIR_UP:
+            if(y - step > 0)
+                y -= step;
+            break;
+
+            case DIR_DOWN:
+            if(y + step < y_max)
+                y += step;
+            break;
+
+            case DIR_LEFT:
+            if(x - step > 0)
+                x -= step;
+            break;
+
+            case DIR_RIGHT:
+            if(x + step < x_max)
+                x += step;
+            break;
+        }
+    }
 
     pos& operator =(const pos &r)
     {
@@ -44,63 +67,80 @@ struct pos {
 
 class LevelGenerator {
     public:
+        //CONSTRUCTION / INITIALIZATION
         LevelGenerator(int width, int height);
         void initBoard(int w, int h, Direction in_dir, int in_index,
                         Direction out_dir, int out_index);
-        void initBoard(Level* l, int w, int h, Direction in_dir, int in_index,
-                        Direction out_dir, int out_index);
+        void initBoard(Level* l, int w, int h, Direction in_dir, int in_index, Direction out_dir, int out_index);
+
+        //SETTER
         void setLevel(Level* l);
 
+        //AUX BOARD FUNCTION
         void printCharBoard() const;
-        Square*** randomRoom(int w, int h, int room_doory, FastRandom &r);
-        Square*** cpeRoom();
-        Square*** cpeRoom(Direction in_dir, int in_offset, Direction out_dir, int out_offset, int d);
-        Square*** bossRoom(int w, int h, pos door);
+
+        //ROOM GENERATION
         Square*** startRoom(int w, int h, int room_door_row, int boss_door_column);
+        Square*** bossRoom(int w, int h, pos door);
+        Square*** randomRoom(int w, int h, int room_doory, FastRandom &r);
+        Square*** cpeRoom(Direction in_dir, int in_offset, Direction out_dir, int out_offset, int d);
+        Square*** cpeRoom();
 
     private:
+        //lEVEL INFO
         int width;
         int height;
+
         pos entrance;
         Direction in;
+
         pos exit;
         Direction out;
-        double mut;
-        char** board = NULL;
-        Level* level;
 
-        std::vector<pos> power_positions;
-        std::vector<pos> enemy_positions;
+        char** board = NULL; //intermediate board representation
+        Level* level;        //level this board will belong to
 
-        int depth = 0;
-        int remain;
-        int target_mut;
 
-        int n_floor;
-        int n_mut = 0;
-        int n_powers = 3;
-        int enemy_permille = 5;
+        //PROCEDURAL DIFFICULTY / REWARDS
+        std::vector<pos> power_positions; //where we like to place powerups
+        std::vector<pos> enemy_positions; //where we like to place enemies
 
-        int distanceToEdge(Direction d, pos p);
+        int depth = 0;          //depth of the level we generate
+        int target_mut;         //no. mutations we want
+        int target_powers;      //no. powers we want
+
+        int n_floor;            //no. floor tiles
+        int n_mut = 0;          //no. mutations
+        int enemy_permille;     //no. enemies we want per 1000 tiles
+        int remain;             //no. opportunities for mutation are left
+
+        //INITIALIZATION
         pos generateDoors(Direction d, int i) const;
+
+        //AUX BOARD FUNCTIONS
+        int distanceToEdge(Direction d, pos p);
         void clearChar();
 
-        void setFloor(int x, int y);
-        void setPowers(Square *** b);
-        void setEnemies(Square *** b);
-        void setDifficulty();
-        Square* createSquare(char c, int x, int y);
+        //SQUARE PLACEMENT
         void spawnEnemy(Square* s);
         void spawnHeart(Square* s);
         void spawnFBullet(Square* s);
+        void placePowers(Square *** b);
+        void placeEnemies(Square *** b);
+        void placeFloor(int x, int y, bool critical = false);
 
+
+        //CHAR -> SQUARE BOARD CONVERSION
+        Square* createSquare(char c, int x, int y);
         Square*** createBoard();
 
+        //PATH GENERATION
         pos mutatePath(Direction to, int max, int interval, double mut_rate, pos start);
+        void straightPath(Direction d, int interval, pos start, pos end, int length, bool power);
+        pos uPath(Direction d, Direction turn_d, int length, int turn_length, int interval, pos start);
 
-        void straightPath(Direction d, int interval, double mut_rate, pos start, pos end, int length, bool power);
-        pos uPath(Direction d, Direction turn_d, int length, int turn_length, int interval,
-                    double mut_rate, pos start);
+        //PROCEDURAL DIFFICULTY
+        void setDifficulty();
 };
 
 #endif

@@ -14,15 +14,14 @@
 #include <algorithm>
 
 #define MIN_MUT_LENGTH 3
+#define CRITICAL_MUT 0.9
 
-#define BASE_MUT 0.9
-#define STRAIGHT_DECAY 0.4
-#define U_DECAY 0.4
-
+/*
+    CONSTRUCTION / INITIALIZATION
+*/
 LevelGenerator::LevelGenerator(int w, int h) {
     initBoard(w, h, DIR_LEFT, h/2, DIR_RIGHT, h/2);
-    mut = 0.7;
-    // srand(20);
+
     srand(time(NULL));
 }
 
@@ -39,10 +38,6 @@ pos LevelGenerator::generateDoors(Direction d, int i) const {
             return {width-1, i};
     }
     return {0,0};
-}
-
-void LevelGenerator::setLevel(Level* l) {
-    level = l;
 }
 
 void LevelGenerator::initBoard(int w, int h,
@@ -95,52 +90,53 @@ void LevelGenerator::initBoard(Level*l, int w, int h,
 
    initBoard(w, h, in_dir, in_index, out_dir, out_index);
 }
+/////////////
 
-void LevelGenerator::printCharBoard() const {
-    std::cerr << "LevelGenerator: Print board" << std::endl;
-    for(int j = 0; j < height; j++) {
-        for(int i = 0; i < width; i++) {
-            std::cout << board[i][j] << " ";
-        }
-        std::cout << std::endl;
-    }
-
-    std::cout << "=======================================================" << std::endl;
+/*
+    SETTERS
+*/
+void LevelGenerator::setLevel(Level* l) {
+    level = l;
+}
+/////////////
+/*
+    SQUARE PLACEMENT
+*/
+void LevelGenerator::spawnEnemy(Square* s) {
+    EmptySquare* es = dynamic_cast<EmptySquare*>(s);
+    Enemy* tmp = new Enemy(level, es);
+    es->setEnemy(tmp);
 }
 
-void LevelGenerator::clearChar() {
-    for(int i = 0; i < width; i++) {
-        for(int j = 0; j < height; j++) {
-            if(i == entrance.x && j == entrance.y)
-                board[i][j] = 'I';
-            else if(i == exit.x && j == exit.y)
-                board[i][j] = 'O';
-            else
-                board[i][j] = '-';
-        }
-    }
+void LevelGenerator::spawnHeart(Square* s) {
+    EmptySquare* es = dynamic_cast<EmptySquare*>(s);
+    es->setPowerup(new Hp);
 }
 
-void LevelGenerator::setPowers(Square *** b) {
+void LevelGenerator::spawnFBullet(Square* s) {
+    EmptySquare* es = dynamic_cast<EmptySquare*>(s);
+    es->setPowerup(new FasterBullets);
+}
+
+void LevelGenerator::placePowers(Square *** b) {
     std::random_shuffle(power_positions.begin(), power_positions.end());
 
-
-    for (int i = 0; i < n_powers && i < (int64_t)power_positions.size(); i++) {
+    for (int i = 0; i < target_powers && i < (int64_t)power_positions.size(); i++) {
         pos temp = power_positions[i];
-
+        // dbg(temp.x); dbg(temp.y);
         if(rand()%2) spawnHeart(b[temp.x][temp.y]);
         else spawnFBullet(b[temp.x][temp.y]);
     }
 
-    for (int i = 0; i < n_powers - (int64_t)power_positions.size() && i < (int64_t)enemy_positions.size(); i++) {
+    for (int i = 0; i < target_powers - (int64_t)power_positions.size() && i < (int64_t)enemy_positions.size(); i++) {
         pos temp = enemy_positions[i];
-
+        // dbg(temp.x); dbg(temp.y);
         if(rand()%2) spawnHeart(b[temp.x][temp.y]);
         else spawnFBullet(b[temp.x][temp.y]);
     }
 }
 
-void LevelGenerator::setEnemies(Square *** b) {
+void LevelGenerator::placeEnemies(Square *** b) {
     std::random_shuffle(enemy_positions.begin(), enemy_positions.end());
 
     for (int i = 0; i < (enemy_permille*n_floor)/1000 && i < (int64_t)enemy_positions.size(); i++) {
@@ -151,43 +147,32 @@ void LevelGenerator::setEnemies(Square *** b) {
     }
 }
 
-void LevelGenerator::setDifficulty() {
-    switch(depth) { //TODO determine proper scaling
-        case 1:
-            target_mut = 3;
-            break;
-        case 2:
-            target_mut = 7;
-            break;
-        case 3:
-            target_mut = 12;
-            break;
-        case 4:
-            target_mut = 18;
-            break;
-        case 5:
-            target_mut = 25; //seems to be the maximum for a level that is not empty
-                             //possible TODO: dissallow new paths to intersect
-            break;
-        case 6:
-            target_mut = 35;
-            break;
-        default:
-            target_mut = 25;
+void LevelGenerator::placeFloor(int x, int y, bool critical) {
+    if(x >= width-1 || y >= height-1 || x <= 0 || y <= 0)
+        return;
 
+    if(board[x][y] == '-') {
+        if(dist(x, y, entrance.x, entrance.y) > 15 && dist(x, y, exit.x, exit.y) > 15)
+        enemy_positions.push_back({x, y});
+
+        n_floor++;
     }
-    //Tiers: {0-3}, {3-9}, {10-18}, {19-28} ...
 
-    enemy_permille = 5 + 2*(depth-1) + rand()%3;
-    n_powers = depth;
+    if(critical)
+        board[x][y] = 'C';
+    else
+        board[x][y] = 'F';
 }
-
+/////////////
+/*
+    CHAR -> SQUARE BOARD CONVERSION
+*/
 Square* LevelGenerator::createSquare(char c, int x, int y) {
 
     switch(c) {
         case '-':
             return new WallSquare(x, y);
-        case 'F':
+        case 'F': case 'C':
             return new EmptySquare(x, y);
         case 'I':
             return new DoorSquare(x, y, in);
@@ -205,46 +190,67 @@ Square*** LevelGenerator::createBoard() {
 
     Square*** square_board = new Square**[width];
     for(int i = 0; i < width; i++)
-        square_board[i] = new Square*[height];
+    square_board[i] = new Square*[height];
 
     for(int i = 0; i < width; i++)
-        for(int j = 0; j < height; j++)
-            square_board[i][j] = createSquare(board[i][j], i, j);
+    for(int j = 0; j < height; j++)
+    square_board[i][j] = createSquare(board[i][j], i, j);
 
-    setEnemies(square_board);
-    setPowers(square_board);
+    placeEnemies(square_board);
+    placePowers(square_board);
     // printCharBoard();
     clearChar();
     return square_board;
 }
-
-Square*** LevelGenerator::bossRoom(int w, int h, pos door) {
-    Square*** square_board = new Square**[w];
-    for(int i = 0; i < w; i++)
-        square_board[i] = new Square*[h];
-
-    for(int i = 0; i < w; i++) {
-        for(int j = 0; j < h; j++) {
-            // Edges
-            if(j == door.y && i == door.x)
-                square_board[i][j] = new DoorSquare(i,j,DIR_DOWN);
-            else if(i == 0 || j == 0 || i == w-1 || j == h-1)
-                square_board[i][j] = new WallSquare(i,j);
-            else if(j < 7)
-                square_board[i][j] = new EmptySquare(i,j,true);
-            else
-                square_board[i][j] = new EmptySquare(i,j);
+/////////////
+/*
+    AUX BOARD FUNCTIONS
+*/
+void LevelGenerator::printCharBoard() const {
+    std::cerr << "LevelGenerator: Print board" << std::endl;
+    for(int j = 0; j < height; j++) {
+        for(int i = 0; i < width; i++) {
+            std::cout << board[i][j] << " ";
         }
+        std::cout << std::endl;
     }
-    return square_board;
+
+    std::cout << "=======================================================" << std::endl;
 }
 
+void LevelGenerator::clearChar() {
+    for(int i = 0; i < width; i++) {
+        for(int j = 0; j < height; j++) {
+            if(i == entrance.x && j == entrance.y)
+            board[i][j] = 'I';
+            else if(i == exit.x && j == exit.y)
+            board[i][j] = 'O';
+            else
+            board[i][j] = '-';
+        }
+    }
+}
+
+//No.  squares between p and edge d
+int LevelGenerator::distanceToEdge(Direction d, pos p) {
+    switch(d) {
+        case DIR_UP:    return p.y;
+        case DIR_DOWN:  return height-1-p.y;
+        case DIR_LEFT:  return p.x;
+        case DIR_RIGHT: return width-1-p.x;
+    }
+    return -1;
+}
+/////////////
+/*
+    ROOM GENERATORS
+*/
 Square*** LevelGenerator::startRoom(int w, int h, int room_doory, int boss_doorx) {
     std::cerr << "LevelGenerator: startRoom start" << std::endl;
 
     Square*** square_board = new Square**[w];
     for(int i = 0; i < w; i++)
-        square_board[i] = new Square*[h];
+    square_board[i] = new Square*[h];
 
     for(int i = 0; i < w; i++) {
         for(int j = 0; j < h; j++) {
@@ -265,7 +271,7 @@ Square*** LevelGenerator::startRoom(int w, int h, int room_doory, int boss_doorx
             }
             // Hallway
             else if((i < boss_doorx-6 && j < room_doory-6) || (i > boss_doorx+6 && j < room_doory-6) ||
-                    (i < boss_doorx-6 && j > room_doory+6) || (i > boss_doorx+6 && j > room_doory+6)) {
+            (i < boss_doorx-6 && j > room_doory+6) || (i > boss_doorx+6 && j > room_doory+6)) {
                 square_board[i][j] = new WallSquare(i,j);
             }
             else {
@@ -277,12 +283,33 @@ Square*** LevelGenerator::startRoom(int w, int h, int room_doory, int boss_doorx
     return square_board;
 }
 
+Square*** LevelGenerator::bossRoom(int w, int h, pos door) {
+    Square*** square_board = new Square**[w];
+    for(int i = 0; i < w; i++)
+    square_board[i] = new Square*[h];
+
+    for(int i = 0; i < w; i++) {
+        for(int j = 0; j < h; j++) {
+            // Edges
+            if(j == door.y && i == door.x)
+            square_board[i][j] = new DoorSquare(i,j,DIR_DOWN);
+            else if(i == 0 || j == 0 || i == w-1 || j == h-1)
+            square_board[i][j] = new WallSquare(i,j);
+            else if(j < 7)
+            square_board[i][j] = new EmptySquare(i,j,true);
+            else
+            square_board[i][j] = new EmptySquare(i,j);
+        }
+    }
+    return square_board;
+}
+
 Square*** LevelGenerator::randomRoom(int w, int h, int room_doory, FastRandom &r) {
     std::cerr << "LevelGenerator: startRoom start" << std::endl;
 
     Square*** square_board = new Square**[w];
     for(int i = 0; i < w; i++)
-        square_board[i] = new Square*[h];
+    square_board[i] = new Square*[h];
 
     for(int i = 0; i < w; i++) {
         for(int j = 0; j < h; j++) {
@@ -353,23 +380,15 @@ Square*** LevelGenerator::cpeRoom() {
 
     setDifficulty();
 
-    straightPath(opposite_dir(in), p_width, BASE_MUT, walk, finish, width -2, false);
+    straightPath(opposite_dir(in), p_width, walk, finish, width -2, false);
 
     // dbg(n_mut);
     return createBoard();
 }
-
-//No.  squares between p and edge d
-int LevelGenerator::distanceToEdge(Direction d, pos p) {
-    switch(d) {
-        case DIR_UP:    return p.y;
-        case DIR_DOWN:  return height-1-p.y;
-        case DIR_LEFT:  return p.x;
-        case DIR_RIGHT: return width-1-p.x;
-    }
-    return -1;
-}
-
+/////////////
+/*
+    PATH GENERATORION
+*/
 pos LevelGenerator::mutatePath(Direction to, int parent_remainder, int path_offset, double mut_rate, pos start) {
     double r = rand(); double max = RAND_MAX; double c = r/max;
 
@@ -394,14 +413,14 @@ pos LevelGenerator::mutatePath(Direction to, int parent_remainder, int path_offs
         if(ldist > min_length && rdist > min_length) { //TODO clean up this logic?
             switch(rand()%5) {
                 case 0:
-                    doleft = true;
-                    break;
+                doleft = true;
+                break;
                 case 1:
-                    doright = true;
-                    break;
+                doright = true;
+                break;
                 case 3: case 4: case 5:
-                    doleft = true;
-                    doright = true;
+                doleft = true;
+                doright = true;
             }
         }
         else if(ldist > min_length) { //only option
@@ -418,13 +437,13 @@ pos LevelGenerator::mutatePath(Direction to, int parent_remainder, int path_offs
             int l = rand()%(ldist-1-MIN_MUT_LENGTH) + MIN_MUT_LENGTH;
             pos end = start; end.advance(ldir, l);
 
-            if(parent_remainder > min_width && rand()%10 < 7) {
+            if(parent_remainder > min_width && rand()%10 < 6) {
                 u_widthL = rand()%(parent_remainder - min_width) + min_width;
 
-                lpos = uPath(ldir, to, l, u_widthL, path_offset, mut_rate*U_DECAY, start);
+                lpos = uPath(ldir, to, l, u_widthL, path_offset, start);
                 leftu = true;
             } else
-                straightPath(ldir, path_offset, mut_rate*STRAIGHT_DECAY, start, end, l, true);//select if uPath not possible or on 50% chance
+            straightPath(ldir, path_offset, start, end, l, true);//select if uPath not possible or on 50% chance
         }
         if(doright && MIN_MUT_LENGTH < rdist-1) {
             int l = rand()%(rdist-1-MIN_MUT_LENGTH) + MIN_MUT_LENGTH;
@@ -433,10 +452,10 @@ pos LevelGenerator::mutatePath(Direction to, int parent_remainder, int path_offs
             if(parent_remainder > min_width && rand()%10 < 7) { //favor upath
                 u_widthR = rand()%(parent_remainder - min_width) + min_width;
 
-                rpos = uPath(rdir, to, l, u_widthR, path_offset, mut_rate*U_DECAY, start);
+                rpos = uPath(rdir, to, l, u_widthR, path_offset, start);
                 rightu = true;
             } else
-                straightPath(rdir, path_offset, mut_rate*STRAIGHT_DECAY, start, end, l, true); //select if uPath not possible or on 50% chance
+            straightPath(rdir, path_offset, start, end, l, true); //select if uPath not possible or on 50% chance
         }
 
         //determine behaviour of continuing path
@@ -444,40 +463,27 @@ pos LevelGenerator::mutatePath(Direction to, int parent_remainder, int path_offs
         if(leftu && rightu) {
             //path has been rerouted at least once. Continuing is optional
             if(u_widthL > u_widthR) {
-                straightPath(to, path_offset, mut_rate, rpos, lpos, u_widthL-u_widthR, false);
+                straightPath(to, path_offset, rpos, lpos, u_widthL-u_widthR, false);
                 new_pos = lpos;
             }
             else if(u_widthL < u_widthR) {
-                straightPath(to, path_offset, mut_rate, lpos, rpos, u_widthR-u_widthL, false);
+                straightPath(to, path_offset, lpos, rpos, u_widthR-u_widthL, false);
                 new_pos = rpos;
             }
 
             return new_pos;
         }
         if(leftu)
-            return lpos;
+        return lpos;
         if(rightu)
-            return rpos;
+        return rpos;
         //path has only produced dead ends. Critical path must continue from start
 
     }
     return start;
 }
 
-void LevelGenerator::setFloor(int x, int y) {
-    if(x >= width-1 || y >= height-1 || x <= 0 || y <= 0)
-        return;
-
-    if(board[x][y] == '-') {
-        if(dist(x, y, entrance.x, entrance.y) > 15 && dist(x, y, exit.x, exit.y) > 15)
-            enemy_positions.push_back({x, y});
-
-        n_floor++;
-        board[x][y] = 'F';
-    }
-}
-
-void LevelGenerator::straightPath(Direction d, int path_offset, double mut_rate, pos start, pos end, int length, bool power) {
+void LevelGenerator::straightPath(Direction d, int path_offset, pos start, pos end, int length, bool power) {
     int i = 0;
 
     if(power) { //beetje hacky, alleen puur straightPath heeft power aan het einde
@@ -487,35 +493,46 @@ void LevelGenerator::straightPath(Direction d, int path_offset, double mut_rate,
 
     while(start.x < width-1 && start.y < height-1 && start.x > 0 && start.y > 0) {
 
+
+        pos temp = start; temp.advance(d, 1 + path_offset, width, height);
+
+        if(power && board[temp.x][temp.y] == 'C') { //will be an intersection
+            std::cerr << "path truncated" << std::endl;
+            // printCharBoard();
+            return;
+        }
+
         if(power && i == length && board[start.x][start.y] == '-')
             power_positions.push_back(start);
 
-        setFloor(start.x, start.y);
+        placeFloor(start.x, start.y, true);
 
         for(int k = 1; k <= path_offset; k++) { //path width
             if(d == DIR_RIGHT || d == DIR_LEFT) {
-                setFloor(start.x, start.y+k);
-                setFloor(start.x, start.y-k);
+                placeFloor(start.x, start.y+k);
+                placeFloor(start.x, start.y-k);
             }
             else {
-                setFloor(start.x+k, start.y);
-                setFloor(start.x-k, start.y);
+                placeFloor(start.x+k, start.y);
+                placeFloor(start.x-k, start.y);
             }
         }
 
         if(start.x == end.x && start.y == end.y)
-            return;
+        return;
 
         if((i > path_offset+1 && i%(2*path_offset+1) == 0)) {
             remain--;
             int r;
             if(d == DIR_RIGHT || d == DIR_LEFT)
-                r = abs(end.x - start.x);
+            r = abs(end.x - start.x);
             else
-                r = abs(end.y - start.y);
+            r = abs(end.y - start.y);
 
-            if(r > path_offset) //for old mutation: change (double)... to mut_rate
-                start = mutatePath(d, r, path_offset, (double)(target_mut-n_mut)/remain , start);
+            if(r > path_offset) { //for old mutation: change (double)... to mut_rate
+                double mut_rate = (double)(target_mut-n_mut)/remain;
+                start = mutatePath(d, r, path_offset, mut_rate, start);
+            }
         }
 
         start.advance(d, 1);
@@ -524,48 +541,64 @@ void LevelGenerator::straightPath(Direction d, int path_offset, double mut_rate,
 
 }
 
-pos LevelGenerator::uPath(Direction d, Direction turn_d, int length, int turn_length, int path_offset, double mut_rate, pos start) {
-        n_mut++;
-        remain += (2*length + turn_length)/(2*path_offset+1);
+pos LevelGenerator::uPath(Direction d, Direction turn_d, int length, int turn_length, int path_offset, pos start) {
+    n_mut++;
+    remain += (2*length + turn_length)/(2*path_offset+1);
 
-        pos turn1 = start;
-        turn1.advance(d, length);
+    pos turn1 = start;
+    turn1.advance(d, length);
 
-        pos turn2 = turn1;
-        turn2.advance(turn_d, turn_length);
+    pos turn2 = turn1;
+    turn2.advance(turn_d, turn_length);
 
-        pos end = start;
-        end.advance(turn_d, turn_length);
+    pos end = start;
+    end.advance(turn_d, turn_length);
 
-        // board[start.x][start.y] = '*';
-        // board[turn1.x][turn1.y] = '1';
-        // board[turn2.x][turn2.y] = '2';
-        // board[end.x][end.y] = 'E';
-        // printCharBoard();
+    // board[start.x][start.y] = '*';
+    // board[turn1.x][turn1.y] = '1';
+    // board[turn2.x][turn2.y] = '2';
+    // board[end.x][end.y] = 'E';
+    // printCharBoard();
 
-        straightPath(d, path_offset, mut_rate, start, turn1, length, false);
-        // turn1.advance(turn_d, 1); //make turn
+    straightPath(d, path_offset, start, turn1, length, false);
 
-        straightPath(turn_d, path_offset, mut_rate, turn1, turn2, turn_length, false);
-        // turn2.advance(opposite_dir(d), 1);
+    straightPath(turn_d, path_offset, turn1, turn2, turn_length, false);
 
-        straightPath(opposite_dir(d), path_offset, mut_rate, turn2, end, length, false);
+    straightPath(opposite_dir(d), path_offset, turn2, end, length, false);
 
-        return end;
+    return end;
 }
+/////////////
+/*
+    PROCEDURAL DIFFICULTY
+*/
+void LevelGenerator::setDifficulty() {
+    switch(depth) { //TODO determine proper scaling
+        case 1:
+            target_mut = 3;
+            break;
+        case 2:
+            target_mut = 7;
+            break;
+        case 3:
+            target_mut = 12;
+            break;
+        case 4:
+            target_mut = 18;
+            break;
+        case 5:
+            target_mut = 25; //seems to be the maximum for a level that is not empty
+                             //possible TODO: dissallow new paths to intersect
+            break;
+        case 6:
+            target_mut = 35;
+            break;
+        default:
+            target_mut = 25;
 
-void LevelGenerator::spawnEnemy(Square* s) {
-    EmptySquare* es = dynamic_cast<EmptySquare*>(s);
-    Enemy* tmp = new Enemy(level, es);
-    es->setEnemy(tmp);
-}
-
-void LevelGenerator::spawnHeart(Square* s) {
-    EmptySquare* es = dynamic_cast<EmptySquare*>(s);
-    es->setPowerup(new Hp);
-}
-
-void LevelGenerator::spawnFBullet(Square* s) {
-    EmptySquare* es = dynamic_cast<EmptySquare*>(s);
-    es->setPowerup(new FasterBullets);
+    }
+    //Tiers: {0-3}, {3-9}, {10-18}, {19-28} ...
+    int sign = rand()%2 ? 1 : -1;
+    enemy_permille = 5 + (depth-1) + sign*(rand()%3);
+    target_powers = depth;
 }
