@@ -14,6 +14,15 @@
 #define LVL_WIDTH 50
 #define SPRITE_DIM 16
 
+enum Gamestate {
+    STATE_RUN,
+    STATE_PAUSED,
+    STATE_START,
+    STATE_CLOSED,
+    STATE_WON,
+    STATE_LOST
+};
+
 class Game {
     public:
         Game();
@@ -24,8 +33,9 @@ class Game {
         Level* newLevel(Level* neighbour, int width, int height, Direction dir, int viewDistance);
         FastRandom* getRNG();
         int init();
+        void interfaceInputs(Input in);
         void run();
-        void over();
+        void over(bool won);
 
     private:
         GFX gfx;
@@ -36,8 +46,7 @@ class Game {
         Level* prevLvl;
         std::vector<Level*> levels;
         LevelGenerator levelgen;
-        bool gameOver;
-        bool paused;
+        Gamestate state;
 };
 
 #endif

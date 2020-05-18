@@ -31,7 +31,7 @@ void Player::setLevel(Level* l) {
 }
 
 void Player::takeDamage() {
-    if(--health < 1) { curLvl->signalGameOver(); }
+    if(--health < 1) { curLvl->signalGameOver(false); }
 }
 
 void Player::increaseHP() {

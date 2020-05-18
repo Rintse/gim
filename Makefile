@@ -8,7 +8,7 @@ OBJECTS			= $(SOURCES:.cc=.o)
 MAIN_OBJ		= $(MAIN_SRC:.cc=.o)
 DEPS 			= $(OBJECTS:.o=.d)
 MAIN_DEPS		= $(MAIN_OBJ:.o=.d)
-MAIN_TARGET		= george
+MAIN_TARGET		= game
 CC				= g++
 CFLAGS			= -std=c++11 -g -Wall
 CPPFLAGS 		= $(addprefix -I, $(INC_DIR)) -pedantic

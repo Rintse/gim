@@ -15,7 +15,7 @@ void sleep_remaining(std::chrono::time_point<std::chrono::high_resolution_clock>
 
 
 Game::Game() : gfx(GFX(this)), levelgen(LevelGenerator(LVL_WIDTH, LVL_HEIGHT)) {
-    gameOver = paused = false;
+    state = STATE_START;
 }
 
 Game::~Game(){
@@ -46,8 +46,9 @@ Level* Game::newLevel(Level* neighbour, int width, int height, Direction dir, in
     return tmp;
 }
 
-void Game::over() {
-    gameOver = true;
+void Game::over(bool won) {
+    if(won) state = STATE_WON;
+    else state = STATE_LOST;
 }
 
 void Game::setLevel(Level* l) {
@@ -100,22 +101,37 @@ int Game::init() {
     return err;
 }
 
+
+void Game::interfaceInputs(Input in) {
+    // Pause and unpause
+    if(in.act == GAME_PAUSE) {
+        if(state == STATE_PAUSED) state = STATE_RUN;
+        else if(state == STATE_RUN) state = STATE_PAUSED;
+    }
+
+    else if(in.act == GAME_CLOSE) {
+        // Close the game
+        if(state == STATE_PAUSED || state >= STATE_WON) state = STATE_CLOSED;
+        // Start the game
+        else if(state == STATE_START) state = STATE_RUN;
+    }
+}
+
+
 void Game::run() {
-    while(!gameOver) {
+    // Main game loop
+    while(state != STATE_CLOSED) {
         auto t1 = std::chrono::high_resolution_clock::now();
         Input in = kh->getInput();
-        if(in.act == GAME_PAUSE) {
-            paused = !paused;
-            continue;
-        }
-        else if(in.act == GAME_CLOSE) {
-            if(paused) break;
-        }
 
-        if(paused) {
-            gfx.drawPauseMenu();
-        }
-        else {
+        // Handle pauses, closes, etc.
+        interfaceInputs(in);
+
+        if(state == STATE_PAUSED) gfx.drawPauseMenu();
+        else if(state >= STATE_WON) gfx.drawEnding();
+        else if(state == STATE_START) gfx.drawStart();
+        else if(state == STATE_CLOSED) continue;
+        else { // state == STATE_RUN
             // Update all entities
             curLvl->updateProjectiles();
             curLvl->updateEnemies();

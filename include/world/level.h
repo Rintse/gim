@@ -37,7 +37,7 @@ public:
     void updateProjectiles();
     void updateGeorge();
     void switchLevel(Direction dir);
-    void signalGameOver();
+    void signalGameOver(bool won);
     double BFSdist(Square* from, Square* to);
     void hurtGeorge();
     void setGeorge();

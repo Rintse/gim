@@ -3,7 +3,4 @@
 *.d
 
 # Executable
-george
-
-!src/entites/george
-!img/george
+game

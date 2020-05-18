@@ -199,6 +199,38 @@ void GFX::drawPauseMenu() {
     SDL_UpdateWindowSurface(window);
 }
 
+void GFX::drawStart() {
+    SDL_Rect pos, surfdims;
+
+    pos.y = pauseY;
+    surfdims.x = surfdims.y = 0;
+    for(int i = 0; i < 3; i++) {
+        pos.x = pauseX[i];
+        pos.w = surfdims.w = pauseText[i]->w;
+        pos.h = surfdims.h = pauseText[i]->h;
+        SDL_BlitSurface(pauseText[i], &surfdims, surface, &pos);
+        pos.y += pauseText[i]->h;
+    }
+
+    SDL_UpdateWindowSurface(window);
+}
+
+
+void GFX::drawEnding() {
+    SDL_Rect pos, surfdims;
+
+    pos.y = pauseY;
+    surfdims.x = surfdims.y = 0;
+    for(int i = 0; i < 3; i++) {
+        pos.x = pauseX[i];
+        pos.w = surfdims.w = pauseText[i]->w;
+        pos.h = surfdims.h = pauseText[i]->h;
+        SDL_BlitSurface(pauseText[i], &surfdims, surface, &pos);
+        pos.y += pauseText[i]->h;
+    }
+
+    SDL_UpdateWindowSurface(window);
+}
 
 void GFX::drawGame() {
     Square* ps = game->getLevel()->getPlayer()->getSquare();
@@ -216,7 +248,6 @@ void GFX::drawGame() {
             else {
                 SDL_BlitScaled(sprites[s->token()], &src, surface, &dst);
             }
-
         }
     }
 

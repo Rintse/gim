@@ -31,10 +31,6 @@ Level::Level(int w, int h, Game* g, int vd, int d) {
     depth = d;
 
     board = NULL;
-    // board = new Square**[width];
-    // for(int i = 0; i < width; ++i) {
-    //     board[i] = new Square*[height];
-    // }
 }
 
 Level::~Level() {
@@ -145,8 +141,8 @@ void Level::setNeighbour(Direction dir, Level* l)  {
 }
 
 
-void Level::signalGameOver() {
-    game->over();
+void Level::signalGameOver(bool won) {
+    game->over(won);
 }
 
 void Level::switchLevel(Direction dir) {
@@ -177,7 +173,7 @@ void Level::setGeorge() {
 
 void Level::hurtGeorge() {
   if(george->takehit()) {
-    signalGameOver();
+    signalGameOver(true);
   }
 }
 

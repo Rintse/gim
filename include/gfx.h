@@ -21,6 +21,8 @@ class GFX {
         void drawFooter();
         void drawHeader();
         void drawPauseMenu();
+        void drawEnding();
+        void drawStart();
     private:
         SDL_Rect src, dst;
         int height, width;
