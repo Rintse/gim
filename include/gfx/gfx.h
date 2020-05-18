@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 #include <map>
 #include <vector>
+#include "gfx/menu.h"
 
 #define DEFAULT_SCALE 1
 
@@ -17,21 +18,22 @@ class GFX {
         void loadSprites();
         int checkScreenSize();
         int init();
-        void initPauseMenu();
         void drawFooter();
         void drawHeader();
+        void drawMenu(Menu* menu);
         void drawPauseMenu();
-        void drawEnding();
-        void drawStart();
+        void drawEndMenu(bool won);
+        void drawStartMenu();
+
     private:
         SDL_Rect src, dst;
         int height, width;
         int scale;
-        int* pauseX;
-        int pauseY;
+        int* pauseX, *startX, *endX;
+        int pauseY, startY, endY;
         Game* game;
         SDL_Surface* surface;
-        SDL_Surface** pauseText;
+        Menu *startMenu, *pauseMenu, *wonMenu, *lostMenu;
         std::map<char, SDL_Surface*> sprites;
         SDL_Surface* black;
         SDL_Window* window;

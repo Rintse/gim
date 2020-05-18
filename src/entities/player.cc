@@ -10,7 +10,7 @@ Player::Player() {}
 Player::Player(Level* l) {
     curLvl = l;
     facing = DIR_UP;
-    health = 2;
+    health = 3;
     curSLO = curMLO = -1;
     moveLockout = SLOW_MLO;
     shootLockout = START_SLO;

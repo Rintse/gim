@@ -4,7 +4,7 @@
 #include "entities/player.h"
 #include "world/level.h"
 #include "generation/levelgenerator.h"
-#include "gfx.h"
+#include "gfx/gfx.h"
 #include "tools/key_input.h"
 #include <vector>
 

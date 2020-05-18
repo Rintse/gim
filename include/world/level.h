@@ -56,7 +56,6 @@ public:
     bool noEnemies();
 
 private:
-
     Square*** board;
     int height, width;
     int doorx, doory;

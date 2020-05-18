@@ -128,8 +128,8 @@ void Game::run() {
         interfaceInputs(in);
 
         if(state == STATE_PAUSED) gfx.drawPauseMenu();
-        else if(state >= STATE_WON) gfx.drawEnding();
-        else if(state == STATE_START) gfx.drawStart();
+        else if(state >= STATE_WON) gfx.drawEndMenu(state == STATE_WON);
+        else if(state == STATE_START) gfx.drawStartMenu();
         else if(state == STATE_CLOSED) continue;
         else { // state == STATE_RUN
             // Update all entities
