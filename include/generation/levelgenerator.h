@@ -100,7 +100,7 @@ class LevelGenerator {
 
         char** board = NULL; //intermediate board representation
         Level* level;        //level this board will belong to
-        // FastRandom* rand;
+        FastRandom* rand;
 
 
         //PROCEDURAL DIFFICULTY / REWARDS

@@ -12,6 +12,7 @@
 
 #include <stdlib.h>
 #include <algorithm>
+// #include "/home/majeux/cpp-tools/dbg-macro/dbg.h" //debug shit van Max
 
 #define MIN_MUT_LENGTH 3
 #define CRITICAL_MUT 0.9
@@ -22,11 +23,11 @@
 LevelGenerator::LevelGenerator(int w, int h) {
     initBoard(w, h, DIR_LEFT, h/2, DIR_RIGHT, h/2);
 
-    // rand = new FastRandom(time(NULL));
+    rand = new FastRandom(time(NULL)); //TODO set from argument
 }
 
 LevelGenerator::~LevelGenerator() {
-    // delete rand;
+    delete rand; //TODO dont delete if set from argument
 
     deleteCharBoard();
 }
@@ -126,14 +127,14 @@ void LevelGenerator::placePowers(Square *** b) {
     for (int i = 0; i < target_powers && i < (int64_t)power_positions.size(); i++) {
         pos temp = power_positions[i];
         // dbg(temp.x); dbg(temp.y);
-        if(rand()%2) spawnHeart(b[temp.x][temp.y]);
+        if(rand->getLong()%2) spawnHeart(b[temp.x][temp.y]);
         else spawnFBullet(b[temp.x][temp.y]);
     }
 
     for (int i = 0; i < target_powers - (int64_t)power_positions.size() && i < (int64_t)enemy_positions.size(); i++) {
         pos temp = enemy_positions[i];
         // dbg(temp.x); dbg(temp.y);
-        if(rand()%2) spawnHeart(b[temp.x][temp.y]);
+        if(rand->getLong()%2) spawnHeart(b[temp.x][temp.y]);
         else spawnFBullet(b[temp.x][temp.y]);
     }
 }
@@ -404,9 +405,8 @@ Square*** LevelGenerator::cpeRoom() {
     PATH GENERATORION
 */
 pos LevelGenerator::mutatePath(Direction to, int parent_remainder, int path_offset, double mut_rate, pos start) {
-    double r = rand(); double max = RAND_MAX; double c = r/max;
 
-    if(c < mut_rate) {
+    if(rand->getDouble() < mut_rate) {
         pos lpos, rpos;
 
         //Determine Left/Right direction and parameter bounds
@@ -425,7 +425,7 @@ pos LevelGenerator::mutatePath(Direction to, int parent_remainder, int path_offs
         //choose randomly between { left, right, both } if possible
         //ptherwise take available
         if(ldist > min_length && rdist > min_length) { //TODO clean up this logic?
-            switch(rand()%5) {
+            switch(rand->getLong()%5) {
                 case 0:
                 doleft = true;
                 break;
@@ -448,11 +448,11 @@ pos LevelGenerator::mutatePath(Direction to, int parent_remainder, int path_offs
         int min_width = 2*(path_offset + 1); // minimum distance for worthwile uPath (ensures 1 sep between dir and back)
         //Perform mutations
         if(doleft && MIN_MUT_LENGTH < ldist - 1) {
-            int l = rand()%(ldist-1-MIN_MUT_LENGTH) + MIN_MUT_LENGTH;
+            int l = rand->getLong()%(ldist-1-MIN_MUT_LENGTH) + MIN_MUT_LENGTH; //rand [MIN_MUT_LENGTH .. ldist-1]
             pos end = start; end.advance(ldir, l);
 
-            if(parent_remainder > min_width && rand()%10 < 5) {
-                u_widthL = rand()%(parent_remainder - min_width) + min_width;
+            if(parent_remainder > min_width && rand->getLong()%10 < 5) {
+                u_widthL = rand->getLong()%(parent_remainder - min_width) + min_width; //rand [min_width .. parent_remainder]
 
                 lpos = uPath(ldir, to, l, u_widthL, path_offset, start);
                 leftu = true;
@@ -460,11 +460,11 @@ pos LevelGenerator::mutatePath(Direction to, int parent_remainder, int path_offs
             straightPath(ldir, path_offset, start, end, l, true);//select if uPath not possible or on 50% chance
         }
         if(doright && MIN_MUT_LENGTH < rdist-1) {
-            int l = rand()%(rdist-1-MIN_MUT_LENGTH) + MIN_MUT_LENGTH;
+            int l = rand->getLong()%(rdist-1-MIN_MUT_LENGTH) + MIN_MUT_LENGTH; //rand [MIN_MUT_LENGTH .. rdist-1]
             pos end = start; end.advance(rdir, l);
 
-            if(parent_remainder > min_width && rand()%10 < 5) { //favor upath
-                u_widthR = rand()%(parent_remainder - min_width) + min_width;
+            if(parent_remainder > min_width && rand->getLong()%10 < 5) { //favor upath
+                u_widthR = rand->getLong()%(parent_remainder - min_width) + min_width; //rand [min_width .. parent_remainder]
 
                 rpos = uPath(rdir, to, l, u_widthR, path_offset, start);
                 rightu = true;
@@ -603,17 +603,16 @@ void LevelGenerator::setDifficulty() {
             break;
         case 5:
             target_mut = 25; //seems to be the maximum for a level that is not empty
-                             //possible TODO: dissallow new paths to intersect
             break;
         case 6:
             target_mut = 35;
             break;
         default:
-            target_mut = 25;
+            target_mut = 35;
 
     }
     //Tiers: {0-3}, {3-9}, {10-18}, {19-28} ...
-    int sign = rand()%2 ? 1 : -1;
-    enemy_permille = 5 + (depth-1) + sign*(rand()%3);
+    int sign = rand->getLong()%2 ? 1 : -1;
+    enemy_permille = 5 + (depth-1) + sign*(rand->getLong()%3);
     target_powers = depth;
 }
