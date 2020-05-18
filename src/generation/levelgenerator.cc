@@ -9,7 +9,6 @@
 
 #include "entities/powerups/hp.h"
 #include "entities/powerups/fasterbullets.h"
-#include "/home/majeux/cpp-tools/dbg-macro/dbg.h"
 
 #include <stdlib.h>
 #include <algorithm>
@@ -124,14 +123,14 @@ void LevelGenerator::placePowers(Square *** b) {
 
     for (int i = 0; i < target_powers && i < (int64_t)power_positions.size(); i++) {
         pos temp = power_positions[i];
-        dbg(temp.x); dbg(temp.y);
+        // dbg(temp.x); dbg(temp.y);
         if(rand()%2) spawnHeart(b[temp.x][temp.y]);
         else spawnFBullet(b[temp.x][temp.y]);
     }
 
     for (int i = 0; i < target_powers - (int64_t)power_positions.size() && i < (int64_t)enemy_positions.size(); i++) {
         pos temp = enemy_positions[i];
-        dbg(temp.x); dbg(temp.y);
+        // dbg(temp.x); dbg(temp.y);
         if(rand()%2) spawnHeart(b[temp.x][temp.y]);
         else spawnFBullet(b[temp.x][temp.y]);
     }
@@ -172,17 +171,16 @@ Square* LevelGenerator::createSquare(char c, int x, int y) {
 
     switch(c) {
         case '-':
-        return new WallSquare(x, y);
+            return new WallSquare(x, y);
         case 'F': case 'C':
-        return new EmptySquare(x, y);
+            return new EmptySquare(x, y);
         case 'I':
-        return new DoorSquare(x, y, in);
+            return new DoorSquare(x, y, in);
         case 'O':
-        return new DoorSquare(x, y, out);
+            return new DoorSquare(x, y, out);
 
         default:
-        std::cerr << "a" << std::endl;
-        return new WallSquare(x, y);
+            return new WallSquare(x, y);
     }
 }
 
@@ -600,7 +598,7 @@ void LevelGenerator::setDifficulty() {
 
     }
     //Tiers: {0-3}, {3-9}, {10-18}, {19-28} ...
-
-    enemy_permille = 5 + 2*(depth-1) + rand()%3;
+    int sign = rand()%2 ? 1 : -1;
+    enemy_permille = 5 + (depth-1) + sign*(rand()%3);
     target_powers = depth;
 }
