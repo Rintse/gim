@@ -82,7 +82,7 @@ int Game::init() {
     curLvl->initPlayer();
 
     //BOSS ROOM
-    Level* bossLvl = new Level(LVL_WIDTH, LVL_HEIGHT, this, LVL_WIDTH);
+    Level* bossLvl = new Level(LVL_WIDTH, LVL_HEIGHT, this, 2*LVL_WIDTH);
 
     levelgen.setLevel(bossLvl);
     Square*** boss = levelgen.bossRoom(LVL_WIDTH, LVL_HEIGHT, {LVL_WIDTH/2, LVL_HEIGHT-1} );

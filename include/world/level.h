@@ -11,7 +11,7 @@
 
 class Game;
 
-#define SIGHT_DEGRATION 5
+#define SIGHT_DETERIORATION 4
 
 class Level {
 public:

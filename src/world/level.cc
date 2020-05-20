@@ -161,7 +161,7 @@ void Level::switchLevel(Direction dir) {
 //wrapper om oude code werkend te houden
 //TODO function call vervangen door nieuwe
 Level* Level::newLevel(Direction dir) {
-    return game->newLevel(this, width, height, dir, viewDistance-SIGHT_DEGRATION);
+    return game->newLevel(this, width, height, dir, viewDistance-SIGHT_DETERIORATION);
 }
 
 void Level::setGeorge() {
