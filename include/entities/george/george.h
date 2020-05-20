@@ -17,7 +17,7 @@
 
 // other
 #define N_TINYBABYGEORGES 10
-#define HEALTH 20
+#define HEALTH 40
 
 class Level;
 class Square;
