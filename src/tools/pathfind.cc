@@ -108,7 +108,7 @@ Direction PathFind::dodgeProjectile(Square* curPos, Projectile* p) {
         return (rng.getLong()%2 == 0) ? dirs.first : dirs.second;
     }
 
-    return opposite_dir(p->getDirection());
+    return p->getDirection();
 }
 
 Projectile* PathFind::findCloseProjectile(Square* curPos) {
