@@ -6,7 +6,7 @@
 #include "tools/fastrandom.h"
 
 // bossfight phase length
-#define COOLDOWN_SECONDS 1
+#define COOLDOWN_SECONDS 2
 #define ROUND_SECONDS 10
 #define BULLET_PAUSE 10
 
@@ -17,7 +17,7 @@
 
 // other
 #define N_TINYBABYGEORGES 10
-#define HEALTH 40
+#define HEALTH 20
 
 class Level;
 class Square;
