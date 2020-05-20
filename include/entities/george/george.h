@@ -6,7 +6,7 @@
 #include "tools/fastrandom.h"
 
 // bossfight phase length
-#define COOLDOWN_SECONDS 2
+#define COOLDOWN_SECONDS 1
 #define ROUND_SECONDS 10
 #define BULLET_PAUSE 10
 
