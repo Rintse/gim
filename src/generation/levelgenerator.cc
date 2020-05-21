@@ -12,7 +12,7 @@
 
 #include <stdlib.h>
 #include <algorithm>
-#include "/home/majeux/cpp-tools/dbg-macro/dbg.h" //debug shit van Max
+// #include "/home/majeux/cpp-tools/dbg-macro/dbg.h" //debug shit van Max
 
 #define MIN_MUT_LENGTH 5
 #define CRITICAL_MUT 0.9
@@ -489,10 +489,10 @@ int LevelGenerator::mutatePath(Direction to, int parent_remainder, double mut_ra
             // return next;
         }
         if(leftu) {
-            return u_widthL;
+            return rand->getLong()%2 ? 1 : u_widthL;
         }
         if(rightu) {
-            return u_widthR;
+            return rand->getLong()%2 ? 1 : u_widthR;
         }
         //path has only produced dead ends. Critical path must continue from start
 
