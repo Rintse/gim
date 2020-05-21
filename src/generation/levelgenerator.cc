@@ -12,7 +12,7 @@
 
 #include <stdlib.h>
 #include <algorithm>
-// #include "/home/majeux/cpp-tools/dbg-macro/dbg.h" //debug shit van Max
+#include "/home/majeux/cpp-tools/dbg-macro/dbg.h" //debug shit van Max
 
 #define MIN_MUT_LENGTH 5
 #define CRITICAL_MUT 0.9
@@ -375,7 +375,7 @@ Square*** LevelGenerator::cpeRoom(int d) {
 
     setDifficulty();
 
-    straightPath(opposite_dir(in), walk, width -2, false);
+    straightPath(opposite_dir(in), walk, width-2, false);
 
 
     return createBoard();
@@ -410,12 +410,7 @@ Square*** LevelGenerator::testRoom(int d) {
     PATH GENERATORION
 */
 int LevelGenerator::mutatePath(Direction to, int parent_remainder, double mut_rate, pos start) {
-    int n = 1;
-    pos next = start; next.advance(to, 1);
-
     if(rand->getDouble() < mut_rate) {
-        pos lpos, rpos;
-
         //Determine Left/Right direction and parameter bounds
         Direction ldir = left_dir(to);
         int ldist = distanceToEdge(ldir, start);
@@ -454,24 +449,22 @@ int LevelGenerator::mutatePath(Direction to, int parent_remainder, double mut_ra
         //Perform mutations
         if(doleft && MIN_MUT_LENGTH < ldist - 1) {
             int l = rand->getLong()%(ldist-1-MIN_MUT_LENGTH) + MIN_MUT_LENGTH; //rand [MIN_MUT_LENGTH .. ldist-1]
-            pos end = start; end.advance(ldir, l);
 
-            if(parent_remainder > min_width && rand->getLong()%10 < 5) {
-                u_widthL = rand->getLong()%(parent_remainder - min_width) + min_width; //rand [min_width .. parent_remainder]
+            if(parent_remainder - PATH_WIDTH > min_width && rand->getLong()%10 < 5) {
+                u_widthL = rand->getLong()%(parent_remainder - PATH_WIDTH - min_width) + min_width; //rand [min_width .. parent_remainder]
 
-                lpos = uPath(ldir, to, l, u_widthL, start);
+                uPath(ldir, to, l, u_widthL, start);
                 leftu = true;
             } else
                 straightPath(ldir, start, l, true);//select if uPath not possible or on 50% chance
         }
         if(doright && MIN_MUT_LENGTH < rdist-1) {
             int l = rand->getLong()%(rdist-1-MIN_MUT_LENGTH) + MIN_MUT_LENGTH; //rand [MIN_MUT_LENGTH .. rdist-1]
-            pos end = start; end.advance(rdir, l);
 
-            if(parent_remainder > min_width && rand->getLong()%10 < 5) { //favor upath
-                u_widthR = rand->getLong()%(parent_remainder - min_width) + min_width; //rand [min_width .. parent_remainder]
+            if(parent_remainder - PATH_WIDTH > min_width && rand->getLong()%10 < 5) { //favor upath
+                u_widthR = rand->getLong()%(parent_remainder - PATH_WIDTH - min_width) + min_width; //rand [min_width .. parent_remainder]
 
-                rpos = uPath(rdir, to, l, u_widthR, start);
+                uPath(rdir, to, l, u_widthR, start);
                 rightu = true;
             } else
                 straightPath(rdir, start, l, true); //select if uPath not possible or on 50% chance
@@ -479,27 +472,27 @@ int LevelGenerator::mutatePath(Direction to, int parent_remainder, double mut_ra
 
         //determine behaviour of continuing path
         if(leftu && rightu) {
+            int n = 1;
             //path has been rerouted at least once. Continuing is optional
             if(u_widthL > u_widthR) {
+                pos rpos = start; rpos.advance(to, u_widthR);
                 straightPath(to, rpos, u_widthL-u_widthR, false);
-                next = lpos;
                 n = u_widthL;
             }
             else if(u_widthL < u_widthR) {
+                pos lpos = start; lpos.advance(to, u_widthL);
                 straightPath(to, lpos, u_widthR-u_widthL, false);
-                next = rpos;
                 n = u_widthR;
             }
-            return 1;
+
+            return n;
             // return next;
         }
         if(leftu) {
             return u_widthL;
-            // return lpos;
         }
         if(rightu) {
             return u_widthR;
-            // return rpos;
         }
         //path has only produced dead ends. Critical path must continue from start
 
@@ -613,7 +606,7 @@ void LevelGenerator::straightPath(Direction d, pos start, int length, bool power
 
 }
 
-pos LevelGenerator::uPath(Direction d, Direction turn_d, int length, int turn_length, pos start) {
+void LevelGenerator::uPath(Direction d, Direction turn_d, int length, int turn_length, pos start) {
     n_mut++;
     remain += (2*length + turn_length)/(2*PATH_WIDTH+1);
 
@@ -623,22 +616,16 @@ pos LevelGenerator::uPath(Direction d, Direction turn_d, int length, int turn_le
     pos turn2 = turn1;
     turn2.advance(turn_d, turn_length);
 
-    pos end = start;
-    end.advance(turn_d, turn_length);
-
     // board[start.x][start.y] = '*';
     // board[turn1.x][turn1.y] = '1';
     // board[turn2.x][turn2.y] = '2';
-    // board[end.x][end.y] = 'E';
     // printCharBoard();
 
-    straightPath(d, start, length, false);
+    straightPath(d, start, length+1, false);
 
-    straightPath(turn_d, turn1, turn_length, false);
+    straightPath(turn_d, turn1, turn_length+1, false);
 
-    straightPath(opposite_dir(d), turn2, length, false);
-
-    return end;
+    straightPath(opposite_dir(d), turn2, length+1, false);
 }
 /////////////
 /*

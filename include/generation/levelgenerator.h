@@ -141,7 +141,7 @@ class LevelGenerator {
         int mutatePath(Direction to, int max, double mut_rate, pos start);
         void straightPath(Direction d, pos start, pos end, int length, bool power);
         void straightPath(Direction d, pos start, int length, bool power);
-        pos uPath(Direction d, Direction turn_d, int length, int turn_length, pos start);
+        void uPath(Direction d, Direction turn_d, int length, int turn_length, pos start);
 
         //PROCEDURAL DIFFICULTY
         void setDifficulty();
