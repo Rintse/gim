@@ -409,7 +409,8 @@ Square*** LevelGenerator::testRoom(int d) {
 /*
     PATH GENERATORION
 */
-pos LevelGenerator::mutatePath(Direction to, int parent_remainder, double mut_rate, pos start) {
+int LevelGenerator::mutatePath(Direction to, int parent_remainder, double mut_rate, pos start) {
+    int n = 1;
     pos next = start; next.advance(to, 1);
 
     if(rand->getDouble() < mut_rate) {
@@ -482,22 +483,28 @@ pos LevelGenerator::mutatePath(Direction to, int parent_remainder, double mut_ra
             if(u_widthL > u_widthR) {
                 straightPath(to, rpos, u_widthL-u_widthR, false);
                 next = lpos;
+                n = u_widthL;
             }
             else if(u_widthL < u_widthR) {
                 straightPath(to, lpos, u_widthR-u_widthL, false);
                 next = rpos;
+                n = u_widthR;
             }
-
-            return next;
+            return 1;
+            // return next;
         }
-        if(leftu)
-            return lpos;
-        if(rightu)
-            return rpos;
+        if(leftu) {
+            return u_widthL;
+            // return lpos;
+        }
+        if(rightu) {
+            return u_widthR;
+            // return rpos;
+        }
         //path has only produced dead ends. Critical path must continue from start
 
     }
-    return next;
+    return 1;
 }
 
 void LevelGenerator::straightPath(Direction d, pos start, pos end, int length, bool power) {
@@ -548,7 +555,7 @@ void LevelGenerator::straightPath(Direction d, pos start, pos end, int length, b
 
             if(r > PATH_WIDTH) { //for old mutation: change (double)... to mut_rate
                 double mut_rate = (double)(target_mut-n_mut)/remain;
-                start = mutatePath(d, r, mut_rate, start);
+                // start = mutatePath(d, r, mut_rate, start);
             }
         } else
             start.advance(d, 1);
@@ -593,16 +600,15 @@ void LevelGenerator::straightPath(Direction d, pos start, int length, bool power
             // printCharBoard();
             return;
         }
-
+        int step = 1;
         if((i > PATH_WIDTH && length - i > PATH_WIDTH
                 && i%(2*PATH_WIDTH+1) == 0)) {
             double mut_rate = (double)(target_mut-n_mut)/remain;
-            start = mutatePath(d, length - i, mut_rate, start);
+            step = mutatePath(d, length - i, mut_rate, start);
         }
-        else
-            start.advance(d, 1);
 
-        i++;
+        start.advance(d, step);
+        i += step;
     }
 
 }

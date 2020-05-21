@@ -138,7 +138,7 @@ class LevelGenerator {
         Square*** createBoard();
 
         //PATH GENERATION
-        pos mutatePath(Direction to, int max, double mut_rate, pos start);
+        int mutatePath(Direction to, int max, double mut_rate, pos start);
         void straightPath(Direction d, pos start, pos end, int length, bool power);
         void straightPath(Direction d, pos start, int length, bool power);
         pos uPath(Direction d, Direction turn_d, int length, int turn_length, pos start);
