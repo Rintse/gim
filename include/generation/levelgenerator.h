@@ -85,7 +85,8 @@ class LevelGenerator {
         Square*** bossRoom(int w, int h, pos door);
         Square*** randomRoom(int w, int h, int room_doory, FastRandom &r);
         Square*** cpeRoom(Direction in_dir, int in_offset, Direction out_dir, int out_offset, int d);
-        Square*** cpeRoom();
+        Square*** cpeRoom(int d);
+        Square*** testRoom(int d);
 
     private:
         //lEVEL INFO
@@ -138,9 +139,9 @@ class LevelGenerator {
         Square*** createBoard();
 
         //PATH GENERATION
-        pos mutatePath(Direction to, int max, int interval, double mut_rate, pos start);
-        void straightPath(Direction d, int interval, pos start, pos end, int length, bool power);
-        pos uPath(Direction d, Direction turn_d, int length, int turn_length, int interval, pos start);
+        pos mutatePath(Direction to, int max, double mut_rate, pos start);
+        void straightPath(Direction d, pos start, pos end, int length, bool power);
+        pos uPath(Direction d, Direction turn_d, int length, int turn_length, pos start);
 
         //PROCEDURAL DIFFICULTY
         void setDifficulty();
