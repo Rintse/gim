@@ -488,11 +488,11 @@ int LevelGenerator::mutatePath(Direction to, int parent_remainder, double mut_ra
             return n;
             // return next;
         }
-        if(leftu) {
-            return rand->getLong()%2 ? 1 : u_widthL;
+        if(leftu) { //TODO tweak
+            return rand->getLong()%10 < 3 ? 1 : u_widthL;
         }
         if(rightu) {
-            return rand->getLong()%2 ? 1 : u_widthR;
+            return rand->getLong()%10 < 3 ? 1 : u_widthR;
         }
         //path has only produced dead ends. Critical path must continue from start
 
