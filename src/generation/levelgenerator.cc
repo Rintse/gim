@@ -358,17 +358,6 @@ Square*** LevelGenerator::randomRoom(int w, int h, int room_doory, FastRandom &r
     return square_board;
 }
 
-// Square*** LevelGenerator::cpeRoom(Direction in_dir, int in_offset, Direction out_dir, int out_offset, int d) {
-//     entrance = generateDoors(in_dir, in_offset);
-//     exit = generateDoors(out_dir, out_offset);
-//
-//     in = in_dir;
-//     out = out_dir;
-//     depth = d;
-//
-//     return cpeRoom();
-// }
-
 Square*** LevelGenerator::cpeRoom(int d) {
     depth = d;
     power_positions.clear();
@@ -386,7 +375,7 @@ Square*** LevelGenerator::cpeRoom(int d) {
 
     setDifficulty();
 
-    straightPath(opposite_dir(in), walk, finish, width -2, false);
+    straightPath(opposite_dir(in), walk, width -2, false);
 
 
     return createBoard();
@@ -412,7 +401,7 @@ Square*** LevelGenerator::testRoom(int d) {
     enemy_permille = 0;;
     target_powers = 0;
 
-    straightPath(opposite_dir(in), walk, finish, width -2, false);
+    straightPath(opposite_dir(in), walk, width -2, false);
 
     return createBoard();
 }
@@ -472,7 +461,7 @@ pos LevelGenerator::mutatePath(Direction to, int parent_remainder, double mut_ra
                 lpos = uPath(ldir, to, l, u_widthL, start);
                 leftu = true;
             } else
-                straightPath(ldir, start, end, l, true);//select if uPath not possible or on 50% chance
+                straightPath(ldir, start, l, true);//select if uPath not possible or on 50% chance
         }
         if(doright && MIN_MUT_LENGTH < rdist-1) {
             int l = rand->getLong()%(rdist-1-MIN_MUT_LENGTH) + MIN_MUT_LENGTH; //rand [MIN_MUT_LENGTH .. rdist-1]
@@ -484,18 +473,18 @@ pos LevelGenerator::mutatePath(Direction to, int parent_remainder, double mut_ra
                 rpos = uPath(rdir, to, l, u_widthR, start);
                 rightu = true;
             } else
-                straightPath(rdir, start, end, l, true); //select if uPath not possible or on 50% chance
+                straightPath(rdir, start, l, true); //select if uPath not possible or on 50% chance
         }
 
         //determine behaviour of continuing path
         if(leftu && rightu) {
             //path has been rerouted at least once. Continuing is optional
             if(u_widthL > u_widthR) {
-                straightPath(to, rpos, lpos, u_widthL-u_widthR, false);
+                straightPath(to, rpos, u_widthL-u_widthR, false);
                 next = lpos;
             }
             else if(u_widthL < u_widthR) {
-                straightPath(to, lpos, rpos, u_widthR-u_widthL, false);
+                straightPath(to, lpos, u_widthR-u_widthL, false);
                 next = rpos;
             }
 
@@ -569,6 +558,55 @@ void LevelGenerator::straightPath(Direction d, pos start, pos end, int length, b
 
 }
 
+void LevelGenerator::straightPath(Direction d, pos start, int length, bool power) {
+    int i = 0;
+
+    if(power) { //beetje hacky, alleen puur straightPath heeft power aan het einde
+        n_mut++;
+        remain += length/(2*PATH_WIDTH+1);
+    }
+
+    while(start.x < width-1 && start.y < height-1 && start.x > 0 && start.y > 0
+            && i < length) {
+
+        if(power && i == length && board[start.x][start.y] == '-')
+            power_positions.push_back(start);
+
+        placeFloor(start.x, start.y, true);
+
+        for(int k = 1; k <= PATH_WIDTH; k++) { //path width
+            if(d == DIR_RIGHT || d == DIR_LEFT) {
+                placeFloor(start.x, start.y+k);
+                placeFloor(start.x, start.y-k);
+            }
+            else {
+                placeFloor(start.x+k, start.y);
+                placeFloor(start.x-k, start.y);
+            }
+        }
+
+        pos temp = start; temp.advance(d, 2 + PATH_WIDTH, width, height);
+
+        if(power && temp.x != start.x && temp.y != start.y && board[temp.x][temp.y] == 'C') { //there will be an intersection
+            if(i > length/2)
+                power_positions.push_back(start);
+            // printCharBoard();
+            return;
+        }
+
+        if((i > PATH_WIDTH && length - i > PATH_WIDTH
+                && i%(2*PATH_WIDTH+1) == 0)) {
+            double mut_rate = (double)(target_mut-n_mut)/remain;
+            start = mutatePath(d, length - i, mut_rate, start);
+        }
+        else
+            start.advance(d, 1);
+
+        i++;
+    }
+
+}
+
 pos LevelGenerator::uPath(Direction d, Direction turn_d, int length, int turn_length, pos start) {
     n_mut++;
     remain += (2*length + turn_length)/(2*PATH_WIDTH+1);
@@ -588,11 +626,11 @@ pos LevelGenerator::uPath(Direction d, Direction turn_d, int length, int turn_le
     // board[end.x][end.y] = 'E';
     // printCharBoard();
 
-    straightPath(d, start, turn1, length, false);
+    straightPath(d, start, length, false);
 
-    straightPath(turn_d, turn1, turn2, turn_length, false);
+    straightPath(turn_d, turn1, turn_length, false);
 
-    straightPath(opposite_dir(d), turn2, end, length, false);
+    straightPath(opposite_dir(d), turn2, length, false);
 
     return end;
 }
