@@ -30,4 +30,16 @@ Menu::Menu(std::vector<std::string> texts, std::vector<int> sizes, int w, int h)
         totalheight += surfs[i]->h;
     }
     Y = (h - totalheight) / 2;
+
+    // Cleanup
+    for(int i = 1; i <= 3; i++) {
+        TTF_CloseFont(fonts[i]);
+    }
+}
+
+Menu::~Menu() {
+    delete[] Xs;
+    for(auto &i : surfs) {
+        SDL_FreeSurface(i);
+    }
 }

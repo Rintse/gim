@@ -14,7 +14,11 @@ GFX::~GFX() {
     for(auto &i : sprites) {
         SDL_FreeSurface(i.second);
     }
-    delete black;
+    delete startMenu;
+    delete pauseMenu;
+    delete wonMenu;
+    delete lostMenu;
+    SDL_FreeSurface(black);
     SDL_DestroyWindow(window);
     SDL_Quit();
 }
