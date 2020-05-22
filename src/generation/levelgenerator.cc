@@ -21,15 +21,13 @@
 /*
     (DE)CONSTRUCTION / INITIALIZATION
 */
-LevelGenerator::LevelGenerator(int w, int h) {
+LevelGenerator::LevelGenerator(int w, int h, FastRandom* fr) {
     initBoard(w, h, DIR_LEFT, h/2, DIR_RIGHT, h/2);
 
-    rand = new FastRandom(time(NULL)); //TODO set from argument
+    rand = fr;
 }
 
 LevelGenerator::~LevelGenerator() {
-    delete rand; //TODO dont delete if set from argument
-
     deleteCharBoard();
 }
 

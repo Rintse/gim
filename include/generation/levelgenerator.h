@@ -68,7 +68,7 @@ struct pos {
 class LevelGenerator {
     public:
         //CONSTRUCTION / INITIALIZATION
-        LevelGenerator(int width, int height);
+        LevelGenerator(int width, int height, FastRandom* fr);
         ~LevelGenerator();
         void initBoard(int w, int h, Direction in_dir, int in_index,
                         Direction out_dir, int out_index);
