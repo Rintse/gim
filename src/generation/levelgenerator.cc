@@ -569,7 +569,7 @@ void LevelGenerator::straightPath(Direction d, pos start, int length, bool power
     while(start.x < width-1 && start.y < height-1 && start.x > 0 && start.y > 0
             && i < length) {
 
-        if(power && i == length && board[start.x][start.y] == '-')
+        if(power && i == length - 1 && board[start.x][start.y] == '-')
             power_positions.push_back(start);
 
         placeFloor(start.x, start.y, true);
