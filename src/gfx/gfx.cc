@@ -44,6 +44,8 @@ int GFX::checkScreenSize() {
     dst.w = dst.h = SPRITE_DIM*scale;
     src.w = src.h = SPRITE_DIM;
     src.x = src.y = 0;
+
+    XCloseDisplay(d);
     return err;
 }
 

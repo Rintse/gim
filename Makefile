@@ -10,7 +10,7 @@ DEPS 			= $(OBJECTS:.o=.d)
 MAIN_DEPS		= $(MAIN_OBJ:.o=.d)
 MAIN_TARGET		= game
 CC				= g++
-CFLAGS			= -std=c++11 -g -Wall
+CFLAGS			= -std=c++11 -O3 -Wall
 CPPFLAGS 		= $(addprefix -I, $(INC_DIR)) -pedantic
 SDLFLAGS		= $(shell pkg-config x11 --libs) $(shell pkg-config --cflags --libs sdl2) -lSDL2_ttf
 THREADFLAGS		= -pthread
