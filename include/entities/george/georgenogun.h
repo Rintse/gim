@@ -10,6 +10,7 @@ class GeorgeNoGun : public GeorgePart {
 public:
     GeorgeNoGun();
     GeorgeNoGun(Level* l, EmptySquare* s, char t);
+    ~GeorgeNoGun() {};
 
     void act(Input i);
 };

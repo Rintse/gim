@@ -34,6 +34,9 @@ Level::Level(int w, int h, Game* g, int vd, int d) {
 }
 
 Level::~Level() {
+    if(george)
+      delete george;
+    
     for(int i = 0; i < width; i++) {
         for(int j = 0; j < height; j++) {
             delete board[i][j];

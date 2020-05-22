@@ -13,6 +13,7 @@ class GeorgeGun : public GeorgePart {
 public:
     GeorgeGun();
     GeorgeGun(Level* l, EmptySquare* s, char t);
+    ~GeorgeGun() {};
 
     void act(Input i);
     void setRound(Round round);
