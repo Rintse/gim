@@ -450,7 +450,7 @@ int LevelGenerator::mutatePath(Direction to, int parent_remainder, double mut_ra
         if(doleft && MIN_MUT_LENGTH < ldist - 1) {
             int l = rand->getLong()%(ldist-1-MIN_MUT_LENGTH) + MIN_MUT_LENGTH; //rand [MIN_MUT_LENGTH .. ldist-1]
 
-            if(parent_remainder - PATH_WIDTH > min_width && rand->getLong()%10 < 5) {
+            if(parent_remainder - PATH_WIDTH > min_width && rand->getLong()%10 < 6) {
                 u_widthL = rand->getLong()%(parent_remainder - PATH_WIDTH - min_width) + min_width; //rand [min_width .. parent_remainder]
 
                 uPath(ldir, to, l, u_widthL, start);
@@ -461,7 +461,7 @@ int LevelGenerator::mutatePath(Direction to, int parent_remainder, double mut_ra
         if(doright && MIN_MUT_LENGTH < rdist-1) {
             int l = rand->getLong()%(rdist-1-MIN_MUT_LENGTH) + MIN_MUT_LENGTH; //rand [MIN_MUT_LENGTH .. rdist-1]
 
-            if(parent_remainder - PATH_WIDTH > min_width && rand->getLong()%10 < 5) { //favor upath
+            if(parent_remainder - PATH_WIDTH > min_width && rand->getLong()%10 < 6) { //favor upath
                 u_widthR = rand->getLong()%(parent_remainder - PATH_WIDTH - min_width) + min_width; //rand [min_width .. parent_remainder]
 
                 uPath(rdir, to, l, u_widthR, start);
@@ -472,90 +472,25 @@ int LevelGenerator::mutatePath(Direction to, int parent_remainder, double mut_ra
 
         //determine behaviour of continuing path
         if(leftu && rightu) {
-            int n = 1;
+            int r = rand->getLong()%9;
             //path has been rerouted at least once. Continuing is optional
-            if(u_widthL > u_widthR) {
-                pos rpos = start; rpos.advance(to, u_widthR);
-                straightPath(to, rpos, u_widthL-u_widthR, false);
-                n = u_widthL;
-            }
-            else if(u_widthL < u_widthR) {
-                pos lpos = start; lpos.advance(to, u_widthL);
-                straightPath(to, lpos, u_widthR-u_widthL, false);
-                n = u_widthR;
-            }
+            if(r < 4)
+                return u_widthL;
+            if(r < 8)
+                return u_widthR;
 
-            return n;
-            // return next;
+            return 1;
         }
         if(leftu) { //TODO tweak
-            return rand->getLong()%10 < 3 ? 1 : u_widthL;
+            return rand->getLong()%4 == 0 ? 1 : u_widthL;
         }
         if(rightu) {
-            return rand->getLong()%10 < 3 ? 1 : u_widthR;
+            return rand->getLong()%4 == 0 ? 1 : u_widthR;
         }
         //path has only produced dead ends. Critical path must continue from start
 
     }
     return 1;
-}
-
-void LevelGenerator::straightPath(Direction d, pos start, pos end, int length, bool power) {
-    int i = 0;
-
-    if(power) { //beetje hacky, alleen puur straightPath heeft power aan het einde
-        n_mut++;
-        remain += length/(2*PATH_WIDTH+1);
-    }
-
-    while(start.x < width-1 && start.y < height-1 && start.x > 0 && start.y > 0) {
-
-        if(power && i == length && board[start.x][start.y] == '-')
-            power_positions.push_back(start);
-
-        placeFloor(start.x, start.y, true);
-
-        for(int k = 1; k <= PATH_WIDTH; k++) { //path width
-            if(d == DIR_RIGHT || d == DIR_LEFT) {
-                placeFloor(start.x, start.y+k);
-                placeFloor(start.x, start.y-k);
-            }
-            else {
-                placeFloor(start.x+k, start.y);
-                placeFloor(start.x-k, start.y);
-            }
-        }
-
-        if(start.x == end.x && start.y == end.y)
-            return;
-
-        pos temp = start; temp.advance(d, 2 + PATH_WIDTH, width, height);
-
-        if(power && temp.x != start.x && temp.y != start.y && board[temp.x][temp.y] == 'C') { //there will be an intersection
-            if(i > length/2)
-                power_positions.push_back(start);
-            // printCharBoard();
-            return;
-        }
-
-        if((i > PATH_WIDTH+1 && i%(2*PATH_WIDTH+1) == 0)) {
-            remain--;
-            int r;
-            if(d == DIR_RIGHT || d == DIR_LEFT)
-            r = abs(end.x - start.x);
-            else
-            r = abs(end.y - start.y);
-
-            if(r > PATH_WIDTH) { //for old mutation: change (double)... to mut_rate
-                double mut_rate = (double)(target_mut-n_mut)/remain;
-                // start = mutatePath(d, r, mut_rate, start);
-            }
-        } else
-            start.advance(d, 1);
-
-        i++;
-    }
-
 }
 
 void LevelGenerator::straightPath(Direction d, pos start, int length, bool power) {
