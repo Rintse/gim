@@ -14,7 +14,8 @@ void sleep_remaining(std::chrono::time_point<std::chrono::high_resolution_clock>
 }
 
 
-Game::Game() : gfx(GFX(this)), randgen(time(NULL)), levelgen(LevelGenerator(LVL_WIDTH, LVL_HEIGHT, &randgen)) {
+Game::Game() :  gfx(GFX(this)), randgen(time(NULL)), 
+                levelgen(LevelGenerator(LVL_WIDTH, LVL_HEIGHT, &randgen)) {
     state = STATE_START;
 }
 
