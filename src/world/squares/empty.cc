@@ -19,7 +19,9 @@ EmptySquare::EmptySquare(int x, int y, bool b) : Square(x,y) {
 }
 
 
-EmptySquare::~EmptySquare() {}
+EmptySquare::~EmptySquare() {
+    if(pu) delete pu;
+}
 
 SquareType EmptySquare::type() {
     return SQUARE_FLOOR;

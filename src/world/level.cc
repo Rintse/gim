@@ -34,9 +34,15 @@ Level::Level(int w, int h, Game* g, int vd, int d) {
 }
 
 Level::~Level() {
-    if(george)
-      delete george;
-    
+    if(george) delete george;
+
+    for(auto &i : enemies) {
+        delete i;
+    }
+    for(auto &i : projectiles) {
+        delete i;
+    }
+
     for(int i = 0; i < width; i++) {
         for(int j = 0; j < height; j++) {
             delete board[i][j];
@@ -80,6 +86,7 @@ void Level::newProjectile(Projectile* p) {
 }
 
 void Level::removeProjectile(Projectile* p) {
+    delete *projectiles.find(p);
     projectiles.erase(projectiles.find(p));
 }
 
@@ -97,6 +104,7 @@ Square* Level::getSquareDir(Square* s, Direction dir) {
 }
 
 void Level::removeEnemy(Enemy* e) {
+    delete *enemies.find(e);
     enemies.erase(enemies.find(e));
 }
 
@@ -116,7 +124,7 @@ void Level::updateEnemies() {
     }
     for(auto &i: toDelete) {
         i->getSquare()->setEnemy(0);
-        enemies.erase(enemies.find(i));
+        removeEnemy(i);
     }
 }
 
@@ -129,7 +137,7 @@ void Level::updateProjectiles() {
     }
     for(auto &i: toDelete) {
         i->getSquare()->setProjectile(0);
-        projectiles.erase(projectiles.find(i));
+        removeProjectile(i);
     }
 }
 

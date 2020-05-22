@@ -12,6 +12,8 @@ Projectile::Projectile(Level* l, EmptySquare* s, Direction d) {
     speed = 2;
 }
 
+Projectile::~Projectile() {}
+
 EmptySquare* Projectile::getSquare() {
     return curSquare;
 }

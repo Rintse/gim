@@ -10,6 +10,7 @@ class Projectile {
 public:
   Projectile();
   Projectile(Level* l, EmptySquare* s, Direction d);
+  virtual ~Projectile();
   int move();
   EmptySquare* getSquare();
   virtual char token() = 0;
